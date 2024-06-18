@@ -57,14 +57,6 @@ app.get("/logout", (req, res) => {
   });
 });
 
-app.get("/secrets", (req, res) => {
-  //console.log(req.user.id); user id for logic between pages
-  if (req.isAuthenticated()) {
-    res.render("secrets.ejs");
-  } else {
-    res.redirect("/login");
-  }
-});
 
 app.get("/crud", async (req, res) => {
   console.log(req.user);
@@ -217,6 +209,12 @@ app.post("/updatecrud/:id", async (req, res) => {
   }
 });
 
+app.use((req, res, next) => {
+  res.locals.user = req.user;
+  next();
+});
+
+
 
 app.get(
   "/auth/google",
@@ -228,7 +226,7 @@ app.get(
 app.get(
   "/auth/google/secrets",
   passport.authenticate("google", {
-    successRedirect: "/secrets",
+    successRedirect: "/crud",
     failureRedirect: "/login",
   })
 );
@@ -236,7 +234,7 @@ app.get(
 app.post(
   "/login",
   passport.authenticate("local", {
-    successRedirect: "/secrets",
+    successRedirect: "/crud",
     failureRedirect: "/login",
   })
 );
@@ -281,7 +279,7 @@ app.post("/register", async (req, res) => {
 
           req.login(user, (err) => {
             console.log("success");
-            res.redirect("/secrets");
+            res.redirect("/crud");
           });
         }
       });

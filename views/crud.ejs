@@ -80,9 +80,46 @@
             background-color: #dc3545;
             color: #ffffff;
         }
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 10px;
+        }
+        nav a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+        .nav-left, .nav-right {
+            display: flex;
+        }
     </style>
 </head>
 <body>
+    <nav>
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div class="nav-right">
+            <% if (locals.user && locals.user.id) { %>
+                <a href="/logout">Logout</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+            <% } %>
+        </div>
+    </nav>
+
+
     <div class="form-container">
         <h2>Submit Your Details</h2>
         <form action="/crudsubmit" method="post">
