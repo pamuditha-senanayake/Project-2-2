@@ -58,7 +58,7 @@
 <body>
     <div class="form-container">
         <h2>Update Your Details</h2>
-        <form action="/updatecrud" method="post">
+        <form action="/updatecrud/<%= hour.id %>" method="post">
             <div class="form-group">
                 <label for="hours">Hours:</label>
                 <input type="number" id="hours" name="hours" required min="0" max="24" placeholder="Enter hours (0-24)" value="<%= hour.hours %>">
@@ -70,6 +70,5 @@
             <button type="submit" class="submit-button">Update</button>
         </form>
     </div>
-    <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
 </body>
 </html>

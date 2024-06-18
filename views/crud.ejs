@@ -103,7 +103,7 @@
         <table>
             <thead>
                 <tr>
-                    <th>UID</th>
+                    <th>ID</th>
                     <th>Hours</th>
                     <th>Place</th>
                     <th>Actions</th>
@@ -113,12 +113,12 @@
                 <% if (hours && hours.length > 0) { %>
                     <% hours.forEach(hour => { %>
                         <tr>
-                            <td><%= hour.uid %></td>
+                            <td><%= hour.id %></td>
                             <td><%= hour.hours %></td>
                             <td><%= hour.place %></td>
                             <td>
-                                <button class="action-button update-button" onclick="location.href='/updatecrud'">Update</button>
-                                <button class="action-button delete-button" onclick="location.href='/deletecrud'">Delete</button>
+                                <button class="action-button update-button" onclick="location.href='/updatecrud/<%= hour.id %>'">Update</button>
+                                <button class="action-button delete-button" onclick="location.href='/deletecrud/<%= hour.id %>'">Delete</button>
                             </td>
                         </tr>
                     <% }) %>
@@ -130,6 +130,5 @@
             </tbody>
         </table>
     </div>
-    <a class="btn btn-light btn-lg" href="/logout" role="button">Log Out</a>
 </body>
 </html>
