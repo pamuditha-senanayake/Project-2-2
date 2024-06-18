@@ -62,14 +62,14 @@ app.get("/logout", (req, res) => {
 
 
 app.get("/crud", async (req, res) => {
-  console.log(req.user);
+  //console.log(req.user);
   if (req.isAuthenticated()) {
     try {
       const result = await db.query(
         `SELECT * FROM hours WHERE uid = $1`,
         [req.user.id]
       );
-      console.log(result);
+      //console.log(result);
       const hours = result.rows;
       if (hours.length > 0) {
         res.render("crud.ejs", { hours: hours });
@@ -245,7 +245,7 @@ app.post(
 app.post("/crudsubmit", async function (req, res) {
   const hours = req.body.hours;
   const place = req.body.place;
-  console.log(req.user);
+  //console.log(req.user);
   try {
     await db.query(
       `INSERT INTO hours (uid, hours, place) VALUES ($1, $2, $3)`,
