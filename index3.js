@@ -1,10 +1,20 @@
+import express from 'express';
 import { GoogleGenerativeAI } from '@google/generative-ai';
 import dotenv from 'dotenv';
-import readline from 'readline';
+import path, { dirname } from 'path';
+import { fileURLToPath } from 'url';
+
 dotenv.config();
+
+const app = express();
+const port = process.env.PORT || 3000;
 
 const apiKey = process.env.API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
+
+// Determine __dirname using import.meta.url
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
 
 // Hotel information
 const hotelDescription = [
@@ -14,34 +24,43 @@ const hotelDescription = [
   "For a more casual experience, our Lounge Bar offers a relaxing atmosphere to unwind with crafted cocktails and light bites.",
   "Serenity Hotel is also equipped with state-of-the-art conference facilities, making it an ideal venue for business meetings and events.",
   "Our dedicated event planning team ensures every detail is meticulously handled to exceed expectations.",
-  "Whether you're visiting for business or leisure, Serenity Hotel promises an unforgettable stay with impeccable service and a commitment to your comfort and satisfaction."
+  "Whether you're visiting for business or leisure, Serenity Hotel promises an unforgettable stay with impeccable service and a commitment to your comfort and satisfaction.",
+  "if theres no info provided, respnd as no info, if there is then resond, and better keep in less than 20 words, and simple direct answers"
 ];
 
-async function run() {
-  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+// Set EJS as the view engine
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-  const rl = readline.createInterface({
-    input: process.stdin,
-    output: process.stdout
-  });
+// Serve static files from the 'public' directory (for CSS, images, etc.)
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.urlencoded({ extended: true }));
 
-  console.log("Welcome to the hotel chatbot. You can type your questions or type 'exit' to quit.");
+// Route to render the chatbot interface
+app.get('/', (req, res) => {
+  res.render('index', { message: null, response: null });
+});
 
-  rl.on('line', async (input) => {
-    if (input.trim().toLowerCase() === 'exit') {
-      rl.close();
-      console.log("Exiting...");
-      return;
-    }
+// Route to handle user queries
+app.post('/ask', async (req, res) => {
+  const { message } = req.body;
+
+  if (message.toLowerCase().trim() === 'exit') {
+    res.json({ response: "Chatbot session ended." });
+    return;
+  }
+
+  try {
+    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
 
     const chatHistory = [
       {
         role: "user",
-        parts: [{ text: input }],
+        parts: [{ text: message }],
       },
       {
         role: "model",
-        parts: hotelDescription.map(text => ({ text })) // Include hotel description parts
+        parts: hotelDescription.map(text => ({ text }))
       },
     ];
 
@@ -52,16 +71,17 @@ async function run() {
       },
     });
 
-    const result = await chat.sendMessage(input);
+    const result = await chat.sendMessage(message);
     const response = await result.response;
     const text = response.text();
-    console.log("Chatbot:", text);
-  });
 
-  rl.on('close', () => {
-    console.log("Chatbot session ended.");
-    process.exit(0);
-  });
-}
+    res.json({ response: text });
+  } catch (error) {
+    console.error('Error generating response:', error);
+    res.status(500).json({ response: 'Error generating response' });
+  }
+});
 
-run();
+app.listen(port, () => {
+  console.log(`Server is running on http://localhost:${port}`);
+});
