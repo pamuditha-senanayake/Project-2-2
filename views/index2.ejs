@@ -4,11 +4,42 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Download Invoice</title>
+  <!-- Include SweetAlert library -->
+  <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 </head>
 <body>
   <h1>Invoice Generator</h1>
-  <form action="/download-invoice" method="get">
+  <form id="downloadForm" action="/download-invoice" method="get">
     <button type="submit">Download Invoice</button>
   </form>
+
+  <!-- Script to trigger SweetAlert on form submission success -->
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      const form = document.getElementById('downloadForm');
+      form.addEventListener('submit', function(event) {
+        event.preventDefault(); // Prevent the form from submitting normally
+
+        // Submit the form via AJAX or simply redirect
+        // For simplicity, let's simulate a success message
+        Swal.fire({
+          icon: 'success',
+          title: 'Invoice Downloaded!',
+          showConfirmButton: false,
+          timer: 1500 // Automatically close after 1.5 seconds
+        });
+
+        // Optionally, redirect after showing the success message
+        // window.location.href = form.action; 
+
+        // For demonstration purposes, let's redirect to prevent real submission
+        setTimeout(() => {
+          window.location.href = form.action;
+        }, 1500); // Redirect after 1.5 seconds (same as timer in Swal.fire)
+
+        // Replace the setTimeout above with actual form submission via AJAX if needed
+      });
+    });
+  </script>
 </body>
 </html>
