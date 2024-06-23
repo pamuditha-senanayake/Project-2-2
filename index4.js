@@ -54,7 +54,7 @@ app.get('/download-invoice', (req, res) => {
         console.error('Error downloading the file:', err);
         res.status(500).send('Error downloading the file');
       } else {
-        console.log('File downloaded successfully');
+        // console.log('File downloaded successfully');
       }
     });
   });
