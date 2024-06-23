@@ -85,23 +85,6 @@ app.get("/crud", async (req, res) => {
   }
 });
 
-// app.get("/deletecrud", async (req, res) => {
-//   const uid = req.user.id;
-//   if (req.isAuthenticated()) {
-//     try {
-//       await db.query(
-//         `DELETE FROM hours WHERE uid = $1`,
-//         [uid]
-//       );
-//       res.redirect("/crud");
-//     } catch (err) {
-//       console.log(err);
-//       res.send("Error deleting record.");
-//     }
-//   } else {
-//     res.redirect("/login");
-//   }
-// });
 
 app.get("/deletecrud/:id", async (req, res) => {
   const { id } = req.params;
@@ -120,53 +103,6 @@ app.get("/deletecrud/:id", async (req, res) => {
     res.redirect("/login");
   }
 });
-
-
-// // Display update form
-// app.get("/updatecrud", async (req, res) => {
-//   const uid = req.user.id;
-//   if (req.isAuthenticated()) {
-//     try {
-//       const result = await db.query(
-//         `SELECT * FROM hours WHERE uid = $1`,
-//         [uid]
-//       );
-//       const hour = result.rows[0];
-//       if (hour) {
-//         res.render("update.ejs", { hour: hour });
-//       } else {
-//         res.send("Record not found.");
-//       }
-//     } catch (err) {
-//       console.log(err);
-//       res.send("Error fetching record.");
-//     }
-//   } else {
-//     res.redirect("/login");
-//   }
-// });
-
-// // Handle update form submission
-// app.post("/updatecrud", async (req, res) => {
-//   const uid = req.user.id;
-//   const hours= req.body.hours;
-//   const place = req.body.place;
-
-//   if (req.isAuthenticated()) {
-//     try {
-//       await db.query(
-//         `UPDATE hours SET hours = $1, place = $2 WHERE uid = $3`,
-//         [hours, place, uid]
-//       );
-//       res.redirect("/crud");
-//     } catch (err) {
-//       console.log(err);
-//       res.send("Error updating record.");
-//     }
-//   } else {
-//     res.redirect("/login");
-//   }
-// });
 
 // Display update form
 app.get("/updatecrud/:id", async (req, res) => {
