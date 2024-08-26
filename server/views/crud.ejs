@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CRUD</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f0f0f0;
+        }
+        .form-container, .table-container {
+            background-color: #ffffff;
+            padding: 20px;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-bottom: 20px;
+        }
+        .form-container h2, .table-container h2 {
+            margin-bottom: 20px;
+        }
+        .form-group {
+            margin-bottom: 15px;
+        }
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+        .form-group input {
+            width: 100%;
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        .form-group input:invalid {
+            border-color: red;
+        }
+        .form-group input:valid {
+            border-color: green;
+        }
+        .submit-button {
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            border-radius: 4px;
+            color: #ffffff;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .submit-button:hover {
+            background-color: #218838;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        th, td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            text-align: left;
+        }
+        th {
+            background-color: #f0f0f0;
+        }
+        .action-button {
+            padding: 5px 10px;
+            margin: 0 5px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        .update-button {
+            background-color: #007bff;
+            color: #ffffff;
+        }
+        .delete-button {
+            background-color: #dc3545;
+            color: #ffffff;
+        }
+        nav {
+            background-color: #333;
+            color: white;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        nav a {
+            color: white;
+            text-decoration: none;
+            margin: 0 10px;
+            padding: 10px;
+        }
+        nav a:hover {
+            background-color: #575757;
+            border-radius: 4px;
+        }
+        .nav-left, .nav-right {
+            display: flex;
+        }
+    </style>
+</head>
+<body>
+    <nav>
+        <div class="nav-left">
+            <a href="/">Home</a>
+            <a href="/about">About Us</a>
+        </div>
+        <div class="nav-right">
+            <% if (locals.user && locals.user.id) { %>
+                <a href="/logout">Logout</a>
+            <% } else { %>
+                <a href="/login">Login</a>
+                <a href="/register">Register</a>
+                <a href="/logout">Logout</a>
+            <% } %>
+        </div>
+    </nav>
+
+
+    <div class="form-container">
+        <h2>Submit Your Details</h2>
+        <form action="/crudsubmit" method="post">
+            <div class="form-group">
+                <label for="hours">Hours:</label>
+                <input type="number" id="hours" name="hours" required min="0" max="24" placeholder="Enter hours (0-24)">
+            </div>
+            <div class="form-group">
+                <label for="place">Place:</label>
+                <input type="text" id="place" name="place" required pattern="[A-Za-z\s]+" placeholder="Enter place">
+            </div>
+            <button type="submit" class="submit-button">Submit</button>
+        </form>
+    </div>
+
+    <div class="table-container">
+        <h2>Your Entries</h2>
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Hours</th>
+                    <th>Place</th>
+                    <th>Actions</th>
+                </tr>
+            </thead>
+            <tbody>
+                <% if (hours && hours.length > 0) { %>
+                    <% hours.forEach(hour => { %>
+                        <tr>
+                            <td><%= hour.id %></td>
+                            <td><%= hour.hours %></td>
+                            <td><%= hour.place %></td>
+                            <td>
+                                <button class="action-button update-button" onclick="location.href='/updatecrud/<%= hour.id %>'">Update</button>
+                                <button class="action-button delete-button" onclick="location.href='/deletecrud/<%= hour.id %>'">Delete</button>
+                            </td>
+                        </tr>
+                    <% }) %>
+                <% } else { %>
+                    <tr>
+                        <td colspan="4">No entries found.</td>
+                    </tr>
+                <% } %>
+            </tbody>
+        </table>
+    </div>
+</body>
+</html>
