@@ -9,7 +9,7 @@ import env from "dotenv";
 import GoogleStrategy from "passport-google-oauth2";
 
 const app = express();
-const port = 3000;
+const port = 3001;
 const saltRounds = 10;
 env.config();
 
@@ -23,7 +23,7 @@ app.use(
     }
   })
 );
-//a
+//b
 app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.static("public"));
 
