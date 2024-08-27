@@ -1,2 +1,2 @@
-//ane ane malle
+//ane ane mallekk
 console.log("hello");
