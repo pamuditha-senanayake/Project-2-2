@@ -14,14 +14,14 @@ const saltRounds = 10;
 env.config();
 
 app.use(
-  session({
-    secret: process.env.SESSION_SECRET,
-    resave: false,
-    saveUninitialized: true,
-    cookie: {
-      maxAge: 1000*60*10, //2 minute (mili second)
-    }
-  })
+    session({
+      secret: process.env.SESSION_SECRET,
+      resave: false,
+      saveUninitialized: true,
+      cookie: {
+        maxAge: 1000*60*10, //2 minute (mili second)
+      }
+    })
 );
 
 app.use(bodyParser.urlencoded({ extended: true }));
@@ -44,11 +44,11 @@ app.get("/", (req, res) => {
 });
 
 app.get("/login", (req, res) => {
-  res.render("login.ejs");
+  res.redirect("http://localhost:3000/");
 });
 
 app.get("/register", (req, res) => {
-  res.render("register.ejs");
+  res.redirect("http://localhost:3000/register");
 });
 
 app.get("/logout", (req, res) => {
@@ -66,8 +66,8 @@ app.get("/crud", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const result = await db.query(
-        `SELECT * FROM hours WHERE uid = $1`,
-        [req.user.id]
+          `SELECT * FROM hours WHERE uid = $1`,
+          [req.user.id]
       );
       //console.log(result);
       const hours = result.rows;
@@ -91,8 +91,8 @@ app.get("/deletecrud/:id", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       await db.query(
-        `DELETE FROM hours WHERE id = $1`,
-        [id]
+          `DELETE FROM hours WHERE id = $1`,
+          [id]
       );
       res.redirect("/crud");
     } catch (err) {
@@ -110,8 +110,8 @@ app.get("/updatecrud/:id", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       const result = await db.query(
-        `SELECT * FROM hours WHERE id = $1`,
-        [id]
+          `SELECT * FROM hours WHERE id = $1`,
+          [id]
       );
       const hour = result.rows[0];
       if (hour) {
@@ -135,8 +135,8 @@ app.post("/updatecrud/:id", async (req, res) => {
   if (req.isAuthenticated()) {
     try {
       await db.query(
-        `UPDATE hours SET hours = $1, place = $2 WHERE id = $3`,
-        [hours, place, id]
+          `UPDATE hours SET hours = $1, place = $2 WHERE id = $3`,
+          [hours, place, id]
       );
       res.redirect("/crud");
     } catch (err) {
@@ -156,26 +156,26 @@ app.use((req, res, next) => {
 
 
 app.get(
-  "/auth/google",
-  passport.authenticate("google", {
-    scope: ["profile", "email"],
-  })
+    "/auth/google",
+    passport.authenticate("google", {
+      scope: ["profile", "email"],
+    })
 );
 
 app.get(
-  "/auth/google/secrets",
-  passport.authenticate("google", {
-    successRedirect: "/crud",
-    failureRedirect: "/login",
-  })
+    "/auth/google/secrets",
+    passport.authenticate("google", {
+      successRedirect: "/crud",
+      failureRedirect: "/login",
+    })
 );
 
 app.post(
-  "/login",
-  passport.authenticate("local", {
-    successRedirect: "/crud",
-    failureRedirect: "/login",
-  })
+    "/login",
+    passport.authenticate("local", {
+      successRedirect: "http://localhost:3000/home",
+      failureRedirect: "http://localhost:3000/",
+    })
 );
 
 app.post("/crudsubmit", async function (req, res) {
@@ -184,8 +184,8 @@ app.post("/crudsubmit", async function (req, res) {
   //console.log(req.user);
   try {
     await db.query(
-      `INSERT INTO hours (uid, hours, place) VALUES ($1, $2, $3)`,
-      [req.user.id, hours, place]
+        `INSERT INTO hours (uid, hours, place) VALUES ($1, $2, $3)`,
+        [req.user.id, hours, place]
     );
 
     res.redirect("/crud");
@@ -211,8 +211,8 @@ app.post("/register", async (req, res) => {
           console.error("Error hashing password:", err);
         } else {
           const result = await db.query(
-            "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-            [email, hash]
+              "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+              [email, hash]
           );
           const user = result.rows[0];
 
@@ -229,71 +229,71 @@ app.post("/register", async (req, res) => {
 });
 
 passport.use(
-  "local",
-  new Strategy(async function verify(username, password, cb) {
-    try {
-      const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
-        username,
-      ]);
-      if (result.rows.length > 0) {
-        const user = result.rows[0];
+    "local",
+    new Strategy(async function verify(username, password, cb) {
+      try {
+        const result = await db.query("SELECT * FROM users WHERE email = $1 ", [
+          username,
+        ]);
+        if (result.rows.length > 0) {
+          const user = result.rows[0];
 
-        const storedHashedPassword = user.password;
-        bcrypt.compare(password, storedHashedPassword, (err, valid) => {
-          if (err) {
-            //Error with password check
-            console.error("Error comparing passwords:", err);
-            return cb(err);
-          } else {
-            if (valid) {
-              //Passed password check
-              return cb(null, user);
+          const storedHashedPassword = user.password;
+          bcrypt.compare(password, storedHashedPassword, (err, valid) => {
+            if (err) {
+              //Error with password check
+              console.error("Error comparing passwords:", err);
+              return cb(err);
             } else {
-              //Did not pass password check
-              return cb(null, false);
+              if (valid) {
+                //Passed password check
+                return cb(null, user);
+              } else {
+                //Did not pass password check
+                return cb(null, false);
+              }
             }
-          }
-        });
-      } else {
-        return cb("User not found");
+          });
+        } else {
+          return cb("User not found");
+        }
+      } catch (err) {
+        console.log(err);
       }
-    } catch (err) {
-      console.log(err);
-    }
-  })
+    })
 );
 
 passport.use(
-  "google",
-  new GoogleStrategy(
-    {
-      clientID: process.env.GOOGLE_CLIENT_ID,
-      clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-      callbackURL: "http://localhost:3000/auth/google/secrets",
-      userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
-    },
-    async (accessToken, refreshToken, profile, cb) => {
-      try {
-        // console.log(profile);
-        const result = await db.query("SELECT * FROM users WHERE email = $1", [
-          profile.email,
-        ]);
+    "google",
+    new GoogleStrategy(
+        {
+          clientID: process.env.GOOGLE_CLIENT_ID,
+          clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+          callbackURL: "http://localhost:3000/auth/google/secrets",
+          userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+        },
+        async (accessToken, refreshToken, profile, cb) => {
+          try {
+            // console.log(profile);
+            const result = await db.query("SELECT * FROM users WHERE email = $1", [
+              profile.email,
+            ]);
 
-        if (result.rows.length === 0) {
-          const newUser = await db.query(
-            "INSERT INTO users (email, password) VALUES ($1, $2)",
-            [profile.email, "google"]
-          );
+            if (result.rows.length === 0) {
+              const newUser = await db.query(
+                  "INSERT INTO users (email, password) VALUES ($1, $2)",
+                  [profile.email, "google"]
+              );
 
-          return cb(null, newUser.rows[0]);
-        } else {
-          return cb(null, result.rows[0]);
+              return cb(null, newUser.rows[0]);
+            } else {
+              return cb(null, result.rows[0]);
+            }
+          } catch (err) {
+            return cb(err);
+          }
         }
-      } catch (err) {
-        return cb(err);
-      }
-    }
-  )
+    )
 );
 
 passport.serializeUser((user, cb) => {
