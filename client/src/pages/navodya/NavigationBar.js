@@ -3,6 +3,15 @@ import { Link } from "react-router-dom";
 const NavigationBar = ({ activeTab }) => {
   return (
     <div className="relative flex flex-row items-start p-[2px] bg-gray-300 rounded-lg mb-6">
+        <Link
+            to="/home"
+            className={`relative flex items-center justify-center w-[130px] h-[28px] text-sm cursor-pointer opacity-60 z-[999] ${
+                activeTab === 0 ? "font-bold" : ""
+            }`}
+        >
+            Home
+        </Link>
+
       <Link
         to="/"
         className={`relative flex items-center justify-center w-[130px] h-[28px] text-sm cursor-pointer opacity-60 z-[999] ${
@@ -22,7 +31,7 @@ const NavigationBar = ({ activeTab }) => {
       </Link>
 
       <Link
-        to="/data&time"
+        to="/date&time"
         className={`relative flex items-center justify-center w-[130px] h-[28px] text-sm cursor-pointer opacity-60 z-[999] ${
           activeTab === 3 ? "font-bold" : ""
         }`}
