@@ -3,6 +3,7 @@ import { Link } from "react-router-dom";
 import logo from "../../images/logo.jpeg";
 import logo2 from "../../images/logow.png";
 import homepic from "../../images/home.jpg";
+import homepic2 from "../../images/c.jpg";
 
 // Function to smoothly scroll to a section
 const scrollToSection = (sectionId) => {
@@ -133,16 +134,75 @@ const Home = () => {
                 </div>
             </div>
 
-            <div className="bg-white h-[800px] " id="about">
-                About Us Section
+            <div className="bg-white h-[800px] " id="about"
+                 style={{
+                     backgroundImage: `url(${homepic2})`,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center',
+                     backgroundRepeat: 'no-repeat',
+                 }}
+                 // Adjust width and height as needed
+            >
+                {/* Content goes here */}
+            >
+                <div className="flex flex-row h-full justify-between w-full px-10">
+                    <div className="w-[50%] felx order-1 h-full">
+
+                    </div>
+                    <div className="w-[50%] felx order-2 h-full">
+                        <div className="flex justify-center items-center h-full ">
+                            <div
+                                className="w-full max-w-md rounded-lg shadow-lg p-6 flex flex-col h-[80vh]"
+                                style={{
+                                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                                    borderRadius: '16px',
+                                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                                    backdropFilter: 'blur(5px)',
+                                    WebkitBackdropFilter: 'blur(50px)',
+                                    border: '1px solid rgba(255, 255, 255, 0.3)'
+                                }}
+                            >
+                                <div className="flex-grow overflow-y-auto mb-4">
+                                    {/* Chat messages will be dynamically inserted here */}
+                                    <div className="message bg-gray-200 p-3 mb-2 rounded-lg">
+                                        <p className="text-gray-700">Chatbot: Hello! How can I assist you today?</p>
+                                    </div>
+                                    <div className="message bg-blue-500 text-white p-3 mb-2 rounded-lg self-end">
+                                        <p>You: I need help with booking a room.</p>
+                                    </div>
+                                </div>
+                                <form id="chat-form" className="flex flex-col">
+                                    <label htmlFor="message" className="text-gray-700 mb-2">Ask a question:</label>
+                                    <input
+                                        type="text"
+                                        id="message"
+                                        name="message"
+                                        className="p-2 mb-2 border border-gray-300 rounded-md text-gray-700"
+                                        placeholder="Type your message here..."
+                                    />
+                                    <button
+                                        type="submit"
+                                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
+                                    >
+                                        Submit
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             </div>
+
 
             <div className="bg-white h-[800px] " id="profile">
                 Profile Section
             </div>
 
         </div>
-    );
+    )
+        ;
 };
 
 export default Home;
