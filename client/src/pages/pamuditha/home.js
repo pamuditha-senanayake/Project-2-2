@@ -400,8 +400,8 @@ const Home = () => {
             <div className="bg-white flex flex-row h-[800px] " id="profile">
                 <InfoCards/>
             </div>
-            <div className="bg-white flex flex-row h-[300px] " id="profile">
-                <h1>footer area</h1>
+            <div className="bg-blue-950 flex flex-row h-[200px] content-center justify-center text-white " id="profile">
+                <h1 className="pt-20">Footer Area</h1>
             </div>
 
 
