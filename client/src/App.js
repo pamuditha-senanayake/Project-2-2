@@ -4,8 +4,10 @@ import './App.css';
 import Home from './pages/pamuditha/home';
 import Register from './pages/pamuditha/register';
 import Login from './pages/pamuditha/login';
-import SP from './pages/navodya/SelectServices';
+import SelectServices from './pages/navodya/SelectServices';
 import ReactDOM from "react-dom";
+import SelectProfessional from "./pages/navodya/SelectProfessional";
+import SelectDateTime from "./pages/navodya/SelectDateTime";
 
 function App() {
   return (
@@ -14,7 +16,9 @@ function App() {
         <Route path="/home" element={<Home />} />
           <Route path="/register" element={<Register />} />
           <Route path="/" element={<Login />} />
-          <Route path="/appointments" element={<SP />} />
+          <Route path="/appointments" element={<SelectServices />} />
+          <Route path="/professional" element={<SelectProfessional/>}/>
+          <Route path="/date&time" element={<SelectDateTime/>}/>
 
 
       </Routes>
