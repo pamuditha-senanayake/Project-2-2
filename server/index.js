@@ -2,7 +2,6 @@ import express from 'express';
 import bodyParser from 'body-parser';
 import 'express-async-errors';
 import ErrorHandler from "./middlewares/ErrorHandler.js";
-
 import db from './db.js';
 import employeeRoutes from './controllers/employee.controller.js';
 import userPM from './controllers/userManagement.js';
