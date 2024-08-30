@@ -1,20 +1,27 @@
-import React, { useState, useEffect } from "react";
+import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar"; // Assuming you have a NavigationBar component
 import axios from "axios";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css"; // Importing the datepicker CSS
-import AppointmentSummary from "./AppointmentSummary"; // Import the summary component
+import AppointmentSummary from "./AppointmentSummary";
+import {useLocation} from "react-router-dom"; // Import the summary component
 
 const SelectDateTime = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTime, setSelectedTime] = useState(null);
     const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+    const location = useLocation();
+    const {selectedServices, selectedProfessional} = location.state || {
+        selectedServices: [],
+        selectedProfessional: null
+    };
+
 
     // Example services data (this can be fetched from an API)
     const services = [
-        { name: "Ladies Hair Cut", price: 2500, duration: "1 Hour", durationInHours: 1 },
-        { name: "Hair Trim", price: 600, duration: "30 mins", durationInHours: 0.5 },
-        { name: "Relaxing Crown", price: 600, duration: "2 Hours, 30 mins", durationInHours: 2.5 },
+        {name: "Ladies Hair Cut", price: 2500, duration: "1 Hour", durationInHours: 1},
+        {name: "Hair Trim", price: 600, duration: "30 mins", durationInHours: 0.5},
+        {name: "Relaxing Crown", price: 600, duration: "2 Hours, 30 mins", durationInHours: 2.5},
     ];
 
     // Fetch available time slots from the database based on the selected date
@@ -44,7 +51,7 @@ const SelectDateTime = () => {
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
             {/* Navigation Bar */}
-            <NavigationBar activeTab={3} />
+            <NavigationBar activeTab={3}/>
 
             <div className="flex flex-col md:flex-row w-full mt-4">
                 {/* Left side - Date & Time Selection */}
