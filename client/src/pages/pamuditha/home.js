@@ -5,6 +5,8 @@ import logo2 from "../../images/logow.png";
 import homepic from "../../images/home.jpg";
 import homepic2 from "../../images/c.jpg";
 import homepic3 from "../../images/a.jpg";
+import homepic4 from "../../images/5.jpg";
+import homepic5 from "../../images/d.jpg";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
 
 // Function to smoothly scroll to a section
@@ -38,6 +40,36 @@ const MapComponent = () => {
 
 export { MapComponent };
 
+const PictureGrid = () => {
+    // Replace these src paths with your actual image paths
+    const imageSrcs = [
+        homepic,
+        homepic2,
+        homepic3,
+        homepic4,
+        homepic2,
+        homepic3,
+        homepic4,
+        homepic4,
+    ];
+
+    return (
+        <div className="grid grid-cols-4 gap-4 p-4 w-full h-full justify-center item-center">
+            {imageSrcs.map((src, index) => (
+                <div key={index} className="w-full h-[200px] overflow-hidden rounded-lg">
+                    <img
+                        src={src}
+                        alt={`Picture ${index + 1}`}
+                        className="w-full h-full object-cover"
+                    />
+                </div>
+            ))}
+        </div>
+    );
+};
+
+export {PictureGrid};
+
 const Carousel = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
 
@@ -46,22 +78,22 @@ const Carousel = () => {
         {
             image: homepic2,
             text: {
-                title: 'First Slide Title',
-                description: 'Description for the first slide.',
+                title: 'Professional Hairdressing',
+                description: 'Get the latest styles and trends from our expert stylists.',
             },
         },
         {
             image: homepic,
             text: {
-                title: 'Second Slide Title',
-                description: 'Description for the second slide.',
+                title: 'Luxury Manicures',
+                description: 'Pamper yourself with our range of nail services.',
             },
         },
         {
             image: homepic2,
             text: {
-                title: 'Third Slide Title',
-                description: 'Description for the third slide.',
+                title: 'Relaxing Spa Treatments',
+                description: 'Indulge in our soothing spa treatments for ultimate relaxation.',
             },
         },
     ];
@@ -83,7 +115,7 @@ const Carousel = () => {
     };
 
     return (
-        <div className="relative w-full h-full overflow-hidden">
+        <div className="relative w-[90%] h-full overflow-hidden">
             <div className="relative w-full h-full flex">
                 <div
                     className="flex transition-transform duration-700 ease-in-out"
@@ -139,29 +171,51 @@ const Carousel = () => {
 
 export {Carousel};
 
+
+const Card = () => {
+    return (
+        <div className="flex border border-gray-300 rounded-lg overflow-hidden shadow-lg">
+            {/* Image Section */}
+            <img
+                className="w-1/3 h-auto object-cover"
+                src={logo}
+                alt="Testimonial image"
+            />
+            {/* Text Section */}
+            <div className="flex-1 p-4">
+                <p className="text-gray-700">
+                    "This is a testimonial text that highlights the service or product experience. It's an example of how users might review or comment on the service."
+                </p>
+            </div>
+        </div>
+    );
+};
+
+export {Card};
+
 const InfoCards = () => {
     const cards = [
         {
             imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-            heading: "Heading 1",
+            heading: "Hair Dresser",
             text: "Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.",
         },
         {
             imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-            heading: "Heading 2",
+            heading: "Hair Dresser",
             text: "Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.",
         },
         {
             imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-            heading: "Heading 3",
+            heading: "Hair Dresser",
             text: "Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.",
         },
     ];
 
     return (
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6">
+        <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 h-[60%] justify-center content-center">
             {cards.map((card, index) => (
-                <div key={index} className="bg-white rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
+                <div key={index} className=" bg-white content-center rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
                     <img
                         className="rounded-full mb-4"
                         src={card.imgSrc}
@@ -192,60 +246,64 @@ function Navbar() {
 
 
   return (
-      <nav className="bg-black fixed top-0 left-0 w-full z-50 shadow-md">
-        <div className="w-full pr-5">
-            <div className="flex flex-row h-20 justify-between">
-                {/* Left side with Logo */}
+      <nav
+          className="bg-black fixed top-0 left-1/2 transform -translate-x-1/2 w-[97%] z-50 shadow-md mt-2"
+          style={{borderRadius: 40}}
+      >
+          <div className="w-full pr-5">
+              <div className="flex flex-row h-20 justify-between">
+                  {/* Left side with Logo */}
 
-                <div className="flex-shrink-0 content-start pl-4">
-                    <a href="/home">
-                        <img src={logo2} alt="Logo" className="h-full start content-start"/>
-                    </a>
-                </div>
-                <div className="flex items-center content-end">
+                  <div className="flex-shrink-0 content-start pl-4">
+                      <a href="/home">
+                          <img src={logo2} alt="Logo" className="h-full start content-start"/>
+                      </a>
+                  </div>
+                  <div className="flex items-center content-end">
 
-                    <div className="hidden md:block">
-                        <div className="ml-10 flex items-baseline space-x-4">
-                            <button onClick={() => scrollToSection("home")}
-                                    className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home
-                            </button>
-                            <button onClick={() => scrollToSection("gallery")}
-                                    className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery
-                            </button>
-                            <button onClick={() => scrollToSection("testimonials")}
-                                    className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Testimonials
-                            </button>
-                            <button onClick={() => scrollToSection("about")}
-                                    className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About
-                                Us
-                            </button>
-                            <button onClick={() => scrollToSection("profile")}
-                                    className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Profile
-                            </button>
-                            <Link to="/appointments"
-                                  className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
+                      <div className="hidden md:block">
+                          <div className="ml-10 flex items-baseline space-x-4">
+                              <button onClick={() => scrollToSection("home")}
+                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home
+                              </button>
+                              <button onClick={() => scrollToSection("gallery")}
+                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery
+                              </button>
+                              <button onClick={() => scrollToSection("testimonials")}
+                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Testimonials
+                              </button>
+                              <button onClick={() => scrollToSection("about")}
+                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About
+                                  Us
+                              </button>
+                              <button onClick={() => scrollToSection("profile")}
+                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Profile
+                              </button>
+                              <Link to="/appointments"
+                                    className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
 
-                            <div>
+                              <div>
 
-                                    <a className="nav-link text-white julius-sans-one-regular dropdown-toggle" href="http://example.com" id="dropdown07"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
-                                <div className="dropdown-menu" aria-labelledby="dropdown07">
-                                    <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
-                                    <a className="dropdown-item julius-sans-one-regular" href="#">Login</a>
-                                    <a className="dropdown-item julius-sans-one-regular" href="#">Logout</a>
-                                    <a className="dropdown-item julius-sans-one-regular" href="#">Profile</a>
-                                </div>
+                                  <a className="nav-link text-white julius-sans-one-regular dropdown-toggle"
+                                     href="http://example.com" id="dropdown07"
+                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
+                                  <div className="dropdown-menu" aria-labelledby="dropdown07">
+                                      <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
+                                      <a className="dropdown-item julius-sans-one-regular" href="#">Login</a>
+                                      <a className="dropdown-item julius-sans-one-regular" href="#">Logout</a>
+                                      <a className="dropdown-item julius-sans-one-regular" href="/userp">Profile</a>
+                                  </div>
 
-                            </div>
+                              </div>
 
-                        </div>
+                          </div>
 
-                    </div>
-                </div>
+                      </div>
+                  </div>
 
 
-            </div>
-        </div>
+              </div>
+          </div>
       </nav>
   );
 }
@@ -253,83 +311,62 @@ function Navbar() {
 // Home Component
 const Home = () => {
     return (
-        <div className="felx flex-col" style={{backgroundColor: "#E8ECEF", height: "100vh"}}>
+        <div className="homepage1 felx flex-col" style={{backgroundColor: "#E8ECEF", height: "100vh"}}>
             <div className="flex">
                 <Navbar/>
             </div>
 
 
-            <div className="flex h-[700px]" id="home">
-                <div className="App">
-                    <Carousel/>
-                </div>
-                {/*<div*/}
-                {/*    style={{*/}
-                {/*        backgroundImage: `url(${homepic})`,*/}
-                {/*        backgroundSize: 'cover',*/}
-                {/*        backgroundPosition: 'center',*/}
-                {/*        backgroundRepeat: 'no-repeat',*/}
-                {/*    }}*/}
-                {/*    className="absolute inset-0 w-full h-full z-0" // Background image behind*/}
-                {/*>*/}
-                {/*    /!* Background Image *!/*/}
-                {/*</div>*/}
+            <div
+                className=" flex flex-row h-[700px] justify-center items-center w-full bg-cover bg-center"
+                id="home"
 
-                {/*<div className="z-10 relative flex justify-center items-center h-full w-full">*/}
-                {/*    <h1 className="text-white text-4xl">hello world</h1> /!* Text in front *!/*/}
-                {/*</div>*/}
-            </div>
+                style={{
+                    backgroundImage: `url(${homepic4})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
 
-            <div className="bg-white h-[800px] flex" id="gallery">
-                <div
-                    style={{
-                        backgroundImage: `url(${homepic3})`,
-                        backgroundSize: 'cover',
-                        backgroundPosition: 'center',
-                        backgroundRepeat: 'no-repeat',
-                    }}
-                    className="w-full h-full bg-cover bg-center"
-                >
-                    {/* Background Image */}
+            >
+                <div className="App flex order-2 w-[50%] h-80% justify-center items-center">
+                    <Carousel />
                 </div>
+                <div className="flex order-1 w-[50%] h-full justify-center items-center">
+                    <div className="w-[80%] h-[80%] flex flex-col px-10 justify-center items-start ">
+                        <h1 className="text-white text-7xl julius-sans-one-regular">SALON DIAMOND</h1>
+                        <p className="text-white text-2xl pl-2 text-neutral-700">By Sashra Rajapaksha</p>
+
+                    </div>
+                </div>
+
             </div>
 
 
-            <div className=" h-[800px] flex flex-row space-x-5 bg-pink-500 " id="testimonials">
+            <div className="homepage1 bg-white h-[800px] flex flex-col" id="gallery" >
+                <h1 className="text-5xl julius-sans-one-regular pt-12 pb-4 pl-4">Gallery</h1>
+               <PictureGrid/>
+            </div>
 
 
-                <div className="flex items-center justify-between w-full px-10">
+            <div className=" h-[800px] flex flex-col space-x-5 bg-pink-500 " id="testimonials"
 
-                    <div className="card" style={{width: '18rem'}}>
-                        <img className="card-img-top" src={logo} alt="Card image cap"/>
-                        <div className="card-body">
-                            <p className="card-text">
-                                Some quick example text to build on the card title and make up the bulk of the card's
-                                content.
-                            </p>
-                        </div>
+                 style={{
+                     backgroundImage: `url(${homepic5})`,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center',
+                     backgroundRepeat: 'no-repeat',
+                 }}
+            >
+                <h1 className="text-5xl julius-sans-one-regular pt-12 pb-4 pl-4">Testimonials</h1>
+
+                <div className="p-4">
+                    <div className="grid grid-cols-3 gap-4">
+                        {/* Render 6 cards */}
+                        {[...Array(6)].map((_, index) => (
+                            <Card key={index}/>
+                        ))}
                     </div>
-
-                    <div className="card" style={{width: '18rem'}}>
-                        <img className="card-img-top" src={logo} alt="Card image cap"/>
-                        <div className="card-body">
-                            <p className="card-text">
-                                Some quick example text to build on the card title and make up the bulk of the card's
-                                content.
-                            </p>
-                        </div>
-                    </div>
-
-                    <div className="card" style={{width: '18rem'}}>
-                        <img className="card-img-top" src={logo} alt="Card image cap"/>
-                        <div className="card-body">
-                            <p className="card-text">
-                                Some quick example text to build on the card title and make up the bulk of the card's
-                                content.
-                            </p>
-                        </div>
-                    </div>
-
                 </div>
             </div>
 
@@ -397,11 +434,36 @@ const Home = () => {
             </div>
 
 
-            <div className="bg-white flex flex-row h-[800px] " id="profile">
+            <div className="flex flex-col h-[800px] justify-center items-center" id="profile"
+                 style={{
+                     backgroundImage: `url(${homepic4})`,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center',
+                     backgroundRepeat: 'no-repeat',
+                 }}
+            >
                 <InfoCards/>
             </div>
-            <div className="bg-white flex flex-row h-[300px] " id="profile">
-                <h1>footer area</h1>
+
+
+            <div className="bg-white flex flex-row w-full " id="profile">
+                <div className="bg-gray-900 text-white flex w-full flex-col items-center justify-center py-8">
+                    <h1 className="text-2xl font-bold mb-4 julius-sans-one-regular">Salon Diamond</h1>
+                    <p className="text-lg mb-2">Your ultimate destination for luxurious hair and beauty treatments.</p>
+                    <div className="flex gap-4 mb-4">
+                        <a href="tel:+1234567890" className="hover:underline">Call Us: 081 111 111 1</a>
+                        <a href="mailto:info@salondiamond.com" className="hover:underline">Email:
+                            info@salondiamond.com</a>
+                    </div>
+                    <div className="flex gap-4 mb-4">
+                        <a href="#" className="hover:text-gray-400">Facebook</a>
+                        <a href="#" className="hover:text-gray-400">Instagram</a>
+                        <a href="#" className="hover:text-gray-400">Twitter</a>
+                        <a href="/admin-users" className="hover:text-gray-400">Admin</a>
+                    </div>
+                    <p className="text-sm text-gray-400">© {new Date().getFullYear()} Salon Diamond. All rights
+                        reserved.</p>
+                </div>
             </div>
 
 
