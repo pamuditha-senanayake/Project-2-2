@@ -8,6 +8,8 @@ import SelectServices from './pages/navodya/SelectServices';
 import ReactDOM from "react-dom";
 import SelectProfessional from "./pages/navodya/SelectProfessional";
 import SelectDateTime from "./pages/navodya/SelectDateTime";
+import Userp from "./pages/pamuditha/user_profile";
+import Adminp from "./pages/pamuditha/admin-users";
 
 function App() {
   return (
@@ -19,6 +21,8 @@ function App() {
           <Route path="/appointments" element={<SelectServices />} />
           <Route path="/professional" element={<SelectProfessional/>}/>
           <Route path="/date&time" element={<SelectDateTime/>}/>
+        <Route path="/userp" element={<Userp/>}/>
+        <Route path="/admin-users" element={<Adminp/>}/>
 
 
       </Routes>
