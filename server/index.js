@@ -40,7 +40,7 @@ app.use(passport.session());
 app.use("/api/employees", employeeRoutes);
 app.use("/", userManagementController);
 app.use("/api/crud", crudController);
-app.use("/api/ai", aiController); // Updated route for AiManagement
+// app.use("/api/ai", aiController); // Updated route for AiManagement
 
 app.get("/", (req, res) => {
     res.redirect("http://localhost:3000/home");

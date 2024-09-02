@@ -67,8 +67,6 @@ router.post("/register", async (req, res) => {
 });
 
 
-
-
 router.post("/login", passport.authenticate("local", {
   successRedirect: "http://localhost:3000/home",
   failureRedirect: "http://localhost:3000/admin-users",
