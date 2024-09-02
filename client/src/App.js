@@ -4,6 +4,8 @@ import './App.css';
 import Home from './pages/pamuditha/home';
 import Test1 from './pages/pamuditha/test1';
 import Test2 from './pages/pamuditha/test2';
+import Test3 from './pages/navodya/SelectServices';
+import Test4 from './pages/navodya/SelectProfessional';
 // import SP from './pages/navodya/SelectServices';
 import ReactDOM from "react-dom";
 
