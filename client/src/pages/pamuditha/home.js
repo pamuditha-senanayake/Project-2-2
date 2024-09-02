@@ -1,4 +1,5 @@
-import React, { useState } from "react";
+import Cookies from 'js-cookie';
+import React, { useEffect, useState } from 'react';
 import { Link } from "react-router-dom";
 import logo from "../../images/logo.jpeg";
 import logo2 from "../../images/logow.png";
@@ -8,6 +9,8 @@ import homepic3 from "../../images/a.jpg";
 import homepic4 from "../../images/5.jpg";
 import homepic5 from "../../images/d.jpg";
 import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
+import { useNavigate } from 'react-router-dom';
+import { useLogout } from './authUtils';
 
 // Function to smoothly scroll to a section
 const scrollToSection = (sectionId) => {
@@ -238,14 +241,24 @@ const InfoCards = () => {
     );
 };
 
+
+
 export {InfoCards};
 
 // Navbar Component
 function Navbar() {
   // const [dropdownOpen, setDropdownOpen] = useState(false);
+    const logout = useLogout(); // Using the custom hook
+
+    const [cookieExists, setCookieExists] = React.useState(false);
+
+    React.useEffect(() => {
+        const cookie = Cookies.get('diamond');
+        setCookieExists(!!cookie);
+    }, []);
 
 
-  return (
+    return (
       <nav
           className="bg-black fixed top-0 left-1/2 transform -translate-x-1/2 w-[97%] z-50 shadow-md mt-2"
           style={{borderRadius: 40}}
@@ -288,10 +301,24 @@ function Navbar() {
                                      href="http://example.com" id="dropdown07"
                                      data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
                                   <div className="dropdown-menu" aria-labelledby="dropdown07">
-                                      <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
-                                      <a className="dropdown-item julius-sans-one-regular" href="#">Login</a>
-                                      <a className="dropdown-item julius-sans-one-regular" href="#">Logout</a>
-                                      <a className="dropdown-item julius-sans-one-regular" href="/userp">Profile</a>
+                                      {cookieExists ? (
+                                          <>
+                                              <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
+                                              <a className="dropdown-item julius-sans-one-regular"
+                                                 href="/userp">Profile</a>
+                                              <a className="dropdown-item julius-sans-one-regular" href="#"
+                                                 onClick={(e) => {
+                                                     e.preventDefault();
+                                                     logout();
+                                                 }}>Logout</a>
+                                          </>
+                                      ) : (
+                                          <>
+                                              <a className="dropdown-item julius-sans-one-regular" href="/">Login</a>
+                                              <a className="dropdown-item julius-sans-one-regular"
+                                                 href="/register">Register</a>
+                                          </>
+                                      )}
                                   </div>
 
                               </div>
@@ -305,11 +332,25 @@ function Navbar() {
               </div>
           </div>
       </nav>
-  );
+    );
 }
 
-// Home Component
+
 const Home = () => {
+    // const [cookieExists, setCookieExists] = useState(false);
+    // const navigate = useNavigate();
+    //
+    // useEffect(() => {
+    //     // Check if the session cookie exists
+    //     const cookie = Cookies.get('diamond');
+    //     setCookieExists(!!cookie);
+    //
+    //     if (!cookie) {
+    //         window.location.reload(); // Refresh the page if the cookie is not found
+    //     }
+    // }, []);
+
+
     return (
         <div className="homepage1 felx flex-col" style={{backgroundColor: "#E8ECEF", height: "100vh"}}>
             <div className="flex">
