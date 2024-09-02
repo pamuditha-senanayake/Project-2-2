@@ -1,6 +1,4 @@
 import React, { useState } from 'react';
-import { Link } from "react-router-dom";
-import ReactDOM from "react-dom";
 import backgroundImage from "../../images/a.jpg";
 
 const Register = () => {
@@ -38,13 +36,40 @@ const Register = () => {
         return Object.keys(errors).length === 0;
     };
 
-    const handleSubmit = (e) => {
+    const handleSubmit = async (e) => {
         e.preventDefault();
+
+        console.log('Form Data:', formData); // Debug statement
+
         if (validate()) {
-            // Handle form submission, e.g., send data to server
-            console.log('Form submitted', formData);
+            try {
+                const response = await fetch('http://localhost:3001/register', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(formData),
+                });
+
+                console.log('Response:', response); // Debug statement
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    console.log('Registration successful', data);
+                    // Optionally redirect or show a success message
+                } else {
+                    console.error('Registration error', data);
+                    alert('Registration failed: ' + (data.message || 'Unknown error'));
+                }
+            } catch (error) {
+                console.error('Error during registration:', error);
+                alert('An error occurred during registration.');
+            }
         }
     };
+
+
 
     return (
         <div
