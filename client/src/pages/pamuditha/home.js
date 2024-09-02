@@ -245,6 +245,93 @@ const InfoCards = () => {
 
 export {InfoCards};
 
+function ChatComponent() {
+    const [message, setMessage] = useState('');
+    const [response, setResponse] = useState('');
+    const [messages, setMessages] = useState([]);
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+
+        console.log('Submitting message:', message); // Log message to be sent
+
+        // Add the user's message to the chat
+        setMessages([...messages, { text: message, type: 'user' }]);
+
+        try {
+            const res = await fetch('http://localhost:3001/ask', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ message }),
+            });
+
+            console.log('Response status:', res.status); // Log response status
+            const data = await res.json();
+            console.log('Response data:', data); // Log response data
+
+            // Add the chatbot's response to the chat
+            setMessages([...messages, { text: message, type: 'user' }, { text: data.response, type: 'bot' }]);
+        } catch (error) {
+            console.error('Error submitting message:', error);
+            setResponse('Error communicating with the server.');
+        }
+
+        // Clear the input field after submitting
+        setMessage('');
+    };
+
+    return (
+        <div className="flex justify-center items-center h-full">
+            <div
+                className="w-full max-w-md rounded-lg shadow-lg p-6 flex flex-col h-full"
+                style={{
+                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
+                    borderRadius: '16px',
+                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                    backdropFilter: 'blur(5px)',
+                    WebkitBackdropFilter: 'blur(50px)',
+                    border: '1px solid rgba(255, 255, 255, 0.3)',
+                }}
+            >
+                <div className="flex-grow overflow-y-auto mb-4">
+                    {/* Displaying messages */}
+                    {messages.map((msg, index) => (
+                        <div
+                            key={index}
+                            className={`message p-3 mb-2 rounded-lg ${msg.type === 'user' ? 'bg-blue-500 text-white self-end' : 'bg-gray-200 text-gray-700 self-start'}`}
+                        >
+                            <p>{msg.text}</p>
+                        </div>
+                    ))}
+                </div>
+                <form onSubmit={handleSubmit} className="flex flex-col">
+                    <label htmlFor="message" className="text-gray-700 mb-2">Ask a question:</label>
+                    <input
+                        type="text"
+                        id="message"
+                        name="message"
+                        className="p-2 mb-2 border border-gray-300 rounded-md text-gray-700"
+                        placeholder="Type your message here..."
+                        value={message}
+                        onChange={(e) => setMessage(e.target.value)}
+                    />
+                    <button
+                        type="submit"
+                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
+                    >
+                        Submit
+                    </button>
+                </form>
+            </div>
+        </div>
+    );
+}
+
+export { ChatComponent };
+
+
 // Navbar Component
 function Navbar() {
   // const [dropdownOpen, setDropdownOpen] = useState(false);
@@ -429,45 +516,7 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="w-[50%] felx order-2 h-full pt-5 pb-5">
-                        <div className="flex justify-center items-center h-full ">
-                            <div
-                                className="w-full max-w-md rounded-lg shadow-lg p-6 flex flex-col h-full"
-                                style={{
-                                    backgroundColor: 'rgba(255, 255, 255, 0.2)',
-                                    borderRadius: '16px',
-                                    boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
-                                    backdropFilter: 'blur(5px)',
-                                    WebkitBackdropFilter: 'blur(50px)',
-                                    border: '1px solid rgba(255, 255, 255, 0.3)'
-                                }}
-                            >
-                                <div className="flex-grow overflow-y-auto mb-4">
-                                    {/* Chat messages will be dynamically inserted here */}
-                                    <div className="message bg-gray-200 p-3 mb-2 rounded-lg">
-                                        <p className="text-gray-700">Chatbot: Hello! How can I assist you today?</p>
-                                    </div>
-                                    <div className="message bg-blue-500 text-white p-3 mb-2 rounded-lg self-end">
-                                        <p>You: I need help with booking a room.</p>
-                                    </div>
-                                </div>
-                                <form id="chat-form" className="flex flex-col">
-                                    <label htmlFor="message" className="text-gray-700 mb-2">Ask a question:</label>
-                                    <input
-                                        type="text"
-                                        id="message"
-                                        name="message"
-                                        className="p-2 mb-2 border border-gray-300 rounded-md text-gray-700"
-                                        placeholder="Type your message here..."
-                                    />
-                                    <button
-                                        type="submit"
-                                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
-                                    >
-                                        Submit
-                                    </button>
-                                </form>
-                            </div>
-                        </div>
+                        <ChatComponent/>
                     </div>
                 </div>
 
