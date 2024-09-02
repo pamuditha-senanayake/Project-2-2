@@ -406,6 +406,7 @@ function Navbar() {
                                                  href="/register">Register</a>
                                           </>
                                       )}
+                                      <a className="dropdown-item julius-sans-one-regular" href="/supporthome">Support</a>
                                   </div>
 
                               </div>
