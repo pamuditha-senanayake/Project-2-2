@@ -10,6 +10,8 @@ import SelectProfessional from "./pages/navodya/SelectProfessional";
 import SelectDateTime from "./pages/navodya/SelectDateTime";
 import Userp from "./pages/pamuditha/user_profile";
 import Adminp from "./pages/pamuditha/admin-users";
+import Support from "./pages/shamika/Support";
+import STickets from "./pages/shamika/Ticket";
 
 function App() {
   return (
@@ -23,8 +25,8 @@ function App() {
           <Route path="/date&time" element={<SelectDateTime/>}/>
         <Route path="/userp" element={<Userp/>}/>
         <Route path="/admin-users" element={<Adminp/>}/>
-
-
+        <Route path="/supporthome" element={<Support/>}/>
+        <Route path="/ticket" element={<STickets/>}/>
       </Routes>
     </Router>
   );
