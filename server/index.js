@@ -7,8 +7,8 @@ import ErrorHandler from "./middlewares/ErrorHandler.js";
 import employeeRoutes from './controllers/employee.controller.js';
 import beautyServicesRoutes from './controllers/beautyService.controller.js';
 import professionalRoutes from './controllers/professional.controller.js';
+import confirmRoutes from './controllers/confirm.controller.js';
 
-// import userPM from './controllers/userManagement.js';
 
 const app = express();
 app.use(cors());
@@ -18,7 +18,9 @@ app.use(bodyParser.json());
 app.use('/api/employees', employeeRoutes);
 app.use('/api/beautyservices', beautyServicesRoutes);
 app.use('/api/selectprofessional', professionalRoutes);
-// app.use('/api/users', userPM);
+
+app.use('/api/confirm', confirmRoutes);
+
 app.use(ErrorHandler)
 
 
