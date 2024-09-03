@@ -1,16 +1,28 @@
 import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar";
-import {useLocation} from "react-router-dom";
+import {useLocation, useNavigate} from "react-router-dom";
+import axios from "axios";
 
 const ConfirmAppointment = () => {
     const location = useLocation();
-    const {selectedServices, selectedProfessional, selectedDate, selectedTimeSlots, status} = location.state || {
+    const {
+        selectedServices,
+        selectedProfessional,
+        selectedDate,
+        selectedTimeSlots,
+        status,
+        appointmentId
+    } = location.state || {
         selectedServices: [],
         selectedProfessional: null,
         selectedDate: null,
         selectedTimeSlots: null,
-        status: 'pending' // Default status
+        status: 'pending', // Default status
+        appointmentId: null
     };
+    const navigate = useNavigate();
+
+    const timeslots = ["8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM", "11.00 AM - 12.00 PM", "12.00 PM - 1.00 PM", "1.00 PM - 2.00 PM", "2.00 PM - 3.00 PM", "3.00 PM - 4.00 PM", "4.00 PM - 5.00 PM", "5.00 PM - 6.00 PM"];
 
     const [appointmentStatus, setAppointmentStatus] = useState(status);
 
@@ -40,6 +52,32 @@ const ConfirmAppointment = () => {
         (total, service) => total + parseFloat(service.price || 0),
         0
     );
+
+    const handlePay = async () => {
+        try {
+            await handlePay();
+            navigate("/pay", {
+                state: {
+                    appointmentId
+                }
+            });
+        } catch (error) {
+            console.error('Error during save or navigation:', error);
+        }
+    };
+
+
+    const handleDelete = async () => {
+        try {
+            const response = await axios.delete(
+                "http://localhost:3001/api/appointmentservice/" + appointmentId
+            );
+            console.log(response);
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
 
     const renderStatusContent = () => {
         switch (appointmentStatus) {
@@ -84,8 +122,8 @@ const ConfirmAppointment = () => {
 
                     <div className="bg-white rounded-lg p-8">
                         <button
+                            onClick={handleDelete}
                             className="w-full bg-gray-300 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-gray-700"
-                            disabled
                         >
                             Cancel
                         </button>
@@ -115,11 +153,15 @@ const ConfirmAppointment = () => {
                         </p>
                         <p className="text-lg font-semibold">
                             Selected Date : <span
-                            className="font-normal">{selectedDate ? selectedDate.toLocaleDateString() : "Select A Date"}</span>
+                            className="font-normal">{selectedDate ? selectedDate : "Select A Date"}</span>
                         </p>
                         <p className="text-lg font-semibold">
-                            Selected Time : <span
-                            className="font-normal">{selectedTimeSlots.length > 0 ? selectedTimeSlots.join(", ") : "Select A Time Slot"}</span>
+                            Selected Time :
+                            <span className="font-normal">
+                            {selectedTimeSlots.length > 0
+                                ? selectedTimeSlots.map(index => timeslots[index]).join(", ")
+                                : "Select A Time Slot"}
+                        </span>
                         </p>
                     </div>
                     <hr className="my-4"/>
@@ -131,12 +173,12 @@ const ConfirmAppointment = () => {
                         <p>Total Time</p>
                         <p>{`${formattedTotalTime.hours} Hour(s) ${formattedTotalTime.minutes} Min(s)`}</p>
                     </div>
-                    {/*<button*/}
-                    {/*    onClick={handleContinue}*/}
-                    {/*    className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"*/}
-                    {/*>*/}
-                    {/*    Continue*/}
-                    {/*</button>*/}
+                    <button
+                        onClick={handlePay}
+                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"
+                    >
+                        Pay Now
+                    </button>
                 </div>
             </div>
         </div>
