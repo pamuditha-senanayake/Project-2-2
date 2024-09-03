@@ -10,7 +10,7 @@ type = 'JSON'
 raw = '''
 {
   "appointmentData": {
-    "user_id": 10,
+    "user_id": 1,
     "professional_id": 2,
     "appointment_date": "2024-09-15",
     "total_time": "02:00:00",  // Format: HH:MM:SS
