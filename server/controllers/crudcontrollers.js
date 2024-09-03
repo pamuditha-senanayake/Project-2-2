@@ -1,93 +1,78 @@
 import express from 'express';
-import db from '../db.js'; // Import db from db.js
-import passport from 'passport';
-import bcrypt from 'bcrypt';
-import { Strategy as LocalStrategy } from 'passport-local';
-import { Strategy as GoogleStrategy } from 'passport-google-oauth20';
-import env from 'dotenv';
-
-env.config();
+import db from '../db.js';
 
 const router = express.Router();
-const saltRounds = 10;
 
-router.get('/crud', async (req, res) => {
+// Middleware to check if user is authenticated
+const ensureAuthenticated = (req, res, next) => {
     if (req.isAuthenticated()) {
-        try {
-            const result = await db.query('SELECT * FROM hours WHERE uid = $1', [req.user.id]);
-            const hours = result.rows;
-            res.render('crud.ejs', { hours: hours.length > 0 ? hours : [] });
-        } catch (err) {
-            console.log(err);
-            res.render('crud.ejs', { hours: 'reading error' });
-        }
-    } else {
-        res.redirect('/login');
+        return next();
+    }
+    res.status(401).json({error: 'Unauthorized'});
+};
+
+// GET all records
+router.get('/crud', ensureAuthenticated, async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM hours WHERE uid = $1', [req.user.id]);
+        res.json({hours: result.rows});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({error: 'Error reading records'});
     }
 });
 
-router.get('/deletecrud/:id', async (req, res) => {
-    const { id } = req.params;
-    if (req.isAuthenticated()) {
-        try {
-            await db.query('DELETE FROM hours WHERE id = $1', [id]);
-            res.redirect('/crud');
-        } catch (err) {
-            console.log(err);
-            res.send('Error deleting record.');
-        }
-    } else {
-        res.redirect('/login');
+// DELETE a record by ID
+router.delete('/crud/:id', ensureAuthenticated, async (req, res) => {
+    const {id} = req.params;
+    try {
+        await db.query('DELETE FROM hours WHERE id = $1', [id]);
+        res.status(200).json({message: 'Record deleted'});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({error: 'Error deleting record'});
     }
 });
 
-router.get('/updatecrud/:id', async (req, res) => {
-    const { id } = req.params;
-    if (req.isAuthenticated()) {
-        try {
-            const result = await db.query('SELECT * FROM hours WHERE id = $1', [id]);
-            const hour = result.rows[0];
-            if (hour) {
-                res.render('update.ejs', { hour: hour });
-            } else {
-                res.send('Record not found.');
-            }
-        } catch (err) {
-            console.log(err);
-            res.send('Error fetching record.');
+// GET a record by ID
+router.get('/crud/:id', ensureAuthenticated, async (req, res) => {
+    const {id} = req.params;
+    try {
+        const result = await db.query('SELECT * FROM hours WHERE id = $1', [id]);
+        const hour = result.rows[0];
+        if (hour) {
+            res.json({hour});
+        } else {
+            res.status(404).json({error: 'Record not found'});
         }
-    } else {
-        res.redirect('/login');
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({error: 'Error fetching record'});
     }
 });
 
-router.post('/updatecrud/:id', async (req, res) => {
-    const { id } = req.params;
-    const { hours, place } = req.body;
-    if (req.isAuthenticated()) {
-        try {
-            await db.query('UPDATE hours SET hours = $1, place = $2 WHERE id = $3', [hours, place, id]);
-            res.redirect('/crud');
-        } catch (err) {
-            console.log(err);
-            res.send('Error updating record.');
-        }
-    } else {
-        res.redirect('/login');
+// UPDATE a record by ID
+router.put('/crud/:id', ensureAuthenticated, async (req, res) => {
+    const {id} = req.params;
+    const {hours, place} = req.body;
+    try {
+        await db.query('UPDATE hours SET hours = $1, place = $2 WHERE id = $3', [hours, place, id]);
+        res.status(200).json({message: 'Record updated'});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({error: 'Error updating record'});
     }
 });
 
-router.post('/crudsubmit', async (req, res) => {
-    const { hours, place } = req.body;
-    if (req.isAuthenticated()) {
-        try {
-            await db.query('INSERT INTO hours (uid, hours, place) VALUES ($1, $2, $3)', [req.user.id, hours, place]);
-            res.redirect('/crud');
-        } catch (err) {
-            console.log(err);
-        }
-    } else {
-        res.redirect('/login');
+// POST a new record
+router.post('/', ensureAuthenticated, async (req, res) => {
+    const {hours, place} = req.body;
+    try {
+        await db.query('INSERT INTO hours (uid, hours, place) VALUES ($1, $2, $3)', [req.user.id, hours, place]);
+        res.status(201).json({message: 'Record created'});
+    } catch (err) {
+        console.log(err);
+        res.status(500).json({error: 'Error creating record'});
     }
 });
 
