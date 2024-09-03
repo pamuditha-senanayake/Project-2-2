@@ -7,9 +7,18 @@ function App() {
 
     // Fetch hours data on component mount
     useEffect(() => {
-        fetch('/api/crud', {credentials: 'include'})
+        fetch('http://localhost:3001/api/crud/view', {credentials: 'include'})
             .then((response) => response.json())
-            .then((data) => setHours(data.hours));
+            .then((data) => {
+                console.log('Fetched data:', data); // Debug log
+                
+                if (Array.isArray(data.hours)) {
+                    setHours(data.hours);
+                } else {
+                    console.error('Data is not an array:', data.hours); // Debug log
+                }
+            })
+            .catch((error) => console.error('Fetch error:', error)); // Debug log
     }, []);
 
     // Handle form submission for adding new hours
@@ -25,21 +34,28 @@ function App() {
         })
             .then((response) => response.json())
             .then((data) => {
-                setHours((prevHours) => [...prevHours, data]);
+                console.log('Added data:', data); // Debug log
+                if (data && data.id) {
+                    setHours((prevHours) => [...prevHours, data]);
+                } else {
+                    console.error('Invalid data received:', data); // Debug log
+                }
                 setHoursInput('');
                 setPlaceInput('');
-            });
+            })
+            .catch((error) => console.error('Submit error:', error)); // Debug log
     };
 
     // Handle deleting an entry
     const handleDelete = (id) => {
-        fetch(`http://localhost:3001/api/crud/${id}`, {
+        fetch(`http://localhost:3001/api/crud/delete/${id}`, {
             method: 'DELETE',
             credentials: 'include',
         })
             .then(() => {
                 setHours((prevHours) => prevHours.filter((hour) => hour.id !== id));
-            });
+            })
+            .catch((error) => console.error('Delete error:', error)); // Debug log
     };
 
     return (
@@ -86,7 +102,7 @@ function App() {
                     </tr>
                     </thead>
                     <tbody>
-                    {hours.length > 0 ? (
+                    {Array.isArray(hours) && hours.length > 0 ? (
                         hours.map((hour) => (
                             <tr key={hour.id}>
                                 <td className="border p-2">{hour.id}</td>

@@ -14,7 +14,10 @@ dotenv.config();
 const app = express();
 const port = 3001;
 
-app.use(cors({origin: 'http://localhost:3000', credentials: true}));
+app.use(cors({
+    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    credentials: true
+}));
 
 app.use(
     session({
@@ -23,7 +26,8 @@ app.use(
         saveUninitialized: true,
         cookie: {
             maxAge: 1000 * 60 * 10, // 10 minutes
-            httpOnly: false
+            httpOnly: false,
+            secure: false
         },
         name: 'diamond'
     })

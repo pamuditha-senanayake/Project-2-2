@@ -86,12 +86,13 @@ router.get("/logout", (req, res, next) => {
 passport.use("local", new LocalStrategy(async (username, password, cb) => {
     try {
         const result = await db.query(
-            "SELECT password FROM users WHERE email = $1",
+            "SELECT * FROM users WHERE email = $1",
             [username]
         );
 
         if (result.rows.length > 0) {
             const user = result.rows[0];
+            console.log(user);
             const valid = await bcrypt.compare(password, user.password);
 
             if (valid) {
