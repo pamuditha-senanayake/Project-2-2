@@ -16,10 +16,11 @@ function App() {
                 <Route path="/home" element={<Home/>}/>
                 <Route path="/register" element={<Register/>}/>
                 <Route path="/" element={<Login/>}/>
-                <Route path="/appointments" element={<SelectServices/>}/>
+                <Route path="/services" element={<SelectServices/>}/>
                 <Route path="/professional" element={<SelectProfessional/>}/>
                 <Route path="/date&time" element={<SelectDateTime/>}/>
                 <Route path="/confirm" element={<ConfirmAppointment/>}/>
+                <Route path="/pay" element={<Home/>}/>
 
 
             </Routes>
