@@ -1,4 +1,5 @@
 import service from "../services/appointment.service.js";
+import appointment from "../services/appointment.service.js";
 import express from "express";
 
 const router = express.Router();
@@ -25,7 +26,7 @@ router.post('/confirm', async (req, res, next) => {
     }
 });
 
-router.delete('/:appointmentId', async (req, res, next) => {
+router.delete('/delete/:appointmentId', async (req, res, next) => {
     const {appointmentId} = req.params;
 
     // Ensure the appointmentId is provided
@@ -60,6 +61,49 @@ router.get('/unavailable/:professional_id/:appointment_date', async (req, res, n
         res.status(200).json(unavailableSlots);
     } catch (error) {
         next(error);
+    }
+});
+
+router.get('/all', async (req, res, next) => {
+    try {
+        const appointments = await appointment.getAllAppointmentDetails();
+        res.send(appointments);
+
+    } catch (error) {
+        next(error)
+    }
+});
+
+router.get('/status/:appointmentId', async (req, res, next) => {
+    const {appointmentId} = req.params;
+    try {
+        const status = await appointment.getAppointmentStatus(appointmentId);
+        res.send(status);
+
+    } catch (error) {
+        next(error)
+    }
+});
+
+router.put('/confirmed/:appointmentId', async (req, res, next) => {
+    const {appointmentId} = req.params;
+    try {
+        const status = await appointment.updateConfirmedAppointment(appointmentId);
+        res.send(status);
+
+    } catch (error) {
+        next(error)
+    }
+});
+
+router.put('/rejected/:appointmentId', async (req, res, next) => {
+    const {appointmentId} = req.params;
+    try {
+        const status = await appointment.updateRejectedAppointment(appointmentId);
+        res.send(status);
+
+    } catch (error) {
+        next(error)
     }
 });
 

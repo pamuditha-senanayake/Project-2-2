@@ -3,9 +3,9 @@ import db from "../db.js";
 const addAppointment = async (appointmentData) => {
     const {user_id, professional_id, appointment_date, total_time, total_cost} = appointmentData;
     const result = await db.query(
-        `INSERT INTO appointments (user_id, professional_id, appointment_date, total_time, total_cost)
-         VALUES ($1, $2, $3, $4, $5) RETURNING id`,
-        [user_id, professional_id, appointment_date, total_time, total_cost]
+        `INSERT INTO appointments (user_id, professional_id, appointment_date, total_time, total_cost, status)
+         VALUES ($1, $2, $3, $4, $5, $6) RETURNING id`,
+        [user_id, professional_id, appointment_date, total_time, total_cost, 'pending']
     );
 
     return result.rows[0].id; // Return the appointment ID
@@ -87,6 +87,84 @@ const getAppointmentTimeSlots = async (professional_id, appointment_date) => {
     }
 };
 
+const getAllAppointmentDetails = async () => {
+    try {
+        const result = await db.query(
+            `SELECT 
+                a.user_id, 
+                u.name AS user_name, 
+                a.id AS appointment_id, 
+                a.appointment_date,      -- Include appointment_date in the SELECT clause
+                p.name AS professional_name, 
+                ARRAY_AGG(DISTINCT s.name) AS service_names, 
+                ARRAY_AGG(DISTINCT ats.time_number) AS time_numbers, 
+                a.total_time, 
+                a.total_cost 
+             FROM appointments a
+             JOIN appointment_services aps ON a.id = aps.appointment_id
+             JOIN services s ON aps.service_id = s.id
+             JOIN appointment_time_slots ats ON a.id = ats.appointment_id
+             JOIN professionals p ON a.professional_id = p.id
+             JOIN users u ON a.user_id = u.id
+             GROUP BY a.id, p.name, u.name, a.appointment_date`  // Add appointment_date to the GROUP BY clause
+        );
+
+        return result.rows; // Return an array of objects containing all required fields, including appointment_date
+    } catch (error) {
+        throw error;
+    }
+};
+
+const getAppointmentStatus = async (appointmentId) => {
+    const result = await db.query(
+        `SELECT 
+            a.status, 
+            a.appointment_date,
+            a.total_time, 
+            a.total_cost, 
+            ARRAY_AGG(DISTINCT s.name) AS service_names, 
+            p.name AS professional_name, 
+            ARRAY_AGG(DISTINCT ats.time_number) AS time_slots
+         FROM appointments a
+         JOIN appointment_services aps ON a.id = aps.appointment_id
+         JOIN services s ON aps.service_id = s.id
+         JOIN appointment_time_slots ats ON a.id = ats.appointment_id
+         JOIN professionals p ON a.professional_id = p.id
+         WHERE a.id = $1
+         GROUP BY a.id, p.name`,
+        [appointmentId]
+    );
+
+    return result.rows[0]; // Return the status of the appointment
+
+};
+
+const updateConfirmedAppointment = async (appointmentId) => {
+    try {
+        await db.query(
+            `UPDATE appointments
+             SET status = 'confirmed'
+             WHERE id = $1`,
+            [appointmentId]
+        );
+    } catch (error) {
+        throw error;
+    }
+};
+
+const updateRejectedAppointment = async (appointmentId) => {
+    try {
+        await db.query(
+            `UPDATE appointments
+             SET status = 'rejected'
+             WHERE id = $1`,
+            [appointmentId]
+        );
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 export default {
     addAppointment,
@@ -95,5 +173,9 @@ export default {
     deleteAppointment,
     deleteAppointmentServices,
     deleteAppointmentTimeSlots,
-    getAppointmentTimeSlots
+    getAppointmentTimeSlots,
+    getAllAppointmentDetails,
+    getAppointmentStatus,
+    updateConfirmedAppointment,
+    updateRejectedAppointment
 };
