@@ -11,7 +11,8 @@ import Userp from "./pages/pamuditha/user_profile";
 import Adminp from "./pages/pamuditha/admin-users";
 import Support from "./pages/shamika/Support";
 import STickets from "./pages/shamika/Ticket";
-import Ct1 from "./pages/pamuditha/crud-test";
+import Ct1 from "./pages/com/crud-test";
+import UpdateRecord from "./pages/com/updatec";
 
 function App() {
     return (
@@ -28,6 +29,7 @@ function App() {
                 <Route path="/supporthome" element={<Support/>}/>
                 <Route path="/ticket" element={<STickets/>}/>
                 <Route path="/crud" element={<Ct1/>}/>
+                <Route path="/update/:id" element={<UpdateRecord/>}/>
             </Routes>
         </Router>
     );

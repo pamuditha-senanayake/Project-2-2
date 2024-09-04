@@ -83,6 +83,20 @@ router.get("/logout", (req, res, next) => {
     });
 });
 
+router.get(
+    "/auth/google",
+    passport.authenticate("google", {
+        scope: ["profile", "email"],
+    })
+);
+
+router.get(
+    "/auth/google/secrets",
+    passport.authenticate("google", {
+        successRedirect: "http://localhost:3000/home",
+        failureRedirect: "http://localhost:3000/",
+    })
+);
 passport.use("local", new LocalStrategy(async (username, password, cb) => {
     try {
         const result = await db.query(
@@ -109,24 +123,48 @@ passport.use("local", new LocalStrategy(async (username, password, cb) => {
     }
 }));
 
-passport.use("google", new GoogleStrategy({
-    clientID: process.env.GOOGLE_CLIENT_ID,
-    clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-    callbackURL: "http://localhost:3000/auth/google/secrets",
-    userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
-}, async (accessToken, refreshToken, profile, cb) => {
-    try {
-        const result = await db.query("SELECT * FROM users WHERE email = $1", [profile.email]);
-        if (result.rows.length === 0) {
-            const newUser = await db.query("INSERT INTO users (email, password) VALUES ($1, $2)", [profile.email, "google"]);
-            return cb(null, newUser.rows[0]);
-        } else {
-            return cb(null, result.rows[0]);
+passport.use(
+    "google",
+    new GoogleStrategy(
+        {
+            clientID: process.env.GOOGLE_CLIENT_ID,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET,
+            callbackURL: "http://localhost:3001/auth/google/secrets",
+            userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
+        },
+        async (accessToken, refreshToken, profile, cb) => {
+            try {
+                // Log profile object to debug
+                console.log("Google profile:", profile);
+
+                // Extract email from profile
+                const email = profile.email || (profile.emails && profile.emails[0].value);
+
+                if (!email) {
+                    return cb(new Error("Email not found in profile"), null);
+                }
+
+                const result = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+
+                if (result.rows.length === 0) {
+                    // Insert new user with a placeholder password
+                    const newUser = await db.query(
+                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+                        [email, "google"]
+                    );
+
+                    return cb(null, newUser.rows[0]);
+                } else {
+                    return cb(null, result.rows[0]);
+                }
+            } catch (err) {
+                console.error("Error in GoogleStrategy verification:", err);
+                return cb(err);
+            }
         }
-    } catch (err) {
-        return cb(err);
-    }
-}));
+    )
+);
+
 
 passport.serializeUser((user, cb) => cb(null, user));
 passport.deserializeUser((user, cb) => cb(null, user));

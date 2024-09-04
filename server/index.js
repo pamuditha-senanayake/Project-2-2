@@ -8,6 +8,7 @@ import userManagementController from "./controllers/userManagement.js";
 import crudController from "./controllers/crudcontrollers.js";
 import ErrorHandler from "./middlewares/ErrorHandler.js";
 import employeeRoutes from './controllers/employee.controller.js';
+import UserH from './controllers/userhandling.js';
 
 dotenv.config();
 
@@ -44,6 +45,7 @@ app.use(passport.session());
 app.use("/api/employees", employeeRoutes);
 app.use("/", userManagementController);
 app.use('/api/crud', crudController);
+app.use('/api/user', UserH);
 
 
 // app.use("/api/ai", aiController); // Updated route for AiManagement

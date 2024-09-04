@@ -1,4 +1,5 @@
 import React, {useEffect, useState} from 'react';
+import {Link} from 'react-router-dom';
 
 function App() {
     const [hours, setHours] = useState([]);
@@ -11,7 +12,7 @@ function App() {
             .then((response) => response.json())
             .then((data) => {
                 console.log('Fetched data:', data); // Debug log
-                
+
                 if (Array.isArray(data.hours)) {
                     setHours(data.hours);
                 } else {
@@ -108,13 +109,18 @@ function App() {
                                 <td className="border p-2">{hour.id}</td>
                                 <td className="border p-2">{hour.hours}</td>
                                 <td className="border p-2">{hour.place}</td>
-                                <td className="border p-2">
+                                <td className="border p-2 flex gap-2">
                                     <button
                                         className="bg-red-500 text-white px-2 py-1 rounded"
                                         onClick={() => handleDelete(hour.id)}
                                     >
                                         Delete
                                     </button>
+                                    <Link to={`/update/${hour.id}`}>
+                                        <button className="bg-yellow-500 text-white px-2 py-1 rounded">
+                                            Update
+                                        </button>
+                                    </Link>
                                 </td>
                             </tr>
                         ))
