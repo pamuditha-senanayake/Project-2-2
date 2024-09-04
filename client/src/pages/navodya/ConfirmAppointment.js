@@ -1,83 +1,79 @@
 import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar";
-import {useLocation, useNavigate} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import axios from "axios";
 
 const ConfirmAppointment = () => {
-    const location = useLocation();
-    const {
-        selectedServices,
-        selectedProfessional,
-        selectedDate,
-        selectedTimeSlots,
-        status,
-        appointmentId
-    } = location.state || {
-        selectedServices: [],
-        selectedProfessional: null,
-        selectedDate: null,
-        selectedTimeSlots: null,
-        status: 'pending', // Default status
-        appointmentId: null
-    };
     const navigate = useNavigate();
+    const {appointmentId} = useParams();
 
-    const timeslots = ["8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM", "11.00 AM - 12.00 PM", "12.00 PM - 1.00 PM", "1.00 PM - 2.00 PM", "2.00 PM - 3.00 PM", "3.00 PM - 4.00 PM", "4.00 PM - 5.00 PM", "5.00 PM - 6.00 PM"];
+    const timeslots = [
+        "8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM",
+        "11.00 AM - 12.00 PM", "12.00 PM - 1.00 PM", "1.00 PM - 2.00 PM",
+        "2.00 PM - 3.00 PM", "3.00 PM - 4.00 PM", "4.00 PM - 5.00 PM",
+        "5.00 PM - 6.00 PM"
+    ];
 
-    const [appointmentStatus, setAppointmentStatus] = useState(status);
+    const [appointmentStatus, setAppointmentStatus] = useState();
+    const [appointmentDate, setAppointmentDate] = useState();
+    const [appointmentProfessionalName, setAppointmentProfessionalName] = useState();
+    const [serviceNames, setServiceNames] = useState([]);
+    const [timeSlots, setTimeSlots] = useState([]);
+    const [totalCost, setTotalCost] = useState();
+    const [totalTime, setTotalTime] = useState({hours: 0, minutes: 0}); // Default value
+
+    const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect(() => {
-        // Here you can fetch the actual status from the server if needed
-        setAppointmentStatus(status);
-    }, [status]);
+        const getAppointmentStatus = async () => {
+            try {
+                const response = await axios.get(
+                    `http://localhost:3001/api/appointmentstatus/status/${appointmentId}`
+                );
+                const data = response.data;
+                setAppointmentStatus(data.status);
+                setAppointmentDate(data.appointment_date);
+                setAppointmentProfessionalName(data.professional_name);
+                setServiceNames(data.service_names || []); // Ensure it's an array
+                setTimeSlots(data.time_slots || []); // Ensure it's an array
+                setTotalCost(data.total_cost);
+                setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
+            } catch (err) {
+                console.error(err);
+            }
+        };
 
-    const totalTime = selectedServices.reduce(
-        (total, service) => {
-            const serviceDuration = service.duration;
-            const hours = serviceDuration.hours || 0;
-            const minutes = serviceDuration.minutes || 0;
-            total.hours += hours;
-            total.minutes += minutes;
-            return total;
-        },
-        {hours: 0, minutes: 0}
-    );
-
-    const formattedTotalTime = {
-        hours: totalTime.hours + Math.floor(totalTime.minutes / 60),
-        minutes: totalTime.minutes % 60,
-    };
-
-    const totalCost = selectedServices.reduce(
-        (total, service) => total + parseFloat(service.price || 0),
-        0
-    );
+        if (appointmentId) {
+            getAppointmentStatus();
+        }
+    }, [appointmentId]);
 
     const handlePay = async () => {
         try {
-            await handlePay();
             navigate("/pay", {
                 state: {
                     appointmentId
                 }
             });
         } catch (error) {
-            console.error('Error during save or navigation:', error);
+            console.error('Error during payment process or navigation:', error);
         }
     };
 
-
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(
-                "http://localhost:3001/api/appointmentservice/" + appointmentId
-            );
-            console.log(response);
+            if (appointmentStatus === "pending") {
+                const response = await axios.delete(
+                    `http://localhost:3001/api/appointmentdelete/delete/` + {appointmentId}
+                );
+                console.log(response);
+            } else {
+                setErrorMsg("You cannot cancel a confirmation or rejection appointment.");
+            }
         } catch (err) {
             console.error(err);
         }
     };
-
 
     const renderStatusContent = () => {
         switch (appointmentStatus) {
@@ -113,7 +109,7 @@ const ConfirmAppointment = () => {
             <div className="flex flex-col md:flex-row w-full mt-4">
                 {/* Left side - Status */}
                 <div className="w-full md:w-2/3 bg-gray-100 p-8">
-                    <h2 className="text-2xl font-bold mb-6">Payment & Confirm</h2>
+                    <h2 className="text-2xl font-bold mb-6">Appointment Status</h2>
 
                     <div className="bg-white rounded-lg p-8 mb-4">
                         <h3 className="text-lg font-semibold mb-4">Status</h3>
@@ -121,57 +117,65 @@ const ConfirmAppointment = () => {
                     </div>
 
                     <div className="bg-white rounded-lg p-8">
+                        {errorMsg && (
+                            <div className="text-red-500 text-center mb-4">{errorMsg}</div>
+                        )}
                         <button
                             onClick={handleDelete}
                             className="w-full bg-gray-300 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-gray-700"
                         >
                             Cancel
                         </button>
-                        <p className="text-center text-sm mt-2">• Only cancel within 30 mins</p>
+                        <p className="text-center text-sm mt-2">• Only cancel before confirm or reject </p>
                     </div>
                 </div>
 
                 {/* Right side - Appointment Summary */}
                 <div className="w-full md:w-1/3 bg-gray-200 p-8">
                     <h2 className="text-2xl font-bold mb-6">Salon Diamond</h2>
-                    {selectedServices.map((service) => (
-                        <div key={service.id} className="mb-2">
-                            <h3 className="text-lg font-semibold">{service.name}</h3>
-                            <p>LKR {service.price}</p>
-                            <p>
-                                {service.duration.hours ? `${service.duration.hours} hr` : ''}
-                                {service.duration.hours && service.duration.minutes ? ' ' : ''}
-                                {service.duration.minutes ? `${service.duration.minutes} min` : ''}
-                            </p>
-                        </div>
-                    ))}
+                    {serviceNames.length > 0 ? (
+                        serviceNames.map((service, index) => (
+                            <div key={index} className="mb-2">
+                                <h3 className="text-lg font-semibold">{service}</h3>
+                                {/* Assuming price and duration are not provided, they need to be displayed if available */}
+                                {/* <p>LKR {service.price}</p> */}
+                                {/* <p>
+                                    {service.duration?.hours ? `${service.duration.hours} hr` : ''}
+                                    {service.duration?.hours && service.duration?.minutes ? ' ' : ''}
+                                    {service.duration?.minutes ? `${service.duration.minutes} min` : ''}
+                                </p> */}
+                            </div>
+                        ))
+                    ) : (
+                        <p>No services selected.</p>
+                    )}
                     <hr className="my-4"/>
                     <div className="text-lg">
                         <p className="text-lg font-semibold">
-                            Stylist Name : <span
-                            className="font-normal">{selectedProfessional ? selectedProfessional.name : "Select Your Stylist"}</span>
+                            Stylist Name: <span
+                            className="font-normal">{appointmentProfessionalName || "Select Your Stylist"}</span>
                         </p>
                         <p className="text-lg font-semibold">
-                            Selected Date : <span
-                            className="font-normal">{selectedDate ? selectedDate : "Select A Date"}</span>
+                            Selected Date: <span
+                            className="font-normal">{appointmentDate ? new Date(appointmentDate).toLocaleDateString() : "Select A Date"}</span>
                         </p>
                         <p className="text-lg font-semibold">
-                            Selected Time :
+                            Selected Time:
                             <span className="font-normal">
-                            {selectedTimeSlots.length > 0
-                                ? selectedTimeSlots.map(index => timeslots[index]).join(", ")
-                                : "Select A Time Slot"}
-                        </span>
+                                {timeSlots.length > 0
+                                    ? timeSlots.map(index => timeslots[index]).join(", ")
+                                    : "Select A Time Slot"}
+                            </span>
                         </p>
                     </div>
                     <hr className="my-4"/>
                     <div className="flex justify-between">
                         <p>Total Cost</p>
-                        <p>LKR {totalCost.toFixed(2)}</p>
+                        <p>LKR {totalCost || "0.00"}</p>
                     </div>
                     <div className="flex justify-between">
                         <p>Total Time</p>
-                        <p>{`${formattedTotalTime.hours} Hour(s) ${formattedTotalTime.minutes} Min(s)`}</p>
+                        <p>{totalTime.hours || totalTime.minutes ? `${totalTime.hours || 0} Hour(s) ${totalTime.minutes || 0} Min(s)` : "0 Hour(s) 0 Min(s)"}</p>
                     </div>
                     <button
                         onClick={handlePay}

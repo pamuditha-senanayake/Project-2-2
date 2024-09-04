@@ -46,7 +46,7 @@ const SelectDateTime = () => {
     const handleSave = async () => {
         try {
             const appointmentData = {
-                user_id: 4, // Replace with actual user ID
+                user_id: 5, // Replace with actual user ID
                 professional_id: selectedProfessional ? selectedProfessional.id : null,
                 appointment_date: selectedDate,
                 total_time: `${formattedTotalTime.hours}:${formattedTotalTime.minutes}:00`,
@@ -76,13 +76,12 @@ const SelectDateTime = () => {
     const handleContinue = async () => {
         try {
             await handleSave();
-            navigate("/confirm", {
+            navigate('/confirm/' + appointmentId, {
                 state: {
                     selectedServices,
                     selectedProfessional,
                     selectedTimeSlots,
-                    selectedDate,
-                    appointmentId
+                    selectedDate
                 }
             });
         } catch (error) {
