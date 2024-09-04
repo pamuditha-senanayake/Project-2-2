@@ -8,6 +8,7 @@ import SelectServices from './pages/navodya/SelectServices';
 import SelectProfessional from "./pages/navodya/SelectProfessional";
 import SelectDateTime from "./pages/navodya/SelectDateTime";
 import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
+import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 
 function App() {
     return (
@@ -19,7 +20,8 @@ function App() {
                 <Route path="/services" element={<SelectServices/>}/>
                 <Route path="/professional" element={<SelectProfessional/>}/>
                 <Route path="/date&time" element={<SelectDateTime/>}/>
-                <Route path="/confirm" element={<ConfirmAppointment/>}/>
+                <Route path="/confirm/:appointmentId" element={<ConfirmAppointment/>}/>
+                <Route path="/view" element={<AdminAppointmentView/>}/>
                 <Route path="/pay" element={<Home/>}/>
 
 
