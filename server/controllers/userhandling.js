@@ -18,6 +18,15 @@ router.get('/', async (req, res) => {
     }
 });
 
+router.get('/admin', (req, res) => {
+    // Ensure the user is authenticated and role is admin
+    if (req.user && req.user.role === 'admin') {
+        res.json({isAdmin: true}); // Respond with true if the user is an admin
+    } else {
+        res.status(403).json({message: 'Access denied. Admins only.'}); // Return 403 if not authorized
+    }
+});
+
 
 // UPDATE a user by ID
 router.put('/update/:id', async (req, res) => {

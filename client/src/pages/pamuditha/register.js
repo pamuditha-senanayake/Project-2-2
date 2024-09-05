@@ -81,6 +81,17 @@ const Register = () => {
             className="flex flex-col items-center justify-center h-screen bg-white"
             style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}
         >
+            <label className="absolute top-4 left-4 inline-flex items-center cursor-pointer">
+                <input
+                    type="checkbox"
+                    value=""
+                    className="sr-only peer"
+                    onChange={() => navigate('/home')}
+                />
+                <div
+                    className="peer ring-0 bg-blue-400 rounded-full outline-none duration-300 after:duration-500 w-12 h-12 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-['✖️'] after:rounded-full after:absolute after:outline-none after:h-10 after:w-10 after:bg-gray-50 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-hover:after:scale-75 peer-checked:after:content-['✔️'] after:-rotate-180 peer-checked:after:rotate-0">
+                </div>
+            </label>
             <div className="flex flex-row w-[70%] h-[600px] bg-opacity-70">
                 <div className="flex flex-col order-2 w-[50%] h-full items-end justify-center pr-5"
                      style={{

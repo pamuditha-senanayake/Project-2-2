@@ -24,17 +24,15 @@ router.post("/register", async (req, res) => {
     const {email, password} = req.body;
 
     try {
-        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
-            email,
-        ]);
+        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
 
         if (checkResult.rows.length > 0) {
-            res.redirect("http://localhost:3000");//check
-
+            res.status(400).json({message: "User already exists"}); // Respond with an error if user exists
         } else {
             bcrypt.hash(password, saltRounds, async (err, hash) => {
                 if (err) {
                     console.error("Error hashing password:", err);
+                    res.status(500).json({message: "Server error during registration"});
                 } else {
                     const result = await db.query(
                         "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
@@ -43,14 +41,18 @@ router.post("/register", async (req, res) => {
                     const user = result.rows[0];
 
                     req.login(user, (err) => {
-                        console.log("success");
-                        res.redirect("http://localhost:3000/home");
+                        if (err) {
+                            res.status(500).json({message: "Login failed after registration"});
+                        } else {
+                            res.json({message: "Registration successful", user}); // Return success response
+                        }
                     });
                 }
             });
         }
     } catch (err) {
         console.log(err);
+        res.status(500).json({message: "Server error"}); // Send an error message to the frontend
     }
 });
 
@@ -135,6 +137,7 @@ router.get(
     passport.authenticate("google", {session: true}), // Disable session management for stateless authentication
     roleRedirect // Add roleRedirect middleware after passport.authenticate
 );
+
 passport.use("local", new LocalStrategy(async (username, password, cb) => {
     try {
         const result = await db.query(
