@@ -42,6 +42,14 @@ const MapComponent = () => {
 
 export {MapComponent};
 
+// const SplineViewer = () => {
+//     return (
+//         <spline-viewer url="https://prod.spline.design/lrHfYnrgkXDusItV/scene.splinecode"></spline-viewer>
+//     );
+// };
+//
+// export {SplineViewer};
+
 const PictureGrid = () => {
     // Replace these src paths with your actual image paths
     const imageSrcs = [
@@ -382,6 +390,8 @@ function Navbar() {
                                 </button>
                                 <Link to="/appointments"
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
+                                <Link to="/products"
+                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Products</Link>
 
                                 <div>
 
@@ -461,8 +471,11 @@ const Home = () => {
                 }}
 
             >
+
                 <div className="App flex order-2 w-[50%] h-80% justify-center items-center">
                     <Carousel/>
+
+
                 </div>
                 <div className="flex order-1 w-[50%] h-full justify-center items-center">
                     <div className="w-[80%] h-[80%] flex flex-col px-10 justify-center items-start ">

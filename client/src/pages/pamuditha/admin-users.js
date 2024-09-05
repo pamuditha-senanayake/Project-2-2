@@ -68,9 +68,9 @@ const Layout = () => {
                 },
                 credentials: 'include', // Include credentials with the request
                 body: JSON.stringify({
-                    name: editUser.name,
+                    firstname: editUser.firstname,
                     email: editUser.email,
-                    phoneNumber: editUser.phone_number,
+                    phone_number: editUser.phone_number,
                 }),
             });
 
@@ -117,7 +117,7 @@ const Layout = () => {
                         {users.map((user) => (
                             <tr key={user.id} className="border-b border-gray-300">
                                 <td className="py-2 px-4 text-gray-700">{user.id}</td>
-                                <td className="py-2 px-4 text-gray-700">{user.name}</td>
+                                <td className="py-2 px-4 text-gray-700">{user.firstname}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.email}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.phone_number}</td>
                                 <td className="py-2 px-4">
@@ -150,12 +150,12 @@ const Layout = () => {
                         <h2 className="text-2xl mb-4">Edit User</h2>
                         <form onSubmit={handleUpdate}>
                             <div className="mb-4">
-                                <label htmlFor="name" className="block text-gray-700">Name</label>
+                                <label htmlFor="firstname" className="block text-gray-700">Name</label>
                                 <input
                                     type="text"
-                                    id="name"
-                                    name="name"
-                                    value={editUser.name}
+                                    id="firstname"
+                                    name="firstname"  // Ensure the name attribute matches your state key
+                                    value={editUser.firstname || ''}  // Default to an empty string if undefined
                                     onChange={handleInputChange}
                                     className="border border-gray-300 p-2 w-full"
                                     required

@@ -1,10 +1,10 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 import backgroundImage from "../../images/a.jpg";
+import {useNavigate} from 'react-router-dom';
+import google from "../../images/google.png";
 
 const Register = () => {
     const [formData, setFormData] = useState({
-        firstName: '',
-        lastName: '',
         email: '',
         password: '',
         rePassword: '',
@@ -16,9 +16,11 @@ const Register = () => {
         rePassword: '',
     });
 
+    const navigate = useNavigate(); // Initialize useNavigate
+
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setFormData({ ...formData, [name]: value });
+        const {name, value} = e.target;
+        setFormData({...formData, [name]: value});
     };
 
     const validate = () => {
@@ -39,8 +41,6 @@ const Register = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        console.log('Form Data:', formData); // Debug statement
-
         if (validate()) {
             try {
                 const response = await fetch('http://localhost:3001/register', {
@@ -48,19 +48,26 @@ const Register = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    body: JSON.stringify(formData),
+                    body: JSON.stringify({
+                        email: formData.email,
+                        password: formData.password,
+                    }),
+                    redirect: 'manual' // Handle redirects manually
                 });
 
-                console.log('Response:', response); // Debug statement
-
-                const data = await response.json();
-
-                if (response.ok) {
-                    console.log('Registration successful', data);
-                    // Optionally redirect or show a success message
+                if (response.redirected) {
+                    // If redirected, manually handle the redirect
+                    window.location.href = response.url;
                 } else {
-                    console.error('Registration error', data);
-                    alert('Registration failed: ' + (data.message || 'Unknown error'));
+                    const data = await response.json();
+
+                    if (response.ok) {
+                        console.log('Registration successful', data);
+                        navigate('/home'); // Redirect to the home page
+                    } else {
+                        console.error('Registration error', data);
+                        alert('Registration failed: ' + (data.message || 'Unknown error'));
+                    }
                 }
             } catch (error) {
                 console.error('Error during registration:', error);
@@ -69,12 +76,10 @@ const Register = () => {
         }
     };
 
-
-
     return (
         <div
             className="flex flex-col items-center justify-center h-screen bg-white"
-            style={{ backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center' }}
+            style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}
         >
             <div className="flex flex-row w-[70%] h-[600px] bg-opacity-70">
                 <div className="flex flex-col order-2 w-[50%] h-full items-end justify-center pr-5"
@@ -98,38 +103,6 @@ const Register = () => {
                         <h2 className="text-2xl font-bold mb-6 text-left julius-sans-one-regular">REGISTER</h2>
 
                         <form onSubmit={handleSubmit}>
-                            <div className="mb-4">
-                                <label htmlFor="firstName"
-                                       className="block text-sm font-medium text-gray-700 julius-sans-one-regular">
-                                    First Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="firstName"
-                                    name="firstName"
-                                    value={formData.firstName}
-                                    onChange={handleChange}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="Enter your first name"
-                                />
-                            </div>
-
-                            <div className="mb-4">
-                                <label htmlFor="lastName"
-                                       className="block text-sm font-medium text-gray-700 julius-sans-one-regular">
-                                    Last Name
-                                </label>
-                                <input
-                                    type="text"
-                                    id="lastName"
-                                    name="lastName"
-                                    value={formData.lastName}
-                                    onChange={handleChange}
-                                    className="mt-1 block w-full px-3 py-2 border border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                    placeholder="Enter your last name"
-                                />
-                            </div>
-
                             <div className="mb-4">
                                 <label htmlFor="email"
                                        className="block text-sm font-medium text-gray-700 julius-sans-one-regular">
@@ -188,6 +161,20 @@ const Register = () => {
                                 Register
                             </button>
                         </form>
+                        <div className="mt-6 flex items-center justify-center">
+                            <button
+                                type="button"
+                                onClick={() => window.location.href = 'http://localhost:3001/auth/google'}
+                                className="flex items-center justify-center w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                            >
+                                <img
+                                    src={google}
+                                    alt="Google"
+                                    className="w-5 h-5 mr-2"
+                                />
+                                Sign up with Google
+                            </button>
+                        </div>
                     </div>
                 </div>
             </div>

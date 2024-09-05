@@ -18,14 +18,15 @@ router.get('/', async (req, res) => {
     }
 });
 
+
 // UPDATE a user by ID
 router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
-        const {firstName, email, phoneNumber} = req.body; // Use firstName here
+        const {firstname, email, phone_number, lastname, address} = req.body; // Use firstName here
         try {
-            const query = 'UPDATE users SET email = $1, phone_number = $2 WHERE id = $3 RETURNING *';
-            const params = [email, phoneNumber, id]; // Pass firstName here
+            const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6 WHERE id = $4 RETURNING *';
+            const params = [firstname, email, phone_number, id, lastname, address]; // Pass firstName here
             const result = await db.query(query, params);
             if (result.rows.length) {
                 res.status(200).json({user: result.rows[0]});
@@ -38,6 +39,26 @@ router.put('/update/:id', async (req, res) => {
         }
     } else {
         res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+// In your Express router file (e.g., userRoutes.js)
+router.get("/profile", async (req, res) => {
+    res.setHeader('Cache-Control', 'no-store'); // Disable caching
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({message: "Unauthorized"});
+    }
+
+    try {
+        const result = await db.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({message: "User not found"});
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).json({message: "Server error"});
     }
 });
 

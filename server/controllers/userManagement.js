@@ -21,56 +21,87 @@ router.get("/register", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const {email, password, firstName, lastName} = req.body;
+    const {email, password} = req.body;
 
     try {
-        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+        const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [
+            email,
+        ]);
 
         if (checkResult.rows.length > 0) {
-            return res.status(400).json({message: "User already exists"});
+            res.redirect("http://localhost:3000");//check
+
+        } else {
+            bcrypt.hash(password, saltRounds, async (err, hash) => {
+                if (err) {
+                    console.error("Error hashing password:", err);
+                } else {
+                    const result = await db.query(
+                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+                        [email, hash]
+                    );
+                    const user = result.rows[0];
+
+                    req.login(user, (err) => {
+                        console.log("success");
+                        res.redirect("http://localhost:3000/home");
+                    });
+                }
+            });
         }
-
-        bcrypt.hash(password, saltRounds, async (err, hash) => {
-            if (err) {
-                console.error("Error hashing password:", err);
-                return res.status(500).json({message: "Error hashing password"});
-            }
-
-            try {
-                console.log("Inserting user data:", email, hash, firstName, lastName);
-
-                const result = await db.query(
-                    "INSERT INTO users (email, password, firstName, lastName) VALUES ($1, $2, $3, $4) RETURNING *",
-                    [email, hash, firstName, lastName]
-                );
-
-                const user = result.rows[0];
-                console.log("Inserted user:", user);
-
-                req.login(user, (err) => {
-                    if (err) {
-                        console.error("Login error:", err);
-                        return res.status(500).json({message: "Error logging in"});
-                    }
-
-                    res.status(201).json({message: "Registration successful"});
-                });
-            } catch (dbErr) {
-                console.error("Database error:", dbErr.message, dbErr.stack);
-                res.status(500).json({message: "Error saving user to database"});
-            }
-        });
     } catch (err) {
-        console.error("Error during registration:", err.message, err.stack);
-        res.status(500).json({message: "Internal server error"});
+        console.log(err);
     }
 });
 
 
-router.post("/login", passport.authenticate("local", {
-    successRedirect: "http://localhost:3000/home",
-    failureRedirect: "http://localhost:3000/admin-users",
-}));
+// router.post("/login", passport.authenticate("local", {
+//     successRedirect: "http://localhost:3000/home",
+//     failureRedirect: "http://localhost:3000/admin-users",
+// }));
+
+
+const roleRedirect = async (req, res, next) => {
+    // Debugging log
+    // console.log('User object:', req.user);
+
+    if (req.user) {
+        try {
+            const result = await db.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
+
+            if (result.rows.length > 0) {
+                const user = result.rows[0];
+                // console.log('User role:', user.role); // Debugging log
+
+                // Redirect based on user role
+                if (user.role === 'admin') {
+                    return res.redirect('http://localhost:3000/admin-users');
+                } else if (user.role === 'customer') {
+                    return res.redirect('http://localhost:3000/home');
+                } else {
+                    // Default redirection if role is unknown
+                    return res.redirect('http://localhost:3000/home');
+                }
+            } else {
+                console.log('User not found in database'); // Debugging log
+                return res.redirect('http://localhost:3000/');
+            }
+        } catch (err) {
+            console.error('Error fetching user data:', err);
+            return res.redirect('http://localhost:3000/');
+        }
+    } else {
+        console.log('No user found in request'); // Debugging log
+        return res.redirect('http://localhost:3000/');
+    }
+};
+
+
+router.post("/login",
+    passport.authenticate("local", {session: true}), // Disable session management for stateless authentication
+    roleRedirect // Add roleRedirect middleware after passport.authenticate
+);
+
 
 router.get("/logout", (req, res, next) => {
     req.logout((err) => {
@@ -90,12 +121,19 @@ router.get(
     })
 );
 
+
+// router.get(
+//     "/auth/google/secrets",
+//     passport.authenticate("google", {
+//         successRedirect: "http://localhost:3000/home",
+//         failureRedirect: "http://localhost:3000/",
+//     })
+// );
+
 router.get(
     "/auth/google/secrets",
-    passport.authenticate("google", {
-        successRedirect: "http://localhost:3000/home",
-        failureRedirect: "http://localhost:3000/",
-    })
+    passport.authenticate("google", {session: true}), // Disable session management for stateless authentication
+    roleRedirect // Add roleRedirect middleware after passport.authenticate
 );
 passport.use("local", new LocalStrategy(async (username, password, cb) => {
     try {
@@ -135,7 +173,7 @@ passport.use(
         async (accessToken, refreshToken, profile, cb) => {
             try {
                 // Log profile object to debug
-                console.log("Google profile:", profile);
+                // console.log("Google profile:", profile);
 
                 // Extract email from profile
                 const email = profile.email || (profile.emails && profile.emails[0].value);
