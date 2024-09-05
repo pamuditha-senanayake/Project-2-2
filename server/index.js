@@ -10,8 +10,6 @@ import crudController from "./controllers/crudcontrollers.js";
 import ErrorHandler from "./middlewares/ErrorHandler.js";
 import employeeRoutes from './controllers/employee.controller.js';
 import UserH from './controllers/userhandling.js';
-
-dotenv.config();
 import beautyServicesRoutes from './controllers/beautyService.controller.js';
 import professionalRoutes from './controllers/professional.controller.js';
 import appointmentRoutes from './controllers/appointment.controller.js';
@@ -20,6 +18,8 @@ import appointmentStatusRoutes from './controllers/appointment.controller.js';
 import appointmentConfirmedRoutes from './controllers/appointment.controller.js';
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
+
+dotenv.config();
 
 const app = express();
 const port = 3001;
@@ -82,7 +82,6 @@ app.get("/", (req, res) => {
 db.query("SELECT 1")
     .then(() => {
         console.log('DB connection succeeded.');
-        app.listen(3001, () => console.log('Server started at port 3001'));
     })
     .catch(err => console.log('DB connection failed.\n' + err));
 
