@@ -12,6 +12,11 @@ import Userp from "./pages/pamuditha/user_profile";
 import Adminp from "./pages/pamuditha/admin-users";
 import Support from "./pages/shamika/Support";
 import STickets from "./pages/shamika/Ticket";
+import Cart from "./pages/sasanka/Cart";
+import Checkout from "./pages/sasanka/Checkout";
+import ProductList  from "./pages/sasanka/ProductList";
+import S from "./pages/sasanka/s";
+
 
 function App() {
   return (
@@ -27,6 +32,10 @@ function App() {
         <Route path="/admin-users" element={<Adminp/>}/>
         <Route path="/supporthome" element={<Support/>}/>
         <Route path="/ticket" element={<STickets/>}/>
+        <Route path="/cart" element={<Cart/>}/>
+        <Route path="/ProductList" element={<ProductList/>}/>
+        <Route path="/Checkout" element={<Checkout/>}/>
+        <Route path="/s" element={<S/>}/>
       </Routes>
     </Router>
   );

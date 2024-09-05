@@ -11,11 +11,12 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
+    const [userId, setUserId] = useState(1); // Replace with actual logic to fetch or set user_id
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:5000/products');
+                const response = await axios.get('http://localhost:3001/products');
                 setProducts(response.data);
                 setLoading(false);
             } catch (error) {
@@ -36,12 +37,22 @@ const ProductList = () => {
 
     const handleOk = async () => {
         try {
-            await axios.put(`http://localhost:5000/cart/1`, { itemId: selectedProduct.id, quantity });
+            // Ensure user_id is correctly defined and available in your component
+            const user_id = 1; // Replace with the actual user_id logic
+
+            // Send PUT request to update the cart
+            await axios.put(`http://localhost:3001/api/cart/add`, { userId: user_id, itemId: selectedProduct.id, quantity });
+
+            // Close the modal after a successful request
             setVisible(false);
         } catch (error) {
             console.error('Error adding to cart:', error);
+
+            // Optional: Display an error message to the user
+            alert('Failed to add item to cart. Please try again.');
         }
     };
+
 
     const handleCancel = () => {
         setVisible(false);
