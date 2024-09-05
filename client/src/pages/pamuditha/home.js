@@ -1,6 +1,6 @@
 import Cookies from 'js-cookie';
-import React, { useEffect, useState } from 'react';
-import { Link } from "react-router-dom";
+import React, {useState} from 'react';
+import {Link} from "react-router-dom";
 import logo from "../../images/logo.jpeg";
 import logo2 from "../../images/logow.png";
 import homepic from "../../images/home.jpg";
@@ -8,13 +8,12 @@ import homepic2 from "../../images/c.jpg";
 import homepic3 from "../../images/a.jpg";
 import homepic4 from "../../images/5.jpg";
 import homepic5 from "../../images/d.jpg";
-import { GoogleMap, LoadScript, Marker } from "@react-google-maps/api";
-import { useNavigate } from 'react-router-dom';
-import { useLogout } from './authUtils';
+import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
+import {useLogout} from './authUtils';
 
 // Function to smoothly scroll to a section
 const scrollToSection = (sectionId) => {
-  document.getElementById(sectionId).scrollIntoView({ behavior: "smooth" });
+    document.getElementById(sectionId).scrollIntoView({behavior: "smooth"});
 };
 const MapComponent = () => {
     const mapStyles = {
@@ -35,13 +34,21 @@ const MapComponent = () => {
                 zoom={13}
                 center={defaultCenter}
             >
-                <Marker position={defaultCenter} />
+                <Marker position={defaultCenter}/>
             </GoogleMap>
         </LoadScript>
     );
 };
 
-export { MapComponent };
+export {MapComponent};
+
+// const SplineViewer = () => {
+//     return (
+//         <spline-viewer url="https://prod.spline.design/lrHfYnrgkXDusItV/scene.splinecode"></spline-viewer>
+//     );
+// };
+//
+// export {SplineViewer};
 
 const PictureGrid = () => {
     // Replace these src paths with your actual image paths
@@ -122,7 +129,7 @@ const Carousel = () => {
             <div className="relative w-full h-full flex">
                 <div
                     className="flex transition-transform duration-700 ease-in-out"
-                    style={{ transform: `translateX(-${currentIndex * 100}%)` }}
+                    style={{transform: `translateX(-${currentIndex * 100}%)`}}
                 >
                     {slides.map((slide, index) => (
                         <div key={index} className="relative w-full flex-shrink-0 h-full">
@@ -131,7 +138,8 @@ const Carousel = () => {
                                 alt={`Slide ${index + 1}`}
                                 className="w-full h-full object-cover"
                             />
-                            <div className="absolute bottom-0 left-0 right-0 flex flex-col justify-end items-center bg-black bg-opacity-50 text-center p-4">
+                            <div
+                                className="absolute bottom-0 left-0 right-0 flex flex-col justify-end items-center bg-black bg-opacity-50 text-center p-4">
                                 <h1 className="text-white text-2xl">{slide.text.title}</h1>
                                 <p className="text-white">{slide.text.description}</p>
                             </div>
@@ -187,7 +195,8 @@ const Card = () => {
             {/* Text Section */}
             <div className="flex-1 p-4">
                 <p className="text-gray-700">
-                    "This is a testimonial text that highlights the service or product experience. It's an example of how users might review or comment on the service."
+                    "This is a testimonial text that highlights the service or product experience. It's an example of
+                    how users might review or comment on the service."
                 </p>
             </div>
         </div>
@@ -218,7 +227,8 @@ const InfoCards = () => {
     return (
         <div className="grid grid-cols-1 md:grid-cols-3 gap-6 p-6 h-[60%] justify-center content-center">
             {cards.map((card, index) => (
-                <div key={index} className=" bg-white content-center rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
+                <div key={index}
+                     className=" bg-white content-center rounded-lg shadow-lg p-6 flex flex-col items-center text-center">
                     <img
                         className="rounded-full mb-4"
                         src={card.imgSrc}
@@ -242,7 +252,6 @@ const InfoCards = () => {
 };
 
 
-
 export {InfoCards};
 
 function ChatComponent() {
@@ -256,7 +265,7 @@ function ChatComponent() {
         console.log('Submitting message:', message); // Log message to be sent
 
         // Add the user's message to the chat
-        setMessages([...messages, { text: message, type: 'user' }]);
+        setMessages([...messages, {text: message, type: 'user'}]);
 
         try {
             const res = await fetch('http://localhost:3001/ask', {
@@ -264,7 +273,7 @@ function ChatComponent() {
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ message }),
+                body: JSON.stringify({message}),
             });
 
             console.log('Response status:', res.status); // Log response status
@@ -272,7 +281,7 @@ function ChatComponent() {
             console.log('Response data:', data); // Log response data
 
             // Add the chatbot's response to the chat
-            setMessages([...messages, { text: message, type: 'user' }, { text: data.response, type: 'bot' }]);
+            setMessages([...messages, {text: message, type: 'user'}, {text: data.response, type: 'bot'}]);
         } catch (error) {
             console.error('Error submitting message:', error);
             setResponse('Error communicating with the server.');
@@ -329,12 +338,12 @@ function ChatComponent() {
     );
 }
 
-export { ChatComponent };
+export {ChatComponent};
 
 
 // Navbar Component
 function Navbar() {
-  // const [dropdownOpen, setDropdownOpen] = useState(false);
+    // const [dropdownOpen, setDropdownOpen] = useState(false);
     const logout = useLogout(); // Using the custom hook
 
     const [cookieExists, setCookieExists] = React.useState(false);
@@ -346,80 +355,84 @@ function Navbar() {
 
 
     return (
-      <nav
-          className="bg-black fixed top-0 left-1/2 transform -translate-x-1/2 w-[97%] z-50 shadow-md mt-2"
-          style={{borderRadius: 40}}
-      >
-          <div className="w-full pr-5">
-              <div className="flex flex-row h-20 justify-between">
-                  {/* Left side with Logo */}
+        <nav
+            className="bg-black fixed top-0 left-1/2 transform -translate-x-1/2 w-[97%] z-50 shadow-md mt-2"
+            style={{borderRadius: 40}}
+        >
+            <div className="w-full pr-5">
+                <div className="flex flex-row h-20 justify-between">
+                    {/* Left side with Logo */}
 
-                  <div className="flex-shrink-0 content-start pl-4">
-                      <a href="/home">
-                          <img src={logo2} alt="Logo" className="h-full start content-start"/>
-                      </a>
-                  </div>
-                  <div className="flex items-center content-end">
+                    <div className="flex-shrink-0 content-start pl-4">
+                        <a href="/home">
+                            <img src={logo2} alt="Logo" className="h-full start content-start"/>
+                        </a>
+                    </div>
+                    <div className="flex items-center content-end">
 
-                      <div className="hidden md:block">
-                          <div className="ml-10 flex items-baseline space-x-4">
-                              <button onClick={() => scrollToSection("home")}
-                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home
-                              </button>
-                              <button onClick={() => scrollToSection("gallery")}
-                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery
-                              </button>
-                              <button onClick={() => scrollToSection("testimonials")}
-                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Testimonials
-                              </button>
-                              <button onClick={() => scrollToSection("about")}
-                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About
-                                  Us
-                              </button>
-                              <button onClick={() => scrollToSection("profile")}
-                                      className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Profile
-                              </button>
-                              <Link to="/appointments"
-                                    className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
+                        <div className="hidden md:block">
+                            <div className="ml-10 flex items-baseline space-x-4">
+                                <button onClick={() => scrollToSection("home")}
+                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home
+                                </button>
+                                <button onClick={() => scrollToSection("gallery")}
+                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery
+                                </button>
+                                <button onClick={() => scrollToSection("testimonials")}
+                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Testimonials
+                                </button>
+                                <button onClick={() => scrollToSection("about")}
+                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About
+                                    Us
+                                </button>
+                                <button onClick={() => scrollToSection("profile")}
+                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Profile
+                                </button>
+                                <Link to="/appointments"
+                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
+                                <Link to="/products"
+                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Products</Link>
 
-                              <div>
+                                <div>
 
-                                  <a className="nav-link text-white julius-sans-one-regular dropdown-toggle"
-                                     href="http://example.com" id="dropdown07"
-                                     data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
-                                  <div className="dropdown-menu" aria-labelledby="dropdown07">
-                                      {cookieExists ? (
-                                          <>
-                                              <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
-                                              <a className="dropdown-item julius-sans-one-regular"
-                                                 href="/userp">Profile</a>
-                                              <a className="dropdown-item julius-sans-one-regular" href="#"
-                                                 onClick={(e) => {
-                                                     e.preventDefault();
-                                                     logout();
-                                                 }}>Logout</a>
-                                          </>
-                                      ) : (
-                                          <>
-                                              <a className="dropdown-item julius-sans-one-regular" href="/">Login</a>
-                                              <a className="dropdown-item julius-sans-one-regular"
-                                                 href="/register">Register</a>
-                                          </>
-                                      )}
-                                      <a className="dropdown-item julius-sans-one-regular" href="/supporthome">Support</a>
-                                  </div>
+                                    <a className="nav-link text-white julius-sans-one-regular dropdown-toggle"
+                                       href="http://example.com" id="dropdown07"
+                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
+                                    <div className="dropdown-menu" aria-labelledby="dropdown07">
+                                        {cookieExists ? (
+                                            <>
+                                                <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
+                                                <a className="dropdown-item julius-sans-one-regular"
+                                                   href="/userp">Profile</a>
+                                                <a className="dropdown-item julius-sans-one-regular"
+                                                   href="/supporthome">Support</a>
+                                                <a className="dropdown-item julius-sans-one-regular" href="#"
+                                                   onClick={(e) => {
+                                                       e.preventDefault();
+                                                       logout();
+                                                   }}>Logout</a>
+                                            </>
+                                        ) : (
+                                            <>
+                                                <a className="dropdown-item julius-sans-one-regular" href="/">Login</a>
+                                                <a className="dropdown-item julius-sans-one-regular"
+                                                   href="/register">Register</a>
+                                            </>
+                                        )}
 
-                              </div>
+                                    </div>
 
-                          </div>
+                                </div>
 
-                      </div>
-                  </div>
+                            </div>
+
+                        </div>
+                    </div>
 
 
-              </div>
-          </div>
-      </nav>
+                </div>
+            </div>
+        </nav>
     );
 }
 
@@ -458,8 +471,11 @@ const Home = () => {
                 }}
 
             >
+
                 <div className="App flex order-2 w-[50%] h-80% justify-center items-center">
-                    <Carousel />
+                    <Carousel/>
+
+
                 </div>
                 <div className="flex order-1 w-[50%] h-full justify-center items-center">
                     <div className="w-[80%] h-[80%] flex flex-col px-10 justify-center items-start ">
@@ -472,9 +488,9 @@ const Home = () => {
             </div>
 
 
-            <div className="homepage1 bg-white h-[800px] flex flex-col" id="gallery" >
+            <div className="homepage1 bg-white h-[800px] flex flex-col" id="gallery">
                 <h1 className="text-5xl julius-sans-one-regular pt-12 pb-4 pl-4">Gallery</h1>
-               <PictureGrid/>
+                <PictureGrid/>
             </div>
 
 
