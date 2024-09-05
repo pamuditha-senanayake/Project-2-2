@@ -15,7 +15,7 @@ const SelectServices = () => {
         const getAllServices = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:3001/api/beautyservices/"
+                    process.env.REACT_APP_API_URL + '/api/beautyservices/'
                 );
                 console.log(response);
                 setServices(response.data);
@@ -56,6 +56,7 @@ const SelectServices = () => {
     const handleContinue = () => {
         navigate("/professional", {state: {selectedServices}});
     };
+    console.log(process.env.REACT_APP_SERVER_URL)
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">

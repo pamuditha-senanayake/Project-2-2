@@ -57,7 +57,7 @@ const SelectDateTime = () => {
             const timeNumbers = selectedTimeSlots; // Assuming selectedTimeSlots contains time numbers
 
             // Send the POST request and get the response
-            const response = await axios.post('http://localhost:3001/api/appointmentservice/confirm', {
+            const response = await axios.post(process.env.REACT_APP_API_URL + '/api/appointmentservice/confirm', {
                 appointmentData,
                 serviceIds,
                 time_numbers: timeNumbers

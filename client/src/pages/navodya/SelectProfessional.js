@@ -14,7 +14,7 @@ const SelectProfessional = () => {
     useEffect(() => {
         const getProfessionals = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/api/selectprofessional");
+                const response = await axios.get(process.env.REACT_APP_API_URL + "/api/selectprofessional");
                 setProfessionals(response.data);
                 console.log(response);
             } catch (err) {

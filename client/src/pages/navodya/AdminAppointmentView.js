@@ -8,7 +8,7 @@ const AdminAppointmentView = () => {
         const getAppointments = async () => {
             try {
                 const response = await axios.get(
-                    "http://localhost:3001/api/appointmentdetails/all"
+                    process.env.REACT_APP_API_URL + "/api/appointmentdetails/all"
                 );
                 console.log(response);
                 setAppointments(response.data);
