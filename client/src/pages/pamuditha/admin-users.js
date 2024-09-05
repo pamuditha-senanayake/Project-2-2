@@ -3,13 +3,40 @@ import Sidebar from '../com/admindash'; // Import your Sidebar component
 import {FaEdit, FaTrash} from 'react-icons/fa';
 import {useNavigate} from 'react-router-dom';
 
+
 const Layout = () => {
     const [users, setUsers] = useState([]);
     const [editUser, setEditUser] = useState(null); // State to hold user data for editing
     const [showModal, setShowModal] = useState(false); // State to control the visibility of the modal
+    const navigate = useNavigate();
 
     useEffect(() => {
-        // Fetch user data from the backend
+        const checkAdmin = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/user/admin', {
+                    credentials: 'include' // Include credentials with the request
+                });
+
+                if (response.status === 403 || response.status === 401) {
+                    navigate('/'); // Redirect if not authorized
+                    return;
+                }
+
+                const data = await response.json();
+                if (!data.isAdmin) {
+                    navigate('/'); // Redirect if the user is not an admin
+                }
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                navigate('/'); // Redirect in case of an error
+            }
+        };
+
+        checkAdmin();
+    }, [navigate]);
+
+    // Fetch user data from the backend
+    useEffect(() => {
         const fetchUsers = async () => {
             console.log('Fetching user data...'); // Debug log before fetching data
             try {
@@ -32,6 +59,7 @@ const Layout = () => {
 
         fetchUsers(); // Call the async function and handle the promise.
     }, []); // Empty dependency array means this effect runs once after the initial render.
+
 
     const handleDelete = async (id) => {
         try {
