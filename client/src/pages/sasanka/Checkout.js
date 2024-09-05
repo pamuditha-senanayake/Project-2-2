@@ -16,7 +16,7 @@ const Checkout = () => {
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const response = await fetch('http://localhost:5000/cart'); // Update endpoint if needed
+                const response = await fetch('http://localhost:3001/api/cart'); // Update endpoint if needed
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
                 setCartItems(data);
@@ -42,7 +42,7 @@ const Checkout = () => {
         e.preventDefault();
 
         try {
-            const response = await fetch('http://localhost:5000/checkout', {
+            const response = await fetch('http://localhost:3001/api/checkout', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
