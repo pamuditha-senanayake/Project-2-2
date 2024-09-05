@@ -61,10 +61,11 @@ const ConfirmAppointment = () => {
     };
 
     const handleDelete = async () => {
+        console.log("id " + appointmentId)
         try {
             if (appointmentStatus === "pending") {
                 const response = await axios.delete(
-                    `http://localhost:3001/api/appointmentdelete/delete/` + {appointmentId}
+                    `http://localhost:3001/api/appointmentdelete/delete/` + appointmentId
                 );
                 console.log(response);
             } else {

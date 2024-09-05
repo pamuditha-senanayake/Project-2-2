@@ -8,7 +8,7 @@ import {useLocation, useNavigate} from "react-router-dom";
 const SelectDateTime = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
-    const [availableTimeSlots, setAvailableTimeSlots] = useState([]);
+    const [unavailableTimeSlots, setUnavailableTimeSlots] = useState([]);
     const location = useLocation();
     const {selectedServices, selectedProfessional} = location.state || {
         selectedServices: [],
@@ -100,10 +100,10 @@ const SelectDateTime = () => {
             try {
                 const response = await axios.get(`http://localhost:3001/api/appointmentservice/unavailable/` + selectedProfessional.id + '/' + formattedDate);
                 const bookedTimeSlots = response.data; // Assuming the response data contains the booked time slots
-                setAvailableTimeSlots(bookedTimeSlots);
+                setUnavailableTimeSlots(bookedTimeSlots);
             } catch (error) {
                 console.error("Error fetching time slots:", error);
-                setAvailableTimeSlots([]);
+                setUnavailableTimeSlots([]);
             }
         }
     };
@@ -147,11 +147,11 @@ const SelectDateTime = () => {
                                 className={`w-8/12 h-12 text-lg rounded-lg ${
                                     selectedTimeSlots.includes(index)
                                         ? "bg-blue-500 text-white"
-                                        : availableTimeSlots.includes(index)
+                                        : unavailableTimeSlots.includes(index)
                                             ? "bg-gray-200 hover:bg-gray-300"
                                             : "bg-gray-500 text-white"
                                 } transition`}
-                                disabled={availableTimeSlots.includes(index) || index + totalSlotsNeeded > timeslots.length}
+                                disabled={unavailableTimeSlots.includes(index) || index + totalSlotsNeeded > timeslots.length}
                             >
                                 {time}
                             </button>
