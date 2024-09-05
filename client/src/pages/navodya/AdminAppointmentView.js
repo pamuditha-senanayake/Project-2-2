@@ -32,6 +32,11 @@ const AdminAppointmentView = () => {
         }
     };
 
+    const formatDate = (dateString) => {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
+    };
+
     const handleReject = async (id) => {
         try {
             const response = await axios.put(
@@ -58,7 +63,7 @@ const AdminAppointmentView = () => {
                     <div className="flex justify-between items-center mt-4">
                         <div className="text-gray-700">
                             <div>Professional: {app.professional_name}</div>
-                            <div>Date: {app.appointment_date} </div>
+                            <div>Date: {formatDate(app.appointment_date)} </div>
                             <div> Time: {app.time_numbers.map(index => timeslots[index] || 'Unknown').join(', ')}</div>
                         </div>
                         <div className="space-x-4">
