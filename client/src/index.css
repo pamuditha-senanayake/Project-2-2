@@ -165,3 +165,23 @@ code {
     background: #7e133e; /* Darker shade for active state */
     transition: background 0s;
 }
+
+@keyframes appear {
+    from {
+        opacity: 0;
+        /*transform: translateX(-100%);*/
+        scale: 0.5;
+    }
+    to {
+        opacity: 1;
+        scale: 1;
+        /*transform: translateX(0);*/
+
+    }
+}
+
+.test1 {
+    animation: appear 1s linear;
+    animation-timeline: view();
+    animation-range: entry 0 cover 40%;
+}

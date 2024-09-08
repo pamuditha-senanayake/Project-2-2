@@ -27,8 +27,8 @@ const MapComponent = () => {
     };
 
     const defaultCenter = {
-        lat: 7.288941287673795, // Example latitude (New York City)
-        lng: 80.62935649554917, // Example longitude (New York City)
+        lat: 7.288941287673795,
+        lng: 80.62935649554917,
 
     };
 
@@ -71,7 +71,7 @@ const PictureGrid = () => {
         <div className="grid grid-cols-3 gap-x-4" style={{rowGap: '20px'}}> {/* Adjust rowGap value as needed */}
             {imageSrcs.map((src, index) => (
                 <div key={index}
-                     className="w-full h-[250px] overflow-hidden rounded-lg border border-gray-300">
+                     className="test1 w-full h-[250px] overflow-hidden rounded-lg border border-gray-300">
                     <img
                         src={src}
                         alt={`Picture ${index + 1}`}
@@ -88,7 +88,7 @@ export {PictureGrid};
 
 const Card = () => {
     return (
-        <div className="flex border border-gray-300 rounded-lg overflow-hidden shadow-lg">
+        <div className="test1 flex border w-[360px] h-[180px] border-gray-300 rounded-lg overflow-hidden shadow-lg">
             {/* Image Section */}
             <img
                 className="w-1/3 h-auto object-cover"
@@ -471,7 +471,7 @@ const Home = () => {
                         exceptional service and quality. Read their stories and see why we are trusted by so many.
                     </p>
 
-                    <div className="w-[75%] flex justify-center">
+                    <div className="w-[80%] flex justify-center">
                         <div className="w-full max-w-6xl">
                             <div className="grid grid-cols-3 gap-4">
                                 {[...Array(6)].map((_, index) => (
@@ -498,7 +498,7 @@ const Home = () => {
                 <div className="flex flex-row h-full justify-between w-full pr-10">
                     <div className="w-[50%] flex items-center justify-center h-full">
                         <div className="w-[80%] h-[80%]">
-                            {/*<MapComponent/>*/}
+                            <MapComponent/>
                         </div>
                     </div>
                     <div className="w-[50%] flex items-center justify-center h-full pt-5 pb-5">
