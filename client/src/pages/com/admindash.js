@@ -1,7 +1,7 @@
 // src/components/Sidebar.js
 import React, {useState} from 'react';
 import {Link} from 'react-router-dom';
-import {FaHome, FaChartLine, FaShoppingCart, FaUser} from 'react-icons/fa';
+import {FaHome} from 'react-icons/fa';
 import {useLogout} from '../pamuditha/authUtils';
 
 const SidebarItem = ({title, id, links}) => {

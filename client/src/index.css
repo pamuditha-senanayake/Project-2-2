@@ -42,3 +42,126 @@ code {
     transition: opacity 300ms ease-out;
 
 }
+
+.custom-button {
+    --color: #be185d; /* bg-pink-700 equivalent */
+    font-family: inherit;
+    display: inline-block;
+    width: 8em;
+    height: 2.6em;
+    line-height: 2.5em;
+    margin: 20px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border: 2px solid var(--color);
+    transition: color 0.5s;
+    z-index: 1;
+    font-size: 17px;
+    border-radius: 6px;
+    font-weight: 500;
+    color: var(--color);
+}
+
+.custom-button:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    background: var(--color);
+    height: 150px;
+    width: 200px;
+    border-radius: 50%;
+    top: 100%;
+    left: 100%;
+    transition: all 0.7s;
+}
+
+.custom-button:hover {
+    color: #fff;
+}
+
+.custom-button:hover:before {
+    top: -30px;
+    left: -30px;
+}
+
+.custom-button:active:before {
+    background: #9d174d; /* Darker shade of pink for active state */
+    transition: background 0s;
+}
+
+
+/* Container styling */
+.image-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    overflow: hidden;
+    width: 100%;
+    height: auto;
+}
+
+/* Image styling */
+.bride-image {
+    width: 80%; /* Adjust as per your needs */
+    height: auto;
+    transition: transform 0.4s ease-in-out, opacity 0.4s ease-in-out; /* Smooth animation */
+}
+
+/* Hover effect: scaling the image */
+.bride-image:hover {
+    transform: scale(1.1); /* Slight scale up on hover */
+    opacity: 0.9; /* Slight transparency */
+}
+
+.custom-button2 {
+    --bg-color: #9d174d; /* Equivalent to bg-pink-700 */
+    --text-color: #fff;
+
+    font-family: inherit;
+    display: inline-block;
+    width: 8em;
+    height: 2.6em;
+    line-height: 2.5em;
+    margin: 20px;
+    position: relative;
+    cursor: pointer;
+    overflow: hidden;
+    border: 2px solid var(--bg-color);
+    transition: color 0.5s, background 0.5s;
+    z-index: 1;
+    font-size: 17px;
+    border-radius: 6px;
+    font-weight: 500;
+
+    background: var(--bg-color); /* Initial background color */
+    color: var(--text-color); /* Initial text color */
+}
+
+.custom-button2:hover {
+    background: transparent; /* Background disappears on hover */
+    color: var(--bg-color); /* Text becomes bg-pink-700 */
+}
+
+.custom-button2:before {
+    content: "";
+    position: absolute;
+    z-index: -1;
+    background: var(--bg-color);
+    height: 150px;
+    width: 200px;
+    border-radius: 50%;
+    top: 100%;
+    left: 100%;
+    transition: all 0.7s;
+}
+
+.custom-button2:hover:before {
+    top: 100%;
+    left: 100%; /* Keep the background circle hidden on hover */
+}
+
+.custom-button2:active:before {
+    background: #7e133e; /* Darker shade for active state */
+    transition: background 0s;
+}

@@ -3,6 +3,7 @@ import db from '../db.js';
 
 const router = express.Router();
 
+
 // GET all records
 router.get('/view', async (req, res) => {
     if (req.isAuthenticated()) {

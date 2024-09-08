@@ -1,6 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Navigation from './nav';
-import homepic4 from "../../images/5.jpg"; // Adjust the path if necessary
+import homepic4 from "../../images/f.jpg"; // Adjust the path if necessary
 import homepic3 from "../../images/a.jpg";
 
 const UserProfile = () => {
