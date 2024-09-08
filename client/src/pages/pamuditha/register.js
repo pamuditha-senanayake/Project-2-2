@@ -3,6 +3,25 @@ import backgroundImage from "../../images/5.jpg";
 import {useNavigate} from 'react-router-dom';
 import google from "../../images/google.png";
 
+const Button = () => {
+    const navigate = useNavigate();
+
+    const handleClick = () => {
+        navigate('/');
+    };
+
+    return (
+        <button
+            onClick={handleClick}
+            className="flex  items-center justify-center h-10 julius-sans-one-regular w-24 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+        >
+            Log-In
+        </button>
+    );
+};
+
+export {Button};
+
 const Register = () => {
     const [formData, setFormData] = useState({
         email: '',
@@ -92,7 +111,7 @@ const Register = () => {
                     className="peer ring-0 bg-pink-400 rounded-full outline-none duration-300 after:duration-500 w-12 h-12 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-['✖️'] after:rounded-full after:absolute after:outline-none after:h-10 after:w-10 after:bg-gray-50 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-hover:after:scale-75 peer-checked:after:content-['✔️'] after:-rotate-180 peer-checked:after:rotate-0">
                 </div>
             </label>
-            <div className="flex flex-row w-[70%] h-[600px] bg-opacity-70">
+            <div className="flex flex-row w-[70%] h-[650px] bg-opacity-70">
                 <div className="flex flex-col order-2 w-[50%] h-full items-end justify-center pr-5"
                      style={{
                          background: 'rgba(87, 40, 215, 0.2)',
@@ -107,9 +126,12 @@ const Register = () => {
                     <p className="text-5xl text-white julius-sans-one-regular text-center">DIAMOND</p>
                     <br/>
                     <p className="text-base text-white text-center">BY SAHASRA RAJAPAKSHA</p>
+                    <div className="pt-5 ">
+                        <Button/>
+                    </div>
                 </div>
 
-                <div className="flex order-1 w-[50%] h-full bg-pink-300 justify-center pl-9 items-center">
+                <div className="flex order-1 w-[50%] h-full bg-pink-300 justify-center items-center">
                     <div className="p-8 rounded-lg w-full max-w-sm">
                         <h2 className="text-2xl font-bold mb-6 text-left julius-sans-one-regular">REGISTER</h2>
 
@@ -167,7 +189,7 @@ const Register = () => {
 
                             <button
                                 type="submit"
-                                className="w-full py-2 px-4 bg-neutral-800 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
+                                className="w-full py-2 px-4 bg-neutral-800 julius-sans-one-regular text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
                                 Register
                             </button>

@@ -11,8 +11,10 @@ import homepic5 from "../../images/d.jpg";
 import homepic6 from "../../images/e.jpg";
 import homepic7 from "../../images/f.jpg";
 import bride from "../../images/file.png";
+import star from "../../images/s.png";
 import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
 import {useLogout} from './authUtils';
+
 
 // Function to smoothly scroll to a section
 const scrollToSection = (sectionId) => {
@@ -53,6 +55,7 @@ export {MapComponent};
 //
 // export {SplineViewer};
 
+
 const PictureGrid = () => {
     // Replace these src paths with your actual image paths
     const imageSrcs = [
@@ -81,109 +84,6 @@ const PictureGrid = () => {
 };
 
 export {PictureGrid};
-
-
-const Carousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    // Array holding images and text content for each slide
-    const slides = [
-        {
-            image: homepic2,
-            text: {
-                title: 'Professional Hairdressing',
-                description: 'Get the latest styles and trends from our expert stylists.',
-            },
-        },
-        {
-            image: homepic,
-            text: {
-                title: 'Luxury Manicures',
-                description: 'Pamper yourself with our range of nail services.',
-            },
-        },
-        {
-            image: homepic2,
-            text: {
-                title: 'Relaxing Spa Treatments',
-                description: 'Indulge in our soothing spa treatments for ultimate relaxation.',
-            },
-        },
-    ];
-
-    const goToPrevious = () => {
-        const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const goToNext = () => {
-        const isLastSlide = currentIndex === slides.length - 1;
-        const newIndex = isLastSlide ? 0 : currentIndex + 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const goToSlide = (index) => {
-        setCurrentIndex(index);
-    };
-
-    return (
-        <div className="relative w-[90%] h-full overflow-hidden">
-            <div className="relative w-full h-full flex">
-                <div
-                    className="flex transition-transform duration-700 ease-in-out"
-                    style={{transform: `translateX(-${currentIndex * 100}%)`}}
-                >
-                    {slides.map((slide, index) => (
-                        <div key={index} className="relative w-full flex-shrink-0 h-full">
-                            <img
-                                src={slide.image}
-                                alt={`Slide ${index + 1}`}
-                                className="w-full h-full object-cover"
-                            />
-                            <div
-                                className="absolute bottom-0 left-0 right-0 flex flex-col justify-end items-center bg-black bg-opacity-50 text-center p-4">
-                                <h1 className="text-white text-2xl">{slide.text.title}</h1>
-                                <p className="text-white">{slide.text.description}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Previous Button */}
-                <button
-                    onClick={goToPrevious}
-                    className="absolute top-1/2 transform -translate-y-1/2 left-4 bg-white text-black p-2 rounded-full z-10"
-                >
-                    &#9664;
-                </button>
-
-                {/* Next Button */}
-                <button
-                    onClick={goToNext}
-                    className="absolute top-1/2 transform -translate-y-1/2 right-4 bg-white text-black p-2 rounded-full z-10"
-                >
-                    &#9654;
-                </button>
-            </div>
-
-            {/* Indicators */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-                {slides.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`w-3 h-3 rounded-full ${
-                            currentIndex === index ? 'bg-white' : 'bg-gray-400'
-                        }`}
-                        onClick={() => goToSlide(index)}
-                    />
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export {Carousel};
 
 
 const Card = () => {
@@ -295,7 +195,20 @@ function ChatComponent() {
     };
 
     return (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex flex-col items-center h-full">
+            <div className="mb-10 justify-center content-center">
+                <button
+                    className="glow-on-hover julius-sans-one-regular justify-center content-center pt-3 flex flex-row"
+                    type="button">
+
+
+                    {/*<img src={star} alt="Icon" className="icon w-[20px]"/>*/}
+                    <b>AI</b>
+                    -Powered
+
+                </button>
+
+            </div>
             <div
                 className="w-full max-w-md rounded-lg shadow-lg p-6 flex flex-col h-full"
                 style={{
@@ -312,7 +225,7 @@ function ChatComponent() {
                     {messages.map((msg, index) => (
                         <div
                             key={index}
-                            className={`message p-3 mb-2 rounded-lg ${msg.type === 'user' ? 'bg-blue-500 text-white self-end' : 'bg-gray-200 text-gray-700 self-start'}`}
+                            className={`message p-3 mb-2 rounded-lg ${msg.type === 'user' ? 'bg-pink-500 text-white self-end' : 'bg-gray-200 text-gray-700 self-start'}`}
                         >
                             <p>{msg.text}</p>
                         </div>
@@ -331,7 +244,7 @@ function ChatComponent() {
                     />
                     <button
                         type="submit"
-                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
+                        className="bg-black text-white p-2 rounded-md hover:bg-pink-700 transition-colors"
                     >
                         GO
                     </button>
@@ -589,7 +502,9 @@ const Home = () => {
                         </div>
                     </div>
                     <div className="w-[50%] flex items-center justify-center h-full pt-5 pb-5">
-                        <div className="w-[90%] h-[50%]">
+                        <div className="w-[90%] h-[50%] ">
+
+
                             <ChatComponent/>
                         </div>
                     </div>
