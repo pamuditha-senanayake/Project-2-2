@@ -391,7 +391,7 @@ function Navbar() {
                                 <button onClick={() => scrollToSection("profile")}
                                         className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Profile
                                 </button>
-                                <Link to="/appointments"
+                                <Link to="/services"
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
                                 <Link to="/products"
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Products</Link>

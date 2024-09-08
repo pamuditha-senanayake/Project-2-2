@@ -14,6 +14,9 @@ import Support from "./pages/shamika/Support";
 import STickets from "./pages/shamika/Ticket";
 import Ct1 from "./pages/com/crud-test";
 import UpdateRecord from "./pages/com/updatec";
+import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
+import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
+import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -39,6 +42,14 @@ const AnimatedRoutes = () => {
                         <Route path="/ticket" element={<STickets/>}/>
                         <Route path="/crud" element={<Ct1/>}/>
                         <Route path="/update/:id" element={<UpdateRecord/>}/>
+                        <Route path="/services" element={<SelectServices/>}/>
+                        <Route path="/professional" element={<SelectProfessional/>}/>
+                        <Route path="/date&time" element={<SelectDateTime/>}/>
+                        <Route path="/confirm/:appointmentId" element={<ConfirmAppointment/>}/>
+                        <Route path="/view" element={<AdminAppointmentView/>}/>
+                        <Route path="/pay" element={<Home/>}/>
+                        <Route path="/viewList" element={<AdminAppointmentList/>}/>
+
                     </Routes>
                 </div>
             </CSSTransition>
