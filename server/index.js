@@ -15,6 +15,7 @@ dotenv.config();
 const app = express();
 const port = 3001;
 
+
 app.use(cors({ origin: 'http://localhost:3000', credentials: true }));
 
 app.use(
@@ -53,6 +54,8 @@ app.use((req, res, next) => {
     res.locals.user = req.user;
     next();
 });
+
+
 
 app.listen(port, () => {
     console.log(`Server running on port ${port}`);

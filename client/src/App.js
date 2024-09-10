@@ -12,7 +12,7 @@ import Userp from "./pages/pamuditha/user_profile";
 import Adminp from "./pages/pamuditha/admin-users";
 import Support from "./pages/shamika/Support";
 import STickets from "./pages/shamika/Ticket";
-import Existing from "./pages/shamika/Existing";
+
 
 function App() {
   return (
@@ -28,7 +28,7 @@ function App() {
         <Route path="/admin-users" element={<Adminp/>}/>
         <Route path="/supporthome" element={<Support/>}/>
         <Route path="/ticket" element={<STickets/>}/>
-        <Route path="/existing" element={<Existing/>}/>
+
       </Routes>
     </Router>
   );
