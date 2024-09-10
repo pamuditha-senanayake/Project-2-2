@@ -20,20 +20,18 @@ export default function Support() {
                          border: '1px solid rgba(255, 255, 255, 0.3)',
                      }}
                 >
+                    <h1 className="lg:mx-32 text-5xl  julius-sans-one-regular font-bold text-orange-500">Customer
+                        Support</h1>
+                    <h3 className="lg:mx-32 text-2xl  julius-sans-one-regular opacity-40 py-6">Welcome to Our Customer
+                        Support!</h3>
 
-
-                    <h1 className="lg:mx-32 text-5xl  julius-sans-one-regular font-bold text-orange-500">Customer Support</h1>
-                    <h3 className="lg:mx-32 text-2xl  julius-sans-one-regular opacity-40 py-6">Welcome to Our Customer Support!</h3>
-
-                    <p className="lg:mx-32  julius-sans-one-regular opacity-30 py-1">Thank you for reaching out to us. At Salon Diamond, we are
-                        dedicated
-                        to providing you with the best possible service and support.
+                    <p className="lg:mx-32  julius-sans-one-regular opacity-30 py-1">Thank you for reaching out to us.
+                        At Salon Diamond, we are dedicated to providing you with the best possible service and support.
                         Whether you have questions, need assistance, our team is here to help you every step of the
                         way.</p>
 
-                    <p className="lg:mx-32  julius-sans-one-regular opacity-30 py-1">Please explore our resources and get in touch with us
-                        through the
-                        contact options available.
+                    <p className="lg:mx-32  julius-sans-one-regular opacity-30 py-1">Please explore our resources and
+                        get in touch with us through the contact options available.
                         We value your time and are committed to ensuring your experience with us is nothing short of
                         exceptional.</p>
 
@@ -49,21 +47,15 @@ export default function Support() {
 
                     <button
                         className="w-full py-2 px-4 julius-sans-one-regular bg-neutral-800  julius-sans-one-regular text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >{""}CHECK
-                        TICKET STATUS
+                    >{""}MY TICKET
 
                     </button>
-                    <button
-                        type="submit"
-                        className="w-full py-2 px-4 julius-sans-one-regular bg-neutral-800  julius-sans-one-regular text-white font-semibold rounded-lg shadow-md hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                    >
-                        New Support Ticket
-                    </button>
+
 
                 </div>
             </div>
         </div>
 
 
-        )
-        }
+    )
+}
