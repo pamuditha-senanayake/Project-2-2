@@ -6,7 +6,7 @@ export default function Support() {
     return (
 
         <div
-            className="flex flex-col items-center justify-center h-screen bg-white"
+            className="flex flex-col items-center justify-center h-screen bg-pink 400"
             style={{backgroundImage: `url(${backgroundImage})`, backgroundSize: 'cover', backgroundPosition: 'center'}}
         >
             <div className="flex flex-row w-[70%] h-[600px] bg-opacity-70">
