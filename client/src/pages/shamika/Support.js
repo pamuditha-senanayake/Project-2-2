@@ -53,7 +53,7 @@ export default function Support() {
                     </a>
 
                     <a
-                        href="/ticket"
+                        href="/myticket"
                         className="flex items-center justify-center h-10 julius-sans-one-regular w-25 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
                     >
                         My Ticket

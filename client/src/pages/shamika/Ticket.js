@@ -159,8 +159,14 @@ function Ticket() {
                                         onClick={handleReset}
                                         className="flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-black text-white border-[1px] rounded-lg transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
                                     >
-                                        Reset
+                                        Re-set
                                     </button>
+                                    <a
+                                        href="/myticket"
+                                        className="flex items-center justify-center h-10 julius-sans-one-regular w-25 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                                    >
+                                        My Ticket
+                                    </a>
                                 </div>
                             </form>
                         </div>

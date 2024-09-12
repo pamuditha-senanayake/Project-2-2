@@ -17,6 +17,7 @@ import UpdateRecord from "./pages/com/updatec";
 import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
 import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
+import Myticket from "./pages/shamika/Myticket";
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -40,6 +41,7 @@ const AnimatedRoutes = () => {
                         <Route path="/admin-users" element={<Adminp/>}/>
                         <Route path="/supporthome" element={<Support/>}/>
                         <Route path="/ticket" element={<STickets/>}/>
+                        <Route path="/myticket" element={<Myticket/>}/>
                         <Route path="/crud" element={<Ct1/>}/>
                         <Route path="/update/:id" element={<UpdateRecord/>}/>
                         <Route path="/services" element={<SelectServices/>}/>
