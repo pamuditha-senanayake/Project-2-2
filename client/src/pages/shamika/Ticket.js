@@ -36,18 +36,58 @@ function Ticket() {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
+            // Send the ticket data to the server
             const { data } = await axios.post('http://localhost:5000/tickets', ticket);
+
+            // If the request is successful, show the toast message
+            showToast('Success: Ticket No. ' + data.ticket_no);
+
+            // Optionally show an alert with ticket number
             alert(`Ticket No. ${data.ticket_no} created successfully!`);
-            handleReset();  // Reset form after successful submission
+
+            // Reset the form after successful submission
+            handleReset();
         } catch (error) {
             console.error("Error creating ticket:", error);
+            showToast('Error: Could not submit ticket'); // Show error toast if submission fails
         }
     };
 
-    const handleReset = () => {
-        setTicket(initialTicketState);
-    };
 
+// Function to display the toast message
+    function showToast(message) {
+        // Create a new div element for the toast
+        const toast = document.createElement('div');
+        toast.innerText = message;
+        toast.style.position = 'fixed';
+        toast.style.bottom = '30px';
+        toast.style.left = '50%';
+        toast.style.transform = 'translateX(-50%)';
+        toast.style.backgroundColor = '#333';
+        toast.style.color = '#fff';
+        toast.style.padding = '16px';
+        toast.style.borderRadius = '5px';
+        toast.style.zIndex = '1000';
+        toast.style.textAlign = 'center';
+        toast.style.minWidth = '200px';
+        toast.style.fontSize = '16px';
+        toast.style.boxShadow = '0 2px 10px rgba(0,0,0,0.3)';
+
+        // Add the toast to the document body
+        document.body.appendChild(toast);
+
+        // Remove the toast after 3 seconds
+        setTimeout(() => {
+            toast.remove();
+        }, 3000);
+    }
+    const handleReset = () => {
+        // Reset the form but keep the ticket number
+        setTicket((prevTicket) => ({
+            ...initialTicketState, // Reset other fields to their initial state
+            ticket_no: prevTicket.ticket_no // Preserve the ticket number
+        }));
+    };
     return (
 
         <div
