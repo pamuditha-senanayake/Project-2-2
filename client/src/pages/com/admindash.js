@@ -60,9 +60,10 @@ const Sidebar = () => {
         {
             title: 'Account',
             links: [
-
+                {text: 'Admin Registration', url: '/adminreg'},
                 {text: 'Profile', url: '/adminprofile'},
-                
+
+
                 {
                     text: 'Sign out',
                     url: '#',

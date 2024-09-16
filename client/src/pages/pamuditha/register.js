@@ -70,6 +70,7 @@ const Register = () => {
                     body: JSON.stringify({
                         email: formData.email,
                         password: formData.password,
+                        role: "customer",
                     }),
                     redirect: 'manual' // Handle redirects manually
                 });
@@ -82,7 +83,7 @@ const Register = () => {
 
                     if (response.ok) {
                         console.log('Registration successful', data);
-                        navigate('/home'); // Redirect to the home page
+                        navigate('/'); // Redirect to the home page
                     } else {
                         console.error('Registration error', data);
                         alert('Registration failed: ' + (data.message || 'Unknown error'));
@@ -133,7 +134,8 @@ const Register = () => {
 
                 <div className="flex order-1 w-[50%] h-full bg-pink-300 justify-center items-center">
                     <div className="p-8 rounded-lg w-full max-w-sm">
-                        <h2 className="text-2xl font-bold mb-6 text-left julius-sans-one-regular">REGISTER</h2>
+                        <h2 className="text-2xl font-bold mb-6 text-left julius-sans-one-regular">CUSTOMER -
+                            REGISTRATION</h2>
 
                         <form onSubmit={handleSubmit}>
                             <div className="mb-4">
