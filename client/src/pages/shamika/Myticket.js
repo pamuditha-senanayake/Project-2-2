@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // For redirection
 import toast, { Toaster } from 'react-hot-toast';
@@ -7,6 +7,7 @@ import backgroundImage from "../../images/5.jpg"; // For toast messages
 function Myticket() {
     const navigate = useNavigate(); // Hook for redirection
     const initialTicketState = {
+        ticket_no: '', // Automatically generated ticket number
         customer_id: '',
         email: '',
         contact_no: '',
@@ -19,6 +20,15 @@ function Myticket() {
     };
 
     const [ticket, setTicket] = useState(initialTicketState);
+    // Automatically generate Ticket No. on component load
+    useEffect(() => {
+        const generatedTicketNo = `TICKET-${Math.floor(Math.random() * 100000)}`;
+        setTicket((prevTicket) => ({
+            ...prevTicket,
+            ticket_no: generatedTicketNo
+        }));
+    }, []);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -48,7 +58,7 @@ function Myticket() {
 
             // Redirect to the Support Tickets List page after 2 seconds
             setTimeout(() => {
-                navigate('/support-tickets-list');
+                navigate('/Slist');
             }, 2000);
 
         } catch (error) {
@@ -249,13 +259,12 @@ function Myticket() {
                                     >
                                         Profile
                                     </button>
-                                    <button
-                                        type="button"
-                                        onClick={handleReset}
+                                    <a
+                                        href="/supporthome"
                                         className="flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
                                     >
                                         Back
-                                    </button>
+                                    </a>
                                 </div>
                             </form>
                         </div>

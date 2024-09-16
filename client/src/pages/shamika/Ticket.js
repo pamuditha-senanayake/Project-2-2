@@ -134,8 +134,10 @@ function Ticket() {
                                         <option value="Product Inquiries and Issues">Product Inquiries and Issues</option>
                                     </select>
                                 </div>
-                                <div style={{ marginBottom: '1rem' }}>
-                                    <label style={{ marginBottom: '0.5rem' }}>Inquiry Description (Max 100 characters):</label>
+                                <div style={{marginBottom: '1rem'}}>
+                                    <label style={{marginBottom: '0.5rem'}}>Inquiry Description (Max 100
+                                        characters):</label>
+
                                     <input
                                         type="text"
                                         name="inquiry_description"

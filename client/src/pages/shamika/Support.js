@@ -4,7 +4,6 @@ import backgroundImage from "../../images/5.jpg";
 
 export default function Support() {
     return (
-
         <div
             className="flex flex-col items-center justify-center h-screen bg-white"
             style={{
@@ -31,13 +30,13 @@ export default function Support() {
                     <h3 className="lg:mx-20 text-1xl  text-white julius-sans-one-regular mb-4 ">Welcome to
                         Our Customer  Support!</h3>
 
-                    <p className="flex 1 lg:mx-20  julius-sans-one-regular text-1xl text-rgb255 mb-4">Thank you for reaching
+                    <p className="flex 1 lg:mx-20  julius-sans-one-regular text-gray-700 text-1xl text-rgb255 mb-4">Thank you for reaching
                         out to us.
                         At Salon Diamond, we are dedicated to providing you with the best possible service and support.
                         Whether you have questions, need assistance, our team is here to help you every step of the
                         way.</p>
-
-                    <p className="lg:mx-20  julius-sans-one-regular  text-1xl text-rgb255 mb-4">Please explore our
+<p></p>
+                    <p className="lg:mx-20  julius-sans-one-regular  text-1xl text-gray-700 text-rgb255 mb-4">Please explore our
                         resources and
                         get in touch with us through the contact options available.
                         We value your time and are committed to ensuring your experience with us is nothing short of

@@ -4,15 +4,12 @@ import { useNavigate } from 'react-router-dom';  // For redirection
 import toast, { Toaster } from 'react-hot-toast';
 import backgroundImage from "../../images/5.jpg"; // For toast messages
 
-function Profile() {
+function Slist() {
     const navigate = useNavigate(); // Hook for redirection
     const initialTicketState = {
         ticket_no: '', // Automatically generated ticket number
         customer_id: '',
-        email: '',
-        contact_no: '',
         category: 'Booking and Appointment Issues',
-        inquiry_description: '',
         status: 'Pending',
         catalog: '',
         notifications: '',
@@ -110,11 +107,11 @@ function Profile() {
                 backgroundPosition: 'center',
             }}
         >
-            <div className="flex flex-row w-[70%] h-[600px] bg-opacity-70">
+            <div className="flex flex-row w-[70%] h-[240px] bg-opacity-70">
                 <div
-                    className="left-div flex flex-col w-[75%] h-full justify-center pl-6 pamlogin1"
+                    className="left-div flex flex-col w-[60%] h-full justify-center pl-6 pamlogin1"
                     style={{
-                        background: 'rgba(87, 40, 215, 0.2)',
+                        background: 'rgb(87, 40, 215, 0.2)',
                         borderRadius: '0',
                         boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
                         backdropFilter: 'blur(5px)',
@@ -122,20 +119,20 @@ function Profile() {
                         border: '1px solid rgba(255, 255, 255, 0.3)',
                     }}
                 >
+
                     <div className="App">
-                        <Toaster/> {/* Component to display toast messages */}
-                        <h1 className="lg:mx-20 justify-center julius-sans-one-regular text-3xl font-bold text-rgb255 mb-4">My
-                            Profile  </h1>
-                        <div
-                            className="lg:mx-20 text-1xl justify-items-stretch text-black julius-sans-one-regular font-bold mb-12">
+                    <div
+                            className="lg:mx-0 text-1xl content-center justify-items-stretch text-gray-700  julius-sans-one-regular font-bold mb-6"
+                           >
                             <form onSubmit={handleSubmit}
                                   style={{
                                       display: 'flex',
                                       flexDirection: 'column',
                                       alignItems: 'flex-start',
-                                      textAlign: 'left'
+                                      textAlign: 'left',
+                                      marginBottom: '0.25rem'
                                   }}>
-                                <div style={{marginBottom: '1rem'}}>
+                                <div>
                                     <label style={{marginBottom: '0.5rem'}}>Ticket No.:</label>
                                     <input
                                         type="text"
@@ -145,8 +142,8 @@ function Profile() {
                                     />
                                 </div>
 
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Customer ID:</label>
+                                <div>
+                                    <label style={{marginBottom: '0.5rem' }}>Customer ID:</label>
                                     <input
                                         type="text"
                                         name="customer_id"
@@ -155,29 +152,8 @@ function Profile() {
                                         required
                                     />
                                 </div>
-
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Email:</label>
-                                    <input
-                                        type="email"
-                                        name="email"
-                                        value={ticket.email}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Contact No:</label>
-                                    <input
-                                        type="text"
-                                        name="contact_no"
-                                        value={ticket.contact_no}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Category:</label>
+                                <div>
+                                    <label>Category:</label>
                                     <select
                                         name="category"
                                         value={ticket.category}
@@ -195,18 +171,6 @@ function Profile() {
                                         </option>
                                     </select>
                                 </div>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Inquiry Description (Max 100
-                                        characters):</label>
-                                    <input
-                                        type="text"
-                                        name="inquiry_description"
-                                        value={ticket.inquiry_description}
-                                        onChange={handleChange}
-                                        maxLength="400"
-                                        required
-                                    />
-                                </div>
 
 
                                 <div>
@@ -221,7 +185,7 @@ function Profile() {
                                 </div>
 
                                 <div>
-                                    <label>Catalog:</label>
+                                    <label>Catalog No:</label>
                                     <input
                                         type="text"
                                         name="catalog"
@@ -241,34 +205,22 @@ function Profile() {
                                         readOnly
                                     />
                                 </div>
-
-                                <div>
-                                    <label>Remarks:</label>
-                                    <textarea
-                                        name="remarks"
-                                        value={ticket.remarks}
-                                        onChange={handleChange}
-                                        placeholder="additional information"
-                                    />
-                                </div>
-
-                                <div className="lg:mx-20 flex space-x-6 pl-12">
-
-
-                                    <a
-                                        href="/supporthome"
-                                        className="lg:mx-20 flex items-center justify-center h-10 julius-sans-one-regular w-32 bg-black text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
-                                    >
-                                        Back
-                                    </a>
-                                </div>
                             </form>
+
                         </div>
                     </div>
+                </div>
+                <div className="lg:mx-10 bottflex space-x-8 pl-12">
+                    <a
+                        href="/supporthome"
+                        className="flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-black text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                    >
+                        Back
+                    </a>
                 </div>
             </div>
         </div>
     );
 }
 
-export default Profile
+export default Slist;
