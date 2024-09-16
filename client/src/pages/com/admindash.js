@@ -1,41 +1,27 @@
-// src/components/Sidebar.js
-import React, {useState} from 'react';
+import React from 'react';
 import {Link} from 'react-router-dom';
-import {FaHome} from 'react-icons/fa';
 import {useLogout} from '../pamuditha/authUtils';
 
-const SidebarItem = ({title, id, links}) => {
-    const [isExpanded, setIsExpanded] = useState(false);
-
-    const handleToggle = () => {
-        setIsExpanded(!isExpanded);
-    };
-
+const SidebarItem = ({title, links}) => {
     return (
-        <li className="mb-1">
-            <button
-                onClick={handleToggle}
-                className="w-full text-left py-2 px-4 flex items-center rounded border-0 bg-gray-700 text-white hover:bg-gray-600 transition-colors"
-                aria-expanded={isExpanded}
-            >
-                {title}
-            </button>
-            <div
-                className={`overflow-hidden transition-max-height duration-500 ${isExpanded ? 'max-h-screen' : 'max-h-0'}`}>
-                <ul className="list-none pl-4">
-                    {links.map((link, index) => (
-                        <li key={index}>
-                            <Link
-                                to={link.url}
-                                onClick={link.onClick} // Handle click for Sign out
-                                className="block py-2 px-4 text-white hover:bg-gray-600 rounded transition-colors"
-                            >
-                                {link.text}
-                            </Link>
-                        </li>
-                    ))}
-                </ul>
+        <li className="mb-2">
+            <div className="w-100 py-2 px-4 d-flex align-items-center rounded-3 bg-dark text-light">
+                <span>{title}</span>
             </div>
+            <ul className="list-unstyled ps-4 mt-2">
+                {links.map((link, index) => (
+                    <li key={index}>
+                        <Link
+                            to={link.url}
+                            onClick={link.onClick} // Handle click for Sign out
+                            className="d-block py-2 px-4 text-dark hover:bg-secondary rounded transition-colors"
+                            style={{textDecoration: 'none'}} // Remove underline
+                        >
+                            {link.text}
+                        </Link>
+                    </li>
+                ))}
+            </ul>
         </li>
     );
 };
@@ -46,26 +32,24 @@ const Sidebar = () => {
     const sections = [
         {
             title: 'Home',
-            id: 'home-collapse',
             links: [
-                {text: 'Overview', url: '#'},
-                {text: 'Updates', url: '#'},
-                {text: 'Reports', url: '#'},
+                {text: 'Admin-Home', url: '/adminhome'},
+                {text: 'User-Home', url: '/home'},
+
+
             ],
         },
         {
-            title: 'Dashboard',
-            id: 'dashboard-collapse',
+            title: 'User Dashboard',
             links: [
+                {text: 'User-List', url: '/admin-users'},
                 {text: 'Overview', url: '#'},
                 {text: 'Weekly', url: '#'},
-                {text: 'Monthly', url: '#'},
-                {text: 'Annually', url: '#'},
+
             ],
         },
         {
             title: 'Orders',
-            id: 'orders-collapse',
             links: [
                 {text: 'New', url: '#'},
                 {text: 'Processed', url: '#'},
@@ -75,11 +59,11 @@ const Sidebar = () => {
         },
         {
             title: 'Account',
-            id: 'account-collapse',
             links: [
-                {text: 'New...', url: '#'},
-                {text: 'Profile', url: '#'},
-                {text: 'Settings', url: '#'},
+                {text: 'Admin Registration', url: '/adminreg'},
+                {text: 'Profile', url: '/adminprofile'},
+
+
                 {
                     text: 'Sign out',
                     url: '#',
@@ -93,21 +77,28 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="fixed top-0 left-0 h-full w-72 bg-gray-800 text-white overflow-hidden overflow-y-scroll">
+        <div className="julius-sans-one-regular top-0 left-0 h-100 w-72 text-dark overflow-auto"
+             style={{
+                 borderRadius: '0.375rem', // 6px border-radius (Bootstrap default)
+                 boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
+                 backdropFilter: 'blur(5px)',
+                 WebkitBackdropFilter: 'blur(5px)',
+                 border: '1px solid rgba(255, 255, 255, 0.3)'
+             }}
+        >
             <Link
                 to="/"
-                className="flex items-center py-3 mb-3 border-b border-gray-700 text-white hover:bg-gray-700 transition-colors"
+                className="d-flex align-items-center py-3 mb-3 border-bottom border-light text-dark hover:bg-light transition-colors"
+                style={{textDecoration: 'none'}} // Remove underline
             >
-                <FaHome className="w-7 h-6 mr-2"/>
-                <span className="text-xl font-semibold">Salon Diamond</span>
+                <span className="text-2xl fw-semibold">Salon Diamond</span>
             </Link>
 
-            <ul className="list-none p-0">
+            <ul className="list-unstyled p-0">
                 {sections.map((section, index) => (
                     <SidebarItem
                         key={index}
                         title={section.title}
-                        id={section.id}
                         links={section.links}
                     />
                 ))}

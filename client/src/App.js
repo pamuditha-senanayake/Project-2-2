@@ -1,5 +1,4 @@
 import React from 'react';
-
 import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import './App.css';
@@ -18,9 +17,10 @@ import UpdateRecord from "./pages/com/updatec";
 import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
 import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
-import Myticket from "./pages/shamika/Myticket";
-import Profile from "./pages/shamika/Profile";
-import Slist from "./pages/shamika/Slist";
+import Adminhome from "./pages/pamuditha/adminhome";
+import Adminprofile from "./pages/pamuditha/admin_profile";
+import Adminreg from "./pages/pamuditha/admin-register";
+
 const AnimatedRoutes = () => {
     const location = useLocation();
 
@@ -43,9 +43,6 @@ const AnimatedRoutes = () => {
                         <Route path="/admin-users" element={<Adminp/>}/>
                         <Route path="/supporthome" element={<Support/>}/>
                         <Route path="/ticket" element={<STickets/>}/>
-                        <Route path="/myticket" element={<Myticket/>}/>
-                        <Route path="/profile" element={<Profile/>}/>
-                        <Route path="/Slist" element={<Slist/>}/>
                         <Route path="/crud" element={<Ct1/>}/>
                         <Route path="/update/:id" element={<UpdateRecord/>}/>
                         <Route path="/services" element={<SelectServices/>}/>
@@ -55,6 +52,9 @@ const AnimatedRoutes = () => {
                         <Route path="/view" element={<AdminAppointmentView/>}/>
                         <Route path="/pay" element={<Home/>}/>
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
+                        <Route path="/adminhome" element={<Adminhome/>}/>
+                        <Route path="/adminprofile" element={<Adminprofile/>}/>
+                        <Route path="/adminreg" element={<Adminreg/>}/>
 
                     </Routes>
                 </div>
