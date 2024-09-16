@@ -6,6 +6,7 @@ import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import homepic7 from "../../images/f.jpg";
 import homepic6 from "../../images/c.jpg";
+import logo from "../../images/logo.jpeg";
 
 const Layout = () => {
     const [users, setUsers] = useState([]);
@@ -180,7 +181,7 @@ const Layout = () => {
                  }}>
                 <Sidebar/>
             </div>
-            <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular"
+            <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular overflow-auto"
                  style={{
                      backgroundImage: `url(${homepic7})`,
                      backgroundSize: 'cover',
@@ -250,63 +251,83 @@ const Layout = () => {
 
             {/* Modal for editing user */}
             {showModal && (
-                <div className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
-                    <div className="bg-white p-6 rounded-lg shadow-lg">
-                        <h2 className="text-2xl mb-4">Edit User</h2>
-                        <form onSubmit={handleUpdate}>
-                            <div className="mb-4">
-                                <label htmlFor="firstname" className="block text-gray-700">Name</label>
-                                <input
-                                    type="text"
-                                    id="firstname"
-                                    name="firstname"
-                                    value={editUser.firstname || ''} // Default to an empty string if undefined
-                                    onChange={handleInputChange}
-                                    className="border border-gray-300 p-2 w-full"
-                                    required
+                <div
+                    className="fixed inset-0 bg-gray-500 bg-opacity-75 flex justify-center items-center z-50">
+                    <div
+                        className="p-5 bg-white julius-sans-one-regular rounded-lg shadow-lg w-[800px] h-[500px] max-w-full">
+
+                        <div className="flex flex-row ">
+                            <div className="flex order-1 w-[50%] flex-col">
+                                <h2 className="text-xl font-semibold mb-4 text-gray-800">Edit User</h2>
+                                <form onSubmit={handleUpdate}>
+                                    <div className="mb-3">
+                                        <label htmlFor="firstname" className="block text-gray-600">Name</label>
+                                        <input
+                                            type="text"
+                                            id="firstname"
+                                            name="firstname"
+                                            value={editUser.firstname || ''}
+                                            onChange={handleInputChange}
+                                            className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="email" className="block text-gray-600">Email</label>
+                                        <input
+                                            type="email"
+                                            id="email"
+                                            name="email"
+                                            value={editUser.email || ''}
+                                            onChange={handleInputChange}
+                                            className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="phone_number" className="block text-gray-600">Phone
+                                            Number</label>
+                                        <input
+                                            type="text"
+                                            id="phone_number"
+                                            name="phone_number"
+                                            value={editUser.phone_number || ''}
+                                            onChange={handleInputChange}
+                                            className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            required
+                                        />
+                                    </div>
+                                    <div className="flex justify-end">
+                                        <button
+                                            type="submit"
+                                            className="bg-pink-500 text-white px-4 py-2 rounded hover:bg-pink-800 transition-all"
+                                        >
+                                            Update
+                                        </button>
+                                        <button
+                                            type="button"
+                                            onClick={() => setShowModal(false)}
+                                            className="ml-3 bg-pink-600 text-white px-4 py-2 rounded hover:bg-pink-800 transition-all"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </form>
+                            </div>
+                            <div className="flex order-2 w-[50%] justify-center items-center">
+                                <img
+                                    src={logo}
+                                    alt="Description"
+                                    className="w-48 h-48 object-cover rounded-lg shadow-lg"
                                 />
                             </div>
-                            <div className="mb-4">
-                                <label htmlFor="email" className="block text-gray-700">Email</label>
-                                <input
-                                    type="email"
-                                    id="email"
-                                    name="email"
-                                    value={editUser.email || ''}
-                                    onChange={handleInputChange}
-                                    className="border border-gray-300 p-2 w-full"
-                                    required
-                                />
-                            </div>
-                            <div className="mb-4">
-                                <label htmlFor="phone_number" className="block text-gray-700">Phone Number</label>
-                                <input
-                                    type="text"
-                                    id="phone_number"
-                                    name="phone_number"
-                                    value={editUser.phone_number || ''}
-                                    onChange={handleInputChange}
-                                    className="border border-gray-300 p-2 w-full"
-                                    required
-                                />
-                            </div>
-                            <button
-                                type="submit"
-                                className="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-700"
-                            >
-                                Update
-                            </button>
-                            <button
-                                type="button"
-                                onClick={() => setShowModal(false)}
-                                className="ml-4 bg-red-500 text-white px-4 py-2 rounded hover:bg-red-700"
-                            >
-                                Cancel
-                            </button>
-                        </form>
+                        </div>
+
                     </div>
+
                 </div>
             )}
+
         </div>
     );
 };
