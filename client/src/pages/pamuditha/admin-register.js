@@ -70,7 +70,7 @@ const Register = () => {
                     body: JSON.stringify({
                         email: formData.email,
                         password: formData.password,
-                        role: "customer",
+                        role: "admin",
                     }),
                     redirect: 'manual' // Handle redirects manually
                 });
@@ -106,7 +106,7 @@ const Register = () => {
                     type="checkbox"
                     value=""
                     className="sr-only peer"
-                    onChange={() => navigate('/home')}
+                    onChange={() => navigate('/adminhome')}
                 />
                 <div
                     className="peer ring-0 bg-pink-400 rounded-full outline-none duration-300 after:duration-500 w-12 h-12 shadow-md peer-checked:bg-emerald-500 peer-focus:outline-none after:content-['✖️'] after:rounded-full after:absolute after:outline-none after:h-10 after:w-10 after:bg-gray-50 after:top-1 after:left-1 after:flex after:justify-center after:items-center peer-hover:after:scale-75 peer-checked:after:content-['✔️'] after:-rotate-180 peer-checked:after:rotate-0">
@@ -134,7 +134,7 @@ const Register = () => {
 
                 <div className="flex order-1 w-[50%] h-full bg-pink-300 justify-center items-center">
                     <div className="p-8 rounded-lg w-full max-w-sm">
-                        <h2 className="text-2xl font-bold mb-6 text-left julius-sans-one-regular">CUSTOMER -
+                        <h2 className="text-2xl font-bold mb-6 text-left julius-sans-one-regular">ADMIN
                             REGISTRATION</h2>
 
                         <form onSubmit={handleSubmit}>

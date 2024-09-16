@@ -21,7 +21,7 @@ router.get("/register", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const {email, password} = req.body;
+    const {email, password, role} = req.body;
 
     try {
         const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -35,8 +35,8 @@ router.post("/register", async (req, res) => {
                     res.status(500).json({message: "Server error during registration"});
                 } else {
                     const result = await db.query(
-                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-                        [email, hash]
+                        "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING *",
+                        [email, hash, role]
                     );
                     const user = result.rows[0];
 
@@ -72,7 +72,7 @@ const roleRedirect = async (req, res, next) => {
                 const user = result.rows[0];
 
                 if (user.role === 'admin') {
-                    return res.redirect('http://localhost:3000/admin-users');
+                    return res.redirect('http://localhost:3000/adminhome');
                 } else if (user.role === 'customer') {
                     return res.redirect('http://localhost:3000/home');
                 } else {
@@ -99,7 +99,7 @@ router.post("/login", (req, res, next) => {
         if (!user) {
             // If authentication fails, clear cookies and redirect to the login page
             res.clearCookie('diamond');
-            return res.redirect('http://localhost:3000/login');
+            return res.redirect('http://localhost:3000/');
         }
         req.logIn(user, (err) => {
             if (err) return next(err);
@@ -138,8 +138,8 @@ router.get(
 
 router.get(
     "/auth/google/secrets",
-    passport.authenticate("google", {session: true}), // Disable session management for stateless authentication
-    roleRedirect // Add roleRedirect middleware after passport.authenticate
+    passport.authenticate("google", {session: true}),
+    roleRedirect
 );
 
 passport.use("local", new LocalStrategy(async (username, password, cb) => {
