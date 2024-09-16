@@ -21,7 +21,7 @@ router.get("/register", (req, res) => {
 });
 
 router.post("/register", async (req, res) => {
-    const {email, password} = req.body;
+    const {email, password, role} = req.body;
 
     try {
         const checkResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
@@ -35,8 +35,8 @@ router.post("/register", async (req, res) => {
                     res.status(500).json({message: "Server error during registration"});
                 } else {
                     const result = await db.query(
-                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
-                        [email, hash]
+                        "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING *",
+                        [email, hash, role]
                     );
                     const user = result.rows[0];
 
@@ -64,28 +64,22 @@ router.post("/register", async (req, res) => {
 
 
 const roleRedirect = async (req, res, next) => {
-    // Debugging log
-    // console.log('User object:', req.user);
-
     if (req.user) {
         try {
             const result = await db.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
 
             if (result.rows.length > 0) {
                 const user = result.rows[0];
-                // console.log('User role:', user.role); // Debugging log
 
-                // Redirect based on user role
                 if (user.role === 'admin') {
-                    return res.redirect('http://localhost:3000/admin-users');
+                    return res.redirect('http://localhost:3000/adminhome');
                 } else if (user.role === 'customer') {
                     return res.redirect('http://localhost:3000/home');
                 } else {
-                    // Default redirection if role is unknown
                     return res.redirect('http://localhost:3000/home');
                 }
             } else {
-                console.log('User not found in database'); // Debugging log
+                console.log('User not found in database');
                 return res.redirect('http://localhost:3000/');
             }
         } catch (err) {
@@ -93,16 +87,26 @@ const roleRedirect = async (req, res, next) => {
             return res.redirect('http://localhost:3000/');
         }
     } else {
-        console.log('No user found in request'); // Debugging log
+        console.log('No user found in request');
         return res.redirect('http://localhost:3000/');
     }
 };
 
 
-router.post("/login",
-    passport.authenticate("local", {session: true}), // Disable session management for stateless authentication
-    roleRedirect // Add roleRedirect middleware after passport.authenticate
-);
+router.post("/login", (req, res, next) => {
+    passport.authenticate("local", (err, user, info) => {
+        if (err) return next(err);
+        if (!user) {
+            // If authentication fails, clear cookies and redirect to the login page
+            res.clearCookie('diamond');
+            return res.redirect('http://localhost:3000/');
+        }
+        req.logIn(user, (err) => {
+            if (err) return next(err);
+            return roleRedirect(req, res, next); // Call roleRedirect after successful login
+        });
+    })(req, res, next);
+});
 
 
 router.get("/logout", (req, res, next) => {
@@ -134,8 +138,8 @@ router.get(
 
 router.get(
     "/auth/google/secrets",
-    passport.authenticate("google", {session: true}), // Disable session management for stateless authentication
-    roleRedirect // Add roleRedirect middleware after passport.authenticate
+    passport.authenticate("google", {session: true}),
+    roleRedirect
 );
 
 passport.use("local", new LocalStrategy(async (username, password, cb) => {

@@ -8,8 +8,14 @@ import homepic2 from "../../images/c.jpg";
 import homepic3 from "../../images/a.jpg";
 import homepic4 from "../../images/5.jpg";
 import homepic5 from "../../images/d.jpg";
+import homepic6 from "../../images/e.jpg";
+import homepic7 from "../../images/f.jpg";
+import bride from "../../images/file.png";
+import star from "../../images/s.png";
 import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
 import {useLogout} from './authUtils';
+import Navbar from './nav';
+
 
 // Function to smoothly scroll to a section
 const scrollToSection = (sectionId) => {
@@ -22,8 +28,8 @@ const MapComponent = () => {
     };
 
     const defaultCenter = {
-        lat: 7.288941287673795, // Example latitude (New York City)
-        lng: 80.62935649554917, // Example longitude (New York City)
+        lat: 7.288941287673795,
+        lng: 80.62935649554917,
 
     };
 
@@ -50,6 +56,7 @@ export {MapComponent};
 //
 // export {SplineViewer};
 
+
 const PictureGrid = () => {
     // Replace these src paths with your actual image paths
     const imageSrcs = [
@@ -59,14 +66,13 @@ const PictureGrid = () => {
         homepic4,
         homepic2,
         homepic3,
-        homepic4,
-        homepic4,
     ];
 
     return (
-        <div className="grid grid-cols-4 gap-4 p-4 w-full h-full justify-center item-center">
+        <div className="grid grid-cols-3 gap-x-4" style={{rowGap: '20px'}}> {/* Adjust rowGap value as needed */}
             {imageSrcs.map((src, index) => (
-                <div key={index} className="w-full h-[200px] overflow-hidden rounded-lg">
+                <div key={index}
+                     className="test1 w-full h-[250px] overflow-hidden rounded-lg border border-gray-300">
                     <img
                         src={src}
                         alt={`Picture ${index + 1}`}
@@ -80,112 +86,10 @@ const PictureGrid = () => {
 
 export {PictureGrid};
 
-const Carousel = () => {
-    const [currentIndex, setCurrentIndex] = useState(0);
-
-    // Array holding images and text content for each slide
-    const slides = [
-        {
-            image: homepic2,
-            text: {
-                title: 'Professional Hairdressing',
-                description: 'Get the latest styles and trends from our expert stylists.',
-            },
-        },
-        {
-            image: homepic,
-            text: {
-                title: 'Luxury Manicures',
-                description: 'Pamper yourself with our range of nail services.',
-            },
-        },
-        {
-            image: homepic2,
-            text: {
-                title: 'Relaxing Spa Treatments',
-                description: 'Indulge in our soothing spa treatments for ultimate relaxation.',
-            },
-        },
-    ];
-
-    const goToPrevious = () => {
-        const isFirstSlide = currentIndex === 0;
-        const newIndex = isFirstSlide ? slides.length - 1 : currentIndex - 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const goToNext = () => {
-        const isLastSlide = currentIndex === slides.length - 1;
-        const newIndex = isLastSlide ? 0 : currentIndex + 1;
-        setCurrentIndex(newIndex);
-    };
-
-    const goToSlide = (index) => {
-        setCurrentIndex(index);
-    };
-
-    return (
-        <div className="relative w-[90%] h-full overflow-hidden">
-            <div className="relative w-full h-full flex">
-                <div
-                    className="flex transition-transform duration-700 ease-in-out"
-                    style={{transform: `translateX(-${currentIndex * 100}%)`}}
-                >
-                    {slides.map((slide, index) => (
-                        <div key={index} className="relative w-full flex-shrink-0 h-full">
-                            <img
-                                src={slide.image}
-                                alt={`Slide ${index + 1}`}
-                                className="w-full h-full object-cover"
-                            />
-                            <div
-                                className="absolute bottom-0 left-0 right-0 flex flex-col justify-end items-center bg-black bg-opacity-50 text-center p-4">
-                                <h1 className="text-white text-2xl">{slide.text.title}</h1>
-                                <p className="text-white">{slide.text.description}</p>
-                            </div>
-                        </div>
-                    ))}
-                </div>
-
-                {/* Previous Button */}
-                <button
-                    onClick={goToPrevious}
-                    className="absolute top-1/2 transform -translate-y-1/2 left-4 bg-white text-black p-2 rounded-full z-10"
-                >
-                    &#9664;
-                </button>
-
-                {/* Next Button */}
-                <button
-                    onClick={goToNext}
-                    className="absolute top-1/2 transform -translate-y-1/2 right-4 bg-white text-black p-2 rounded-full z-10"
-                >
-                    &#9654;
-                </button>
-            </div>
-
-            {/* Indicators */}
-            <div className="absolute bottom-4 left-1/2 transform -translate-x-1/2 flex space-x-2 z-10">
-                {slides.map((_, index) => (
-                    <button
-                        key={index}
-                        className={`w-3 h-3 rounded-full ${
-                            currentIndex === index ? 'bg-white' : 'bg-gray-400'
-                        }`}
-                        onClick={() => goToSlide(index)}
-                    />
-                ))}
-            </div>
-        </div>
-    );
-};
-
-export {Carousel};
-
 
 const Card = () => {
     return (
-        <div className="flex border border-gray-300 rounded-lg overflow-hidden shadow-lg">
+        <div className="test1 flex border w-[360px] h-[180px] border-gray-300 rounded-lg overflow-hidden shadow-lg">
             {/* Image Section */}
             <img
                 className="w-1/3 h-auto object-cover"
@@ -292,7 +196,20 @@ function ChatComponent() {
     };
 
     return (
-        <div className="flex justify-center items-center h-full">
+        <div className="flex flex-col items-center h-full">
+            <div className="mb-10 justify-center content-center">
+                <button
+                    className="glow-on-hover julius-sans-one-regular justify-center content-center pt-3 flex flex-row"
+                    type="button">
+
+
+                    {/*<img src={star} alt="Icon" className="icon w-[20px]"/>*/}
+                    <b>AI</b>
+                    -Powered
+
+                </button>
+
+            </div>
             <div
                 className="w-full max-w-md rounded-lg shadow-lg p-6 flex flex-col h-full"
                 style={{
@@ -304,12 +221,12 @@ function ChatComponent() {
                     border: '1px solid rgba(255, 255, 255, 0.3)',
                 }}
             >
-                <div className="flex-grow overflow-y-auto mb-4">
+                <div className="flex-grow overflow-y-auto mb-4 ">
                     {/* Displaying messages */}
                     {messages.map((msg, index) => (
                         <div
                             key={index}
-                            className={`message p-3 mb-2 rounded-lg ${msg.type === 'user' ? 'bg-blue-500 text-white self-end' : 'bg-gray-200 text-gray-700 self-start'}`}
+                            className={`message p-3 mb-2 rounded-lg ${msg.type === 'user' ? 'bg-pink-500 text-white self-end' : 'bg-gray-200 text-gray-700 self-start'}`}
                         >
                             <p>{msg.text}</p>
                         </div>
@@ -328,9 +245,9 @@ function ChatComponent() {
                     />
                     <button
                         type="submit"
-                        className="bg-blue-500 text-white p-2 rounded-md hover:bg-blue-600 transition-colors"
+                        className="bg-black text-white p-2 rounded-md hover:bg-pink-700 transition-colors"
                     >
-                        Submit
+                        GO
                     </button>
                 </form>
             </div>
@@ -341,130 +258,22 @@ function ChatComponent() {
 export {ChatComponent};
 
 
-// Navbar Component
-function Navbar() {
-    // const [dropdownOpen, setDropdownOpen] = useState(false);
-    const logout = useLogout(); // Using the custom hook
-
-    const [cookieExists, setCookieExists] = React.useState(false);
-
-    React.useEffect(() => {
-        const cookie = Cookies.get('diamond');
-        setCookieExists(!!cookie);
-    }, []);
-
-
-    return (
-        <nav
-            className="bg-black fixed top-0 left-1/2 transform -translate-x-1/2 w-[97%] z-50 shadow-md mt-2"
-            style={{borderRadius: 40}}
-        >
-            <div className="w-full pr-5">
-                <div className="flex flex-row h-20 justify-between">
-                    {/* Left side with Logo */}
-
-                    <div className="flex-shrink-0 content-start pl-4">
-                        <a href="/home">
-                            <img src={logo2} alt="Logo" className="h-full start content-start"/>
-                        </a>
-                    </div>
-                    <div className="flex items-center content-end">
-
-                        <div className="hidden md:block">
-                            <div className="ml-10 flex items-baseline space-x-4">
-                                <button onClick={() => scrollToSection("home")}
-                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Home
-                                </button>
-                                <button onClick={() => scrollToSection("gallery")}
-                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Gallery
-                                </button>
-                                <button onClick={() => scrollToSection("testimonials")}
-                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Testimonials
-                                </button>
-                                <button onClick={() => scrollToSection("about")}
-                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">About
-                                    Us
-                                </button>
-                                <button onClick={() => scrollToSection("profile")}
-                                        className="julius-sans-one-regular text-white hover:bg-pink-700 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Profile
-                                </button>
-                                <Link to="/services"
-                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Appointments</Link>
-                                <Link to="/products"
-                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">Products</Link>
-
-                                <div>
-
-                                    <a className="nav-link text-white julius-sans-one-regular dropdown-toggle"
-                                       href="http://example.com" id="dropdown07"
-                                       data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">Menu</a>
-                                    <div className="dropdown-menu" aria-labelledby="dropdown07">
-                                        {cookieExists ? (
-                                            <>
-                                                <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
-                                                <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/userp">Profile</a>
-                                                <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/supporthome">Support</a>
-                                                <a className="dropdown-item julius-sans-one-regular" href="#"
-                                                   onClick={(e) => {
-                                                       e.preventDefault();
-                                                       logout();
-                                                   }}>Logout</a>
-                                            </>
-                                        ) : (
-                                            <>
-                                                <a className="dropdown-item julius-sans-one-regular" href="/">Login</a>
-                                                <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/register">Register</a>
-                                            </>
-                                        )}
-
-                                    </div>
-
-                                </div>
-
-                            </div>
-
-                        </div>
-                    </div>
-
-
-                </div>
-            </div>
-        </nav>
-    );
-}
-
-
 const Home = () => {
-    // const [cookieExists, setCookieExists] = useState(false);
-    // const navigate = useNavigate();
-    //
-    // useEffect(() => {
-    //     // Check if the session cookie exists
-    //     const cookie = Cookies.get('diamond');
-    //     setCookieExists(!!cookie);
-    //
-    //     if (!cookie) {
-    //         window.location.reload(); // Refresh the page if the cookie is not found
-    //     }
-    // }, []);
 
 
     return (
-        <div className="homepage1 felx flex-col" style={{backgroundColor: "#E8ECEF", height: "100vh"}}>
+        <div className=" felx flex-col" style={{height: "100vh"}}>
             <div className="flex">
                 <Navbar/>
             </div>
 
 
             <div
-                className=" flex flex-row h-[700px] justify-center items-center w-full bg-cover bg-center"
+                className=" flex flex-row h-[1000px] justify-center items-center w-full bg-cover bg-center"
                 id="home"
 
                 style={{
-                    backgroundImage: `url(${homepic4})`,
+                    backgroundImage: `url(${homepic6})`,
                     backgroundSize: 'cover',
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
@@ -472,52 +281,105 @@ const Home = () => {
 
             >
 
-                <div className="App flex order-2 w-[50%] h-80% justify-center items-center">
-                    <Carousel/>
-
-
+                <div className="App flex order-2 w-[50%] h-[80%] justify-center items-center">
+                    <div className="relative bride-image-container">
+                        <img
+                            src={bride}
+                            alt="Bride"
+                            className="bride-image block"
+                        />
+                    </div>
                 </div>
+
+
                 <div className="flex order-1 w-[50%] h-full justify-center items-center">
-                    <div className="w-[80%] h-[80%] flex flex-col px-10 justify-center items-start ">
-                        <h1 className="text-white text-7xl julius-sans-one-regular">SALON DIAMOND</h1>
-                        <p className="text-white text-2xl pl-2 text-neutral-700">By Sashra Rajapaksha</p>
+                    <div className="w-[80%] h-[80%] flex flex-col px-10 justify-center items-start">
 
+                        <h1 className=" text-8xl julius-sans-one-regular">SALON DIAMOND</h1>
+                        <p className="text-2xl pl-2 julius-sans-one-regular">By Sashra Rajapaksha</p>
+                        <p className="text-sm text-gray-400 pl-2 pt-2">
+                            Discover elegance and style at Salon Diamond, where beauty meets luxury.
+                            Specializing in exquisite hairdressing, makeup, and pampering treatments,
+                            we create a serene oasis for modern women seeking the ultimate in self-care.
+                        </p>
+                        <div className="mt-6 flex space-x-4 julius-sans-one-regular">
+                            <button className="mx-0 custom-button">Shop Now</button>
+                            <button className="custom-button2">Appointments</button>
+                        </div>
                     </div>
                 </div>
 
+
             </div>
 
 
-            <div className="homepage1 bg-white h-[800px] flex flex-col" id="gallery">
-                <h1 className="text-5xl julius-sans-one-regular pt-12 pb-4 pl-4">Gallery</h1>
-                <PictureGrid/>
-            </div>
-
-
-            <div className=" h-[800px] flex flex-col space-x-5 bg-pink-500 " id="testimonials"
-
-                 style={{
-                     backgroundImage: `url(${homepic5})`,
-                     backgroundSize: 'cover',
-                     backgroundPosition: 'center',
-                     backgroundRepeat: 'no-repeat',
-                 }}
+            <div
+                className=" h-[1500px] flex flex-col items-center justify-center"
+                id="gallery"
+                style={{
+                    backgroundImage: `url(${homepic7})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
             >
-                <h1 className="text-5xl julius-sans-one-regular pt-12 pb-4 pl-4">Testimonials</h1>
+                <div
+                    className="flex flex-col items-center text-center w-full max-w-5.5xl px-4 py-6 ">
+                    <div className="flex-col w-[50%]">
+                        <h1 className="text-7xl julius-sans-one-regular mb-6">Gallery</h1>
+                        <p className="text-sm text-gray-600 mb-20">
+                            Discover our collection of stunning images that showcase the essence of our work. Each
+                            picture
+                            tells a story and highlights the beauty and detail of our projects. Browse through our
+                            gallery
+                            to see the craftsmanship and creativity that define our brand.
+                        </p>
+                    </div>
 
-                <div className="p-4">
-                    <div className="grid grid-cols-3 gap-4">
-                        {/* Render 6 cards */}
-                        {[...Array(6)].map((_, index) => (
-                            <Card key={index}/>
-                        ))}
+
+                    <div className="w-full h-full flex justify-center items-center">
+                        <div className="w-full max-w-6xl h-auto">
+                            <PictureGrid/>
+                        </div>
                     </div>
                 </div>
             </div>
 
-            <div className="bg-white h-full " id="about"
+
+            <div
+                className="homepage1 h-[1200px] flex flex-col items-center justify-center"
+                id="testimonials"
+                style={{
+                    backgroundImage: `url(${homepic6})`,
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center',
+                    backgroundRepeat: 'no-repeat',
+                }}
+            >
+                <div
+                    className="flex flex-col items-center text-center w-full max-w-5.5xl px-4 py-6">
+                    <h1 className="text-7xl julius-sans-one-regular mb-6 ">Testimonials</h1>
+                    <p className="text-sm text-gray-600 mb-12 w-[65%]">
+                        Hear what our clients have to say about us. Their feedback reflects our commitment to delivering
+                        exceptional service and quality. Read their stories and see why we are trusted by so many.
+                    </p>
+
+                    <div className="w-[80%] flex justify-center">
+                        <div className="w-full max-w-6xl">
+                            <div className="grid grid-cols-3 gap-4">
+                                {[...Array(6)].map((_, index) => (
+                                    <Card key={index}/>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+
+            <div className="bg-white h-[1200px] " id="about"
                  style={{
-                     backgroundImage: `url(${homepic2})`,
+                     backgroundImage: `url(${homepic7})`,
                      backgroundSize: 'cover',
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
@@ -527,13 +389,17 @@ const Home = () => {
 
 
                 <div className="flex flex-row h-full justify-between w-full pr-10">
-                    <div className="w-[50%] felx order-1 h-full">
-                        <div className="flex h-full w-full mt-0">
+                    <div className="w-[50%] flex items-center justify-center h-full">
+                        <div className="w-[80%] h-[80%]">
                             <MapComponent/>
                         </div>
                     </div>
-                    <div className="w-[50%] felx order-2 h-full pt-5 pb-5">
-                        <ChatComponent/>
+                    <div className="w-[50%] flex items-center justify-center h-full pt-5 pb-5">
+                        <div className="w-[90%] h-[50%] ">
+
+
+                            <ChatComponent/>
+                        </div>
                     </div>
                 </div>
 
@@ -541,20 +407,23 @@ const Home = () => {
             </div>
 
 
-            <div className="flex flex-col h-[800px] justify-center items-center" id="profile"
+            <div className="flex flex-col h-[1000px] justify-center items-center" id="profile"
                  style={{
-                     backgroundImage: `url(${homepic4})`,
+                     backgroundImage: `url(${homepic6})`,
                      backgroundSize: 'cover',
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}
             >
-                <InfoCards/>
+                <div className="flex flex-row w-[80%] justify-center items-center">
+                    <InfoCards/>
+                </div>
+
             </div>
 
 
-            <div className="bg-white flex flex-row w-full " id="profile">
-                <div className="bg-gray-900 text-white flex w-full flex-col items-center justify-center py-8">
+            <div className="bg-white flex flex-row w-full" id="profile">
+                <div className="bg-black text-white flex w-full flex-col items-center justify-center py-8">
                     <h1 className="text-2xl font-bold mb-4 julius-sans-one-regular">Salon Diamond</h1>
                     <p className="text-lg mb-2">Your ultimate destination for luxurious hair and beauty treatments.</p>
                     <div className="flex gap-4 mb-4">
