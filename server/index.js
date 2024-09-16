@@ -19,6 +19,12 @@ import appointmentConfirmedRoutes from './controllers/appointment.controller.js'
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 
+
+//s
+import productsController from './controllers/productsController.js';
+import cartController from './controllers/cartController.js'; // Ensure this import is correct
+import checkoutRoutes from './controllers/checkoutController.js'
+
 dotenv.config();
 
 const app = express();
@@ -53,6 +59,13 @@ app.use('/api/appointmentstatus', appointmentStatusRoutes);
 app.use('/api/appointmentconfirmed', appointmentConfirmedRoutes);
 app.use('/api/appointmentrejected', appointmentRejectedRoutes);
 app.use('/api/appointmentdelete', appointmentDeleteRoutes)
+
+//s
+
+// app.use("/api/ai", aiController); // Updated route for AiManagement
+app.use('/api/cart', cartController);
+app.use('/products', productsController);
+app.use('/api/checkout', checkoutRoutes);
 
 
 app.use(ErrorHandler)
