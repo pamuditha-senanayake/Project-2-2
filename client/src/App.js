@@ -12,6 +12,10 @@ import Userp from "./pages/pamuditha/user_profile";
 import Adminp from "./pages/pamuditha/admin-users";
 import Support from "./pages/shamika/Support";
 import STickets from "./pages/shamika/Ticket";
+import Addproduct from "./pages/anuththara/Add Products";
+import ProductT from "./pages/anuththara/ProductTable";
+import ProductTT from "./pages/anuththara/AllProductsPage";
+/*import UpdateItem from './pages/UpdateItem';*/
 
 function App() {
   return (
@@ -27,6 +31,9 @@ function App() {
         <Route path="/admin-users" element={<Adminp/>}/>
         <Route path="/supporthome" element={<Support/>}/>
         <Route path="/ticket" element={<STickets/>}/>
+        <Route path="/ProductL" element={<ProductT/>}/>
+        <Route path="/ProductLL" element={<ProductTT/>}/>
+        {/*<Route path="/update-product/:id" element={<UpdateItem/>}/>*/}
       </Routes>
     </Router>
   );
