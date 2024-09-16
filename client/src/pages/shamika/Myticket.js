@@ -22,12 +22,13 @@ function Myticket() {
     const [ticket, setTicket] = useState(initialTicketState);
     // Automatically generate Ticket No. on component load
     useEffect(() => {
-        const generatedTicketNo = `TICKET-${Math.floor(Math.random() * 100000)}`;
+        const generatedTicketNo = `TICKET-${100 + Math.floor(Math.random() * 100000)}`;
         setTicket((prevTicket) => ({
             ...prevTicket,
             ticket_no: generatedTicketNo
         }));
     }, []);
+
 
 
     const handleChange = (e) => {
