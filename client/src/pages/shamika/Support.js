@@ -25,28 +25,28 @@ export default function Support() {
                     }}
                 >
 
-                    <h1 className="lg:mx-20 text-3xl  justify-center text-white julius-sans-one-regular font-bold mb-10">Customer
+                    <h1 className="lg:mx-20 text-4xl  justify-left text-white julius-sans-one-regular font-bold mb-10">Customer
                         Support</h1>
-                    <h3 className="lg:mx-20 text-1xl  text-white julius-sans-one-regular mb-4 ">Welcome to
+                    <h3 className="lg:mx-20 text-2xl  text-black julius-sans-one mb-4 ">Welcome to
                         Our Customer  Support!</h3>
 
-                    <p className="flex 1 lg:mx-20  julius-sans-one-regular text-gray-700 text-1xl text-rgb255 mb-4">Thank you for reaching
+                    <p className="flex 1 lg:mx-20  julius-sans-one text-gray-700 text-1xl text-rgb255 mb-4">Thank you for reaching
                         out to us.
                         At Salon Diamond, we are dedicated to providing you with the best possible service and support.
                         Whether you have questions, need assistance, our team is here to help you every step of the
                         way.</p>
 <p></p>
-                    <p className="lg:mx-20  julius-sans-one-regular  text-1xl text-gray-700 text-rgb255 mb-4">Please explore our
+                    <p className="lg:mx-20  julius-sans-one text-1xl text-gray-700 text-rgb255 mb-4">Please explore our
                         resources and
                         get in touch with us through the contact options available.
                         We value your time and are committed to ensuring your experience with us is nothing short of
                         exceptional.</p>
 
-                    <p className="lg:mx-20  julius-sans-one-regular  text-2xl text-rgb255 font-bold mb-5 ">Get started!</p>
-                    <div className="flex space-x-4 pl-12">
+                    <p className="lg:mx-20  julius-sans-one  text-3xl text-rgb255 mb-5 ">Get started!</p>
+                    <div className="lg:mx-28 flex space-x-4 pl-12">
                     <a
                         href="/ticket"
-                        className="flex  items-center justify-center h-10 julius-sans-one-regular w-25 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                        className="flex  items-center justify-center h-10 julius-sans-one-regular w-60 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
                     >
                         New Ticket
                     </a>

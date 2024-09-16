@@ -26,6 +26,23 @@ function Slist() {
         }));
     }, []);
 
+    const [tickets, setTickets] = useState([]);
+
+    // Fetch the tickets data when the component mounts
+    useEffect(() => {
+        const fetchTickets = async () => {
+            try {
+                // Fetch completed tickets (status: completed)
+                const response = await axios.get('http://localhost:5000/tickets?status=completed');
+                setTickets(response.data.slice(0, 3)); // Fetch only 3 completed tickets
+            } catch (error) {
+                console.error('Error fetching tickets:', error);
+            }
+        };
+
+        fetchTickets();
+    }, []);
+
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -107,9 +124,9 @@ function Slist() {
                 backgroundPosition: 'center',
             }}
         >
-            <div className="flex flex-row w-[70%] h-[240px] bg-opacity-70">
+            <div className="flex flex-row w-[80%] h-[500px] bg-opacity-70">
                 <div
-                    className="left-div flex flex-col w-[60%] h-full justify-center pl-6 pamlogin1"
+                    className="div flex flex-col w-[60%] h-full justify-center pl-6 pamlogin1"
                     style={{
                         background: 'rgb(87, 40, 215, 0.2)',
                         borderRadius: '0',
@@ -121,91 +138,34 @@ function Slist() {
                 >
 
                     <div className="App">
-                    <div
+                        <div
                             className="lg:mx-0 text-1xl content-center justify-items-stretch text-gray-700  julius-sans-one-regular font-bold mb-6"
-                           >
-                            <form onSubmit={handleSubmit}
-                                  style={{
-                                      display: 'flex',
-                                      flexDirection: 'column',
-                                      alignItems: 'flex-start',
-                                      textAlign: 'left',
-                                      marginBottom: '0.25rem'
-                                  }}>
-                                <div>
-                                    <label style={{marginBottom: '0.5rem'}}>Ticket No.:</label>
-                                    <input
-                                        type="text"
-                                        name="ticket_no"
-                                        value={ticket.ticket_no}
-                                        readOnly // Make sure it's read-only so the user can't modify it
-                                    />
-                                </div>
-
-                                <div>
-                                    <label style={{marginBottom: '0.5rem' }}>Customer ID:</label>
-                                    <input
-                                        type="text"
-                                        name="customer_id"
-                                        value={ticket.customer_id}
-                                        onChange={handleChange}
-                                        required
-                                    />
-                                </div>
-                                <div>
-                                    <label>Category:</label>
-                                    <select
-                                        name="category"
-                                        value={ticket.category}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="Booking and Appointment Issues">Booking and Appointment Issues
-                                        </option>
-                                        <option value="Payment and Billing Concerns">Payment and Billing Concerns
-                                        </option>
-                                        <option value="Service-Related Complaints">Service-Related Complaints</option>
-                                        <option value="Technical Problems with the Online Platform">Technical Problems
-                                            with the Online Platform
-                                        </option>
-                                        <option value="Product Inquiries and Issues">Product Inquiries and Issues
-                                        </option>
-                                    </select>
-                                </div>
-
-
-                                <div>
-                                    <label>Status:</label>
-                                    <input
-                                        type="text"
-                                        name="status"
-                                        value={ticket.status}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div>
-                                    <label>Catalog No:</label>
-                                    <input
-                                        type="text"
-                                        name="catalog"
-                                        value={ticket.catalog}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div>
-                                    <label>Notifications:</label>
-                                    <input
-                                        type="text"
-                                        name="notifications"
-                                        value={ticket.notifications}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                </div>
-                            </form>
+                        >
+                            <div className="container mx-auto p-8">
+                                <h1 className="text-3xl font-bold mb-8">Completed Support Tickets</h1>
+                                <table className="w-full bg-white border">
+                                    <thead>
+                                    <tr>
+                                        <th className="py-2 border px-4">Ticket No</th>
+                                        <th className="py-2 border px-4">Customer ID</th>
+                                        <th className="py-2 border px-4">Category</th>
+                                        <th className="py-2 border px-4">Catalog</th>
+                                        <th className="py-2 border px-4">Status</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    {tickets.map((ticket, index) => (
+                                        <tr key={index}>
+                                            <td className="py-2 border px-4">{ticket.ticket_no}</td>
+                                            <td className="py-2 border px-4">{ticket.customer_id}</td>
+                                            <td className="py-2 border px-4">{ticket.category}</td>
+                                            <td className="py-2 border px-4">{ticket.catalog}</td>
+                                            <td className="py-2 border px-4">{ticket.status}</td>
+                                        </tr>
+                                    ))}
+                                    </tbody>
+                                </table>
+                            </div>
 
                         </div>
                     </div>

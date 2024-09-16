@@ -22,13 +22,12 @@ function Profile() {
     const [ticket, setTicket] = useState(initialTicketState);
     // Automatically generate Ticket No. on component load
     useEffect(() => {
-        const generatedTicketNo = `TICKET-${Math.floor(Math.random() * 100000)}`;
+        const generatedTicketNo = `TICKET-${100 + Math.floor(Math.random() * 100000)}`;
         setTicket((prevTicket) => ({
             ...prevTicket,
             ticket_no: generatedTicketNo
         }));
     }, []);
-
 
     const handleChange = (e) => {
         const { name, value } = e.target;
@@ -124,10 +123,10 @@ function Profile() {
                 >
                     <div className="App">
                         <Toaster/> {/* Component to display toast messages */}
-                        <h1 className="lg:mx-20 justify-center julius-sans-one-regular text-3xl font-bold text-rgb255 mb-4">My
-                            Profile  </h1>
+                        <h1 className="lg:mx-10 justify-center julius-sans-one-regular text-3xl font-bold text-rgb255 mb-4">My
+                            Profile </h1>
                         <div
-                            className="lg:mx-20 text-1xl justify-items-stretch text-black julius-sans-one-regular font-bold mb-12">
+                            className="lg:mx-20 text-1xl justify-items-stretch text-black julius-sans-one-regular font-bold mb-12 ">
                             <form onSubmit={handleSubmit}
                                   style={{
                                       display: 'flex',
@@ -135,51 +134,56 @@ function Profile() {
                                       alignItems: 'flex-start',
                                       textAlign: 'left'
                                   }}>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Ticket No.:</label>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Ticket No.:</label>
                                     <input
                                         type="text"
                                         name="ticket_no"
+                                        className="lg:mx-20  width: '1000px' border julius-sans-one-regular w-40 h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.ticket_no}
                                         readOnly // Make sure it's read-only so the user can't modify it
                                     />
                                 </div>
 
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Customer ID:</label>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Customer ID:</label>
                                     <input
                                         type="text"
                                         name="customer_id"
+                                        className=" lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.customer_id}
                                         onChange={handleChange}
                                         required
                                     />
                                 </div>
 
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Email:</label>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Email:</label>
                                     <input
                                         type="email"
                                         name="email"
+                                        className="lg:mx-20 border width: '300px' julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.email}
                                         onChange={handleChange}
                                         required
                                     />
                                 </div>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Contact No:</label>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Contact No:</label>
                                     <input
                                         type="text"
                                         name="contact_no"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.contact_no}
                                         onChange={handleChange}
                                         required
                                     />
                                 </div>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Category:</label>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Category:</label>
                                     <select
                                         name="category"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.category}
                                         onChange={handleChange}
                                     >
@@ -195,13 +199,71 @@ function Profile() {
                                         </option>
                                     </select>
                                 </div>
-                                <div style={{marginBottom: '1rem'}}>
-                                    <label style={{marginBottom: '0.5rem'}}>Inquiry Description (Max 100
-                                        characters):</label>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}> Description:</label>
                                     <input
                                         type="text"
                                         name="inquiry_description"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.inquiry_description}
+                                        onChange={handleChange}
+                                        maxLength="400"
+                                        required
+                                    />
+                                </div>
+                                <div style={{marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Date:</label>
+                                    <input
+                                        type="text"
+                                        name="current_date"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        value={Date}
+                                        readOnly
+                                    />
+                                </div>
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Status:</label>
+                                    <input
+                                        type="text"
+                                        name="status"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        value={ticket.status}
+                                        onChange={handleChange}
+                                        readOnly
+                                    />
+                                </div>
+
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Catalog:</label>
+                                    <input
+                                        type="text"
+                                        name="catalog"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        value={ticket.catalog}
+                                        onChange={handleChange}
+                                        readOnly
+                                    />
+                                </div>
+
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Notifications:</label>
+                                    <input
+                                        type="text"
+                                        name="notifications"
+                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        value={ticket.notifications}
+                                        onChange={handleChange}
+                                        readOnly
+                                    />
+                                </div>
+
+                                <div style={{display: 'flex', marginBottom: '0.5rem'}}>
+                                    <label style={{width: '150px', marginBottom: '0.5rem'}}>Remarks:</label>
+                                    <input
+                                        type="text"
+                                        name="inquiry_description"
+                                        className="lg:mx-20  border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                        value={ticket.remarks}
                                         onChange={handleChange}
                                         maxLength="400"
                                         required
@@ -209,55 +271,11 @@ function Profile() {
                                 </div>
 
 
-                                <div>
-                                    <label>Status:</label>
-                                    <input
-                                        type="text"
-                                        name="status"
-                                        value={ticket.status}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div>
-                                    <label>Catalog:</label>
-                                    <input
-                                        type="text"
-                                        name="catalog"
-                                        value={ticket.catalog}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div>
-                                    <label>Notifications:</label>
-                                    <input
-                                        type="text"
-                                        name="notifications"
-                                        value={ticket.notifications}
-                                        onChange={handleChange}
-                                        readOnly
-                                    />
-                                </div>
-
-                                <div>
-                                    <label>Remarks:</label>
-                                    <textarea
-                                        name="remarks"
-                                        value={ticket.remarks}
-                                        onChange={handleChange}
-                                        placeholder="additional information"
-                                    />
-                                </div>
-
-                                <div className="lg:mx-20 flex space-x-6 pl-12">
-
+                                <div className="lg:mx-20 flex 1 space-x-4 pl-12 mb-0 mt-6-">
 
                                     <a
                                         href="/supporthome"
-                                        className="lg:mx-20 flex items-center justify-center h-10 julius-sans-one-regular w-32 bg-black text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                                        className="flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-black text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
                                     >
                                         Back
                                     </a>
