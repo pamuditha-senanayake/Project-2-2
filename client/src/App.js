@@ -15,7 +15,8 @@ import STickets from "./pages/shamika/Ticket";
 import Addproduct from "./pages/anuththara/Add Products";
 import ProductT from "./pages/anuththara/ProductTable";
 import ProductTT from "./pages/anuththara/AllProductsPage";
-/*import UpdateItem from './pages/UpdateItem';*/
+import UpdateItem from './pages/anuththara/UpdateItem';
+import StatsPage from './pages/anuththara/StatsPage';
 
 function App() {
   return (
@@ -33,7 +34,9 @@ function App() {
         <Route path="/ticket" element={<STickets/>}/>
         <Route path="/ProductL" element={<ProductT/>}/>
         <Route path="/ProductLL" element={<ProductTT/>}/>
-        {/*<Route path="/update-product/:id" element={<UpdateItem/>}/>*/}
+        <Route path="/update-item/:id" element={<UpdateItem />} />
+        <Route path="/products" element={<StatsPage />} />
+
       </Routes>
     </Router>
   );

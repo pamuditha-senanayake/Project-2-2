@@ -1,7 +1,7 @@
 import express from 'express';
+import fs from 'fs'; // Import fs module
 import service from '../services/products.service.js';
 import multer from 'multer';
-import fs from 'fs';
 
 const router = express.Router();
 
@@ -106,5 +106,21 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         next(error);
     }
 });
+
+// Fetch product statistics
+router.get('/stats', async (req, res, next) => {
+    try {
+        const products = await service.getAllProducts1();
+        const totalProducts = products.length;
+        const totalValue = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
+        const outOfStock = products.filter(product => product.quantity === 0).length;
+
+        res.json({ totalProducts, totalValue, outOfStock });
+    } catch (error) {
+        next(error);
+    }
+});
+
+
 
 export default router;

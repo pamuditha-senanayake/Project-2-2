@@ -6,6 +6,13 @@ const getAllProducts = async () => {
     return records.rows;
 };
 
+const getAllProducts1 = async () => {
+    const records = await db.query("SELECT * FROM products");
+    return records.rows;
+};
+
+
+
 // Get product by ID
 const getProductById = async (id) => {
     const record = await db.query("SELECT * FROM products WHERE id = $1", [id]);
@@ -43,5 +50,8 @@ export default {
     getProductById,
     deleteProduct,
     addProduct,
-    updateProduct
+    updateProduct,
+    getAllProducts1
+
+
 };

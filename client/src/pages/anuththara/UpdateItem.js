@@ -1,16 +1,40 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate, useParams } from 'react-router-dom';
 
-const AddItem = () => {
+const UpdateItem = () => {
+    const { id } = useParams(); // Get the product ID from URL parameters
+    const navigate = useNavigate();
+
     const [title, setTitle] = useState('');
     const [price, setPrice] = useState('');
     const [category, setCategory] = useState('Beauty Product');
     const [description, setDescription] = useState('');
     const [quantity, setQuantity] = useState('');
     const [image, setImage] = useState(null);
-    const [imagePreview, setImagePreview] = useState(null);
+    const [existingImage, setExistingImage] = useState('');
     const [loading, setLoading] = useState(false);
 
+    // Fetch the existing product details
+    useEffect(() => {
+        const fetchProduct = async () => {
+            try {
+                const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+                const product = response.data;
+                setTitle(product.title);
+                setPrice(product.price);
+                setCategory(product.category);
+                setDescription(product.description);
+                setQuantity(product.quantity);
+                setExistingImage(product.image);
+            } catch (error) {
+                console.error('Error fetching product:', error);
+            }
+        };
+        fetchProduct();
+    }, [id]);
+
+    // Handle form submission to update the product
     const handleSubmit = async (e) => {
         e.preventDefault();
 
@@ -23,42 +47,28 @@ const AddItem = () => {
         formData.append('description', description);
         formData.append('quantity', quantity);
         if (image) formData.append('image', image);
+        formData.append('existingImage', existingImage); // Send existing image if no new image is provided
 
         setLoading(true);
 
         try {
-            await axios.post('http://localhost:3001/api/products', formData, {
+            await axios.put(`http://localhost:3001/api/products/${id}`, formData, {
                 headers: { 'Content-Type': 'multipart/form-data' },
             });
 
-            alert('Product added successfully!');
-
-            setTitle('');
-            setPrice('');
-            setCategory('Beauty Product');
-            setDescription('');
-            setQuantity('');
-            setImage(null);
-            setImagePreview(null);
+            alert('Product updated successfully!');
+            navigate('/ProductL'); // Ensure this path matches the one defined in your routes
         } catch (error) {
-            console.error('Error adding product:', error);
-            alert('Error adding product. Please try again.');
+            console.error('Error updating product:', error);
+            alert('Error updating product. Please try again.');
         } finally {
             setLoading(false);
         }
     };
 
-    const handleImageChange = (e) => {
-        const file = e.target.files[0];
-        setImage(file);
-        if (file) {
-            setImagePreview(URL.createObjectURL(file));
-        }
-    };
-
     return (
         <div className="max-w-4xl mx-auto bg-white shadow-lg rounded-lg overflow-hidden mt-6 p-6">
-            <h1 className="text-3xl font-bold text-red-800 mb-6">Add Product +</h1>
+            <h1 className="text-3xl font-bold text-red-800 mb-6">Update Item</h1>
             <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
 
                 {/* Left Section */}
@@ -133,14 +143,14 @@ const AddItem = () => {
                         <label className="block text-gray-700 font-semibold">Image</label>
                         <input
                             type="file"
-                            onChange={handleImageChange}
+                            onChange={(e) => setImage(e.target.files[0])}
                             className="w-full mt-2 p-2 border border-gray-300 rounded-lg shadow-sm"
                         />
-                        {imagePreview && (
+                        {existingImage && (
                             <img
-                                src={imagePreview}
-                                alt="Image preview"
-                                className="w-32 h-32 object-cover mt-4 border border-gray-300 rounded-lg"
+                                src={`http://localhost:3001/uploads/${existingImage}`}
+                                alt="Existing product"
+                                className="w-32 h-32 mt-4 object-cover border border-gray-300 rounded-lg"
                             />
                         )}
                     </div>
@@ -151,7 +161,7 @@ const AddItem = () => {
                         className={`w-full bg-red-800 text-white p-3 rounded-lg shadow-md hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 ${loading ? 'opacity-50 cursor-not-allowed' : ''}`}
                         disabled={loading}
                     >
-                        {loading ? 'Adding...' : 'Add'}
+                        {loading ? 'Updating...' : 'Update'}
                     </button>
                 </div>
             </form>
@@ -159,4 +169,4 @@ const AddItem = () => {
     );
 };
 
-export default AddItem;
+export default UpdateItem;
