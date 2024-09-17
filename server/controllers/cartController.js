@@ -26,29 +26,29 @@ router.get('/', async (req, res) => {
         res.status(500).json({ error: 'Internal server error' });
     }
 });
+
 // Update the quantity of a specific item in the cart
 router.put('/update', async (req, res) => {
-    const { itemId, quantity } = req.body;
+    const { cartId, quantity } = req.body; // Changed from itemId to cartId
     try {
-        const updatedItem = await cartService.updateItemQuantity(itemId, quantity);
+        const updatedItem = await cartService.updateItemQuantity(cartId, quantity);
         res.json(updatedItem);
     } catch (err) {
         console.error('Error updating item quantity:', err.message);
         res.status(500).send('Server Error');
     }
 });
+
 // Delete an item from the cart
-router.delete('/:userId/:itemId', async (req, res) => {
-    const { itemId } = req.params;
+router.delete('/:cartId', async (req, res) => {
+    const { cartId } = req.params;
     try {
-        await cartService.removeItem(itemId);
+        await cartService.removeItem(cartId); // Use cartId here
         res.json({ message: 'Item removed from cart' });
     } catch (err) {
         console.error('Error removing item from cart:', err.message);
         res.status(500).send('Server Error');
     }
 });
-
-
 
 export default router;
