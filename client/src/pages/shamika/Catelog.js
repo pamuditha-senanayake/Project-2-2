@@ -1,12 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import backgroundImage from "../../images/5.jpg";
-import bookImage from "../../images/book.jpg";
-import billImage from "../../images/bill.jpg";
-
+import bookImage from "../../images/book.png";
+import billImage from "../../images/bill.png";
+import serviceImage from "../../images/services.png";
+import productImage from "../../images/product.png";
+import technicalImage from "../../images/technical.png";
 
 function Catelog() {
-
       return (
 
         <div
