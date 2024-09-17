@@ -28,30 +28,35 @@ const ShoppingCart = () => {
         fetchCart();
     }, [userId]);
 
-    const handleUpdateQuantity = (itemId, newQuantity) => {
+    const handleUpdateQuantity = async (cartId, newQuantity) => {
         if (newQuantity < 1) return; // Prevent negative or zero quantity
 
-        fetch(`http://localhost:3001/api/cart/update`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ userId, itemId, quantity: newQuantity }),
-        })
-            .then(() => {
-                setCart(cart.map(item =>
-                    item.product_id === itemId ? { ...item, quantity: newQuantity } : item
-                ));
-            })
-            .catch(error => console.error("Error updating quantity:", error));
+        try {
+            const response = await fetch(`http://localhost:3001/api/cart/update`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ cartId, quantity: newQuantity }),
+            });
+            if (!response.ok) throw new Error('Network response was not ok');
+            const updatedItem = await response.json();
+            setCart(cart.map(item =>
+                item.cart_id === cartId ? { ...item, quantity: updatedItem.quantity } : item
+            ));
+        } catch (error) {
+            console.error("Error updating quantity:", error);
+        }
     };
 
-    const handleRemoveItem = (itemId) => {
-        fetch(`http://localhost:3001/api/cart/${userId}/${itemId}`, { method: "DELETE" })
-            .then(() => {
-                setCart(cart.filter(item => item.product_id !== itemId));
-            })
-            .catch(error => console.error("Error removing item:", error));
+    const handleRemoveItem = async (cartId) => {
+        try {
+            const response = await fetch(`http://localhost:3001/api/cart/${cartId}`, { method: "DELETE" });
+            if (!response.ok) throw new Error('Network response was not ok');
+            setCart(cart.filter(item => item.cart_id !== cartId));
+        } catch (error) {
+            console.error("Error removing item:", error);
+        }
     };
 
     const totalCost = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
@@ -84,7 +89,7 @@ const ShoppingCart = () => {
                                 </thead>
                                 <tbody>
                                 {cart.map((item) => (
-                                    <tr key={item.product_id} className="border-b hover:bg-gray-50 transition duration-200">
+                                    <tr key={item.cart_id} className="border-b hover:bg-gray-50 transition duration-200">
                                         <td className="p-4 flex items-center">
                                             <img
                                                 src={`data:image/jpeg;base64,${item.image}`} // Assuming `item.image` contains base64 image data
@@ -97,7 +102,7 @@ const ShoppingCart = () => {
                                         <td className="p-4">
                                             <div className="flex items-center space-x-2">
                                                 <button
-                                                    onClick={() => handleUpdateQuantity(item.product_id, item.quantity - 1)}
+                                                    onClick={() => handleUpdateQuantity(item.cart_id, item.quantity - 1)}
                                                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
                                                     style={{ border: 'none', outline: 'none' }}
                                                 >
@@ -105,7 +110,7 @@ const ShoppingCart = () => {
                                                 </button>
                                                 <span className="text-lg font-semibold" style={{ minWidth: '2rem', textAlign: 'center' }}>{item.quantity}</span>
                                                 <button
-                                                    onClick={() => handleUpdateQuantity(item.product_id, item.quantity + 1)}
+                                                    onClick={() => handleUpdateQuantity(item.cart_id, item.quantity + 1)}
                                                     className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
                                                     style={{ border: 'none', outline: 'none' }}
                                                 >
@@ -116,7 +121,7 @@ const ShoppingCart = () => {
                                         <td className="p-4 text-gray-800">${(item.price * item.quantity).toFixed(2)}</td>
                                         <td className="p-4">
                                             <button
-                                                onClick={() => handleRemoveItem(item.product_id)}
+                                                onClick={() => handleRemoveItem(item.cart_id)}
                                                 className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md transition duration-200"
                                                 style={{ border: 'none', outline: 'none' }}
                                             >
