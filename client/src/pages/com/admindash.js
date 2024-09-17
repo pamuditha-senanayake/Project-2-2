@@ -49,6 +49,13 @@ const Sidebar = () => {
             ],
         },
         {
+            title: 'Testimonials',
+            id: 'Testimonials-collapse',
+            links: [
+                {text: 'Testimonials', url: '/admin-testimonials'},
+            ],
+        },
+        {
             title: 'Orders',
             links: [
                 {text: 'New', url: '#'},

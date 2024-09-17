@@ -20,6 +20,8 @@ import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
 import Adminhome from "./pages/pamuditha/adminhome";
 import Adminprofile from "./pages/pamuditha/admin_profile";
 import Adminreg from "./pages/pamuditha/admin-register";
+import TestimonialPage from './pages/amalie/TestimonialPage';
+import AdminTestimonials from './pages/amalie/AdminTestimonials';
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -55,6 +57,8 @@ const AnimatedRoutes = () => {
                         <Route path="/adminhome" element={<Adminhome/>}/>
                         <Route path="/adminprofile" element={<Adminprofile/>}/>
                         <Route path="/adminreg" element={<Adminreg/>}/>
+                        <Route path="/testimonials" element={<TestimonialPage/>}/>
+                        <Route path="/admin-testimonials" element={<AdminTestimonials/>}/>
 
                     </Routes>
                 </div>
