@@ -62,6 +62,7 @@ const ShoppingCart = () => {
             console.error("Error updating quantity:", error);
         }
     };
+
     const handleRemoveItem = async (cartItemId) => {
         try {
             const confirmRemove = window.confirm("Are you sure you want to remove this item?");
@@ -85,61 +86,99 @@ const ShoppingCart = () => {
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-6 mt-[100px] md:p-10" style={{ fontFamily: 'Roboto, sans-serif' }}>
+        <div
+            className="flex flex-col w-full min-h-screen bg-gray-100 p-6 mt-[100px] md:p-10"
+            style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#f7fafc', padding: '20px' }}
+        >
             <Navbar />
-            {loading && <p className="text-gray-600 text-center mb-4">Loading your cart...</p>}
-            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
+            {loading && <p style={{ color: '#718096', textAlign: 'center', marginBottom: '16px' }}>Loading your cart...</p>}
+            {error && <p style={{ color: '#f56565', textAlign: 'center', marginBottom: '16px' }}>{error}</p>}
             {!loading && !error && (
                 <div className="flex flex-col md:flex-row w-full mt-4">
-                    <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300">
-                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Shopping Cart</h2>
+                    <div
+                        className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300"
+                        style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}
+                    >
+                        <h2
+                            className="text-3xl font-semibold mb-6 text-gray-800"
+                            style={{ fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c' }}
+                        >
+                            Shopping Cart
+                        </h2>
                         {cart.length === 0 ? (
-                            <p className="text-gray-600 text-center">Your cart is empty.</p>
+                            <p style={{ color: '#718096', textAlign: 'center' }}>Your cart is empty.</p>
                         ) : (
-                            <table className="w-full bg-gray-50 border border-gray-200 rounded-lg">
+                            <table
+                                className="w-full bg-gray-50 border border-gray-200 rounded-lg"
+                                style={{ width: '100%', backgroundColor: '#f7fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                            >
                                 <thead>
-                                <tr className="bg-gray-200 border-b">
-                                    <th className="p-4 text-left font-medium text-gray-700">Product</th>
-                                    <th className="p-4 text-left font-medium text-gray-700">Quantity</th>
-                                    <th className="p-4 text-left font-medium text-gray-700">Price</th>
-                                    <th className="p-4 text-left font-medium text-gray-700">Actions</th>
+                                <tr style={{ backgroundColor: '#edf2f7', borderBottom: '1px solid #e2e8f0' }}>
+                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Product</th>
+                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Quantity</th>
+                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Price</th>
+                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Actions</th>
                                 </tr>
                                 </thead>
                                 <tbody>
                                 {cart.map((item) => (
-                                    <tr key={item.cart_id} className="border-b hover:bg-gray-50 transition duration-200">
-                                        <td className="p-4 flex items-center">
+                                    <tr key={item.cart_id} style={{ borderBottom: '1px solid #e2e8f0', transition: 'background-color 0.2s' }}>
+                                        <td style={{ padding: '16px', display: 'flex', alignItems: 'center' }}>
                                             <img
                                                 src={`data:image/jpeg;base64,${item.image}`} // Ensure this is correct
                                                 alt={item.product_name}
-                                                className="w-24 h-24 object-cover rounded-lg shadow-sm mr-4"
+                                                style={{ width: '96px', height: '96px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }}
                                             />
-                                            <span className="text-gray-800 font-medium">{item.product_name}</span>
+                                            <span style={{ color: '#1a202c', fontWeight: '500' }}>{item.product_name}</span>
                                         </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center space-x-2">
+                                        <td style={{ padding: '16px' }}>
+                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
                                                 <button
                                                     aria-label="Decrease quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity - 1)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
+                                                    style={{
+                                                        backgroundColor: '#4299e1',
+                                                        color: '#fff',
+                                                        fontWeight: '700',
+                                                        padding: '8px 16px',
+                                                        borderRadius: '8px',
+                                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                        cursor: 'pointer',
+                                                    }}
                                                 >
                                                     -
                                                 </button>
-                                                <span className="text-lg font-semibold">{item.quantity}</span>
+                                                <span style={{ fontSize: '18px', fontWeight: '600' }}>{item.quantity}</span>
                                                 <button
                                                     aria-label="Increase quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity + 1)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
+                                                    style={{
+                                                        backgroundColor: '#4299e1',
+                                                        color: '#fff',
+                                                        fontWeight: '700',
+                                                        padding: '8px 16px',
+                                                        borderRadius: '8px',
+                                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                        cursor: 'pointer',
+                                                    }}
                                                 >
                                                     +
                                                 </button>
                                             </div>
                                         </td>
-                                        <td className="p-4 text-gray-800">${(item.price * item.quantity).toFixed(2)}</td>
-                                        <td className="p-4">
+                                        <td style={{ padding: '16px', color: '#1a202c' }}>${(item.price * item.quantity).toFixed(2)}</td>
+                                        <td style={{ padding: '16px' }}>
                                             <button
                                                 onClick={() => handleRemoveItem(item.cart_id)}
-                                                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
+                                                style={{
+                                                    backgroundColor: '#f56565',
+                                                    color: '#fff',
+                                                    fontWeight: '700',
+                                                    padding: '8px 16px',
+                                                    borderRadius: '8px',
+                                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                    cursor: 'pointer',
+                                                }}
                                             >
                                                 Remove
                                             </button>
@@ -152,15 +191,35 @@ const ShoppingCart = () => {
                     </div>
 
                     {/* Cart Summary */}
-                    <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300 mt-4 md:mt-0">
-                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Cart Summary</h2>
-                        <div className="flex justify-between mb-4 text-lg font-medium text-gray-800">
+                    <div
+                        className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300 mt-4 md:mt-0"
+                        style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', marginTop: '16px' }}
+                    >
+                        <h2
+                            className="text-3xl font-semibold mb-6 text-gray-800"
+                            style={{ fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c' }}
+                        >
+                            Cart Summary
+                        </h2>
+                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: '500', color: '#1a202c' }}>
                             <p>Total Cost</p>
                             <p>${totalCost.toFixed(2)}</p>
                         </div>
                         <button
                             onClick={handleCheckout}
-                            className="w-full bg-black text-white py-3 rounded-xl shadow-md hover:bg-gray-800 font-semibold"
+                            style={{
+                                width: '100%',
+                                backgroundColor: '#000',
+                                color: '#fff',
+                                padding: '12px 0',
+                                borderRadius: '16px',
+                                fontWeight: '600',
+                                cursor: 'pointer',
+                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                                transition: 'background-color 0.2s',
+                            }}
+                            onMouseOver={(e) => (e.target.style.backgroundColor = '#333')}
+                            onMouseOut={(e) => (e.target.style.backgroundColor = '#000')}
                         >
                             Checkout
                         </button>
