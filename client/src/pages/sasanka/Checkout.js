@@ -11,12 +11,12 @@ const Checkout = () => {
     });
     const [cartItems, setCartItems] = useState([]); // Assume this is populated from a global state or context
     const navigate = useNavigate();
-
+    const userId = 1;
     // Fetch cart items from backend or context
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/cart'); // Update endpoint if needed
+                const response = await fetch(`http://localhost:3001/api/cart?userId=${userId}`); // Update endpoint if needed
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
                 setCartItems(data);

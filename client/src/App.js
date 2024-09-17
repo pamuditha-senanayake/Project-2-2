@@ -20,7 +20,8 @@ import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
 import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
-import S from "./pages/sasanka/s";
+import S from "./pages/sasanka/a";
+
 
 
 const AnimatedRoutes = () => {
