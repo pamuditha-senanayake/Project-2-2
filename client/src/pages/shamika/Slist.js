@@ -13,7 +13,8 @@ function Slist() {
         status: 'Pending',
         catalog: '',
         notifications: '',
-        remarks: ''
+        remarks: '',
+        date:''
     };
 
     const [ticket, setTicket] = useState(initialTicketState);
@@ -59,29 +60,6 @@ function Slist() {
                 notifications: autoResponse.notifications
             }));
         }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            // Send POST request to server
-            const { data } = await axios.post('http://localhost:5000/tickets', ticket);
-
-            // Show success toast message
-            toast.success('Successfully submitted!');
-
-            // Redirect to the Support Tickets List page after 2 seconds
-            setTimeout(() => {
-                navigate('/Slist');
-            }, 2000);
-
-        } catch (error) {
-            console.error('Error creating ticket:', error);
-        }
-    };
-
-    const handleReset = () => {
-        setTicket(initialTicketState);
     };
 
     // Auto-response messages based on the category
@@ -151,6 +129,7 @@ function Slist() {
                                         <th className="py-2 border px-4">Category</th>
                                         <th className="py-2 border px-4">Catalog</th>
                                         <th className="py-2 border px-4">Status</th>
+                                        <th className="py-2 border px-4">Date</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -161,6 +140,7 @@ function Slist() {
                                             <td className="py-2 border px-4">{ticket.category}</td>
                                             <td className="py-2 border px-4">{ticket.catalog}</td>
                                             <td className="py-2 border px-4">{ticket.status}</td>
+                                            <td className="py-2 border px-4">{ticket.date}</td>
                                         </tr>
                                     ))}
                                     </tbody>

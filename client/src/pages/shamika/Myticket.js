@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // For redirection
-import toast, { Toaster } from 'react-hot-toast';
 import backgroundImage from "../../images/5.jpg"; // For toast messages
 
 function Myticket() {
@@ -44,29 +43,6 @@ function Myticket() {
                 notifications: autoResponse.notifications
             }));
         }
-    };
-
-    const handleSubmit = async (e) => {
-        e.preventDefault();
-        try {
-            // Send POST request to server
-            const { data } = await axios.post('http://localhost:5000/tickets', ticket);
-
-            // Show success toast message
-            toast.success('Successfully submitted!');
-
-            // Redirect to the Support Tickets List page after 2 seconds
-            setTimeout(() => {
-                navigate('/Slist');
-            }, 2000);
-
-        } catch (error) {
-            console.error('Error creating ticket:', error);
-        }
-    };
-
-    const handleReset = () => {
-        setTicket(initialTicketState);
     };
 
     // Auto-response messages based on the category
@@ -121,7 +97,7 @@ function Myticket() {
                     }}
                 >
                     <div className="App">
-                        <Toaster/> {/* Component to display toast messages */}
+
                         <h1 className="lg:mx-10 justify-center julius-sans-one-regular text-3xl font-bold text-rgb255 mb-4">My
                             Ticket   </h1>
                         <div
@@ -216,7 +192,7 @@ function Myticket() {
                                         type="text"
                                         name="current_date"
                                         className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        value={Date}
+                                        value={date}
                                         readOnly
                                     />
                                 </div>
