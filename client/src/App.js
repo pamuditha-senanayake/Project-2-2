@@ -17,9 +17,11 @@ import UpdateRecord from "./pages/com/updatec";
 import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
 import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
-import Adminhome from "./pages/pamuditha/adminhome";
-import Adminprofile from "./pages/pamuditha/admin_profile";
-import Adminreg from "./pages/pamuditha/admin-register";
+import Cart from "./pages/sasanka/Cart";
+import Checkout from "./pages/sasanka/Checkout";
+import ProductList  from "./pages/sasanka/ProductList";
+import S from "./pages/sasanka/s";
+
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -52,11 +54,9 @@ const AnimatedRoutes = () => {
                         <Route path="/view" element={<AdminAppointmentView/>}/>
                         <Route path="/pay" element={<Home/>}/>
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
-                        <Route path="/adminhome" element={<Adminhome/>}/>
-                        <Route path="/adminprofile" element={<Adminprofile/>}/>
-                        <Route path="/adminreg" element={<Adminreg/>}/>
-
-                    </Routes>
+                        <Route path="/cart" element={<Cart/>}/>
+                        <Route path="/ProductList" element={<ProductList/>}/>
+                        <Route path="/Checkout" element={<Checkout/>}/>                    </Routes>
                 </div>
             </CSSTransition>
         </TransitionGroup>

@@ -44,23 +44,31 @@ const getCartItems = async (userId) => {
         throw new Error(`Failed to retrieve cart items: ${err.message}`);
     }
 };
+
 // Function to update the quantity of a specific item in the cart
-const updateItemQuantity = async (itemId, quantity) => {
+const updateItemQuantity = async ( itemId, quantity) => {
     try {
         const result = await db.query(
             `
             UPDATE cart
             SET quantity = $1
-            WHERE product_id = $2
+            WHERE  id = $2
             RETURNING *
             `,
-            [quantity, itemId]
+            [quantity,  itemId]
         );
-        return result.rows[0];
+
+        if (result.rows.length === 0) {
+            return null;  // Item not found in the cart
+        }
+
+        return result.rows[0];  // Return the updated item
     } catch (err) {
         throw new Error(`Failed to update item quantity: ${err.message}`);
     }
 };
+
+
 // Function to delete an item from the cart
 const removeItem = async (itemId) => {
     try {

@@ -75,7 +75,7 @@ function Navbar() {
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Appointments
                                 </Link>
-                                <Link to="/products"
+                                <Link to="/ProductList"
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Products
                                 </Link>
@@ -90,7 +90,7 @@ function Navbar() {
                                     <div className="dropdown-menu" aria-labelledby="dropdown07">
                                         {cookieExists ? (
                                             <>
-                                                <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
+                                                <a className="dropdown-item julius-sans-one-regular" href="/Cart">Cart</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/userp">Profile</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
