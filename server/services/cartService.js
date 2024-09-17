@@ -17,19 +17,19 @@ const addOrUpdateItem = async (userId, itemId, quantity) => {
         throw new Error(`Failed to add or update item: ${err.message}`);
     }
 };
-// Function to get cart items for a specific user
+
 const getCartItems = async (userId) => {
     try {
         const result = await db.query(
             `
             SELECT
-                ci.id AS cart_item_id,
+                ci.cart_id,  
                 ci.user_id,
                 p.id AS product_id,
                 p.name AS product_name,
                 p.price,
                 ci.quantity
-               
+
             FROM
                 cart ci
             JOIN
@@ -44,42 +44,41 @@ const getCartItems = async (userId) => {
         throw new Error(`Failed to retrieve cart items: ${err.message}`);
     }
 };
-// Function to update the quantity of a specific item in the cart
-const updateItemQuantity = async (itemId, quantity) => {
+
+const updateItemQuantity = async (cartId, quantity) => {
     try {
         const result = await db.query(
             `
             UPDATE cart
             SET quantity = $1
-            WHERE product_id = $2
+            WHERE cart_id = $2   -- Updated column name
             RETURNING *
             `,
-            [quantity, itemId]
+            [quantity, cartId]
         );
         return result.rows[0];
     } catch (err) {
         throw new Error(`Failed to update item quantity: ${err.message}`);
     }
 };
-// Function to delete an item from the cart
-const removeItem = async (itemId) => {
+
+const removeItem = async (cartId) => {
     try {
         await db.query(
             `
             DELETE FROM cart
-            WHERE product_id = $1
+            WHERE cart_id = $1  -- Updated column name
             `,
-            [itemId]
+            [cartId]
         );
     } catch (err) {
         throw new Error(`Failed to remove item from cart: ${err.message}`);
     }
 };
+
 export default {
     addOrUpdateItem,
     getCartItems,
     updateItemQuantity,
     removeItem
 };
-
-//                 p.img AS image add wenna oni
