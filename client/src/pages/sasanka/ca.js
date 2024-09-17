@@ -29,7 +29,7 @@ const ShoppingCart = () => {
         fetchCart();
     }, []);
 
-    const handleUpdateQuantity = (cartItemId, newQuantity) => {
+    const handleUpdateQuantity = async (cartItemId, newQuantity) => {
         if (newQuantity < 1) return; // Prevent negative or zero quantity
 
         const originalQuantity = cart.find(item => item.cart_id === cartItemId).quantity;
@@ -39,40 +39,48 @@ const ShoppingCart = () => {
             item.cart_id === cartItemId ? { ...item, quantity: newQuantity } : item
         ));
 
-        fetch(`http://localhost:3001/api/user/update`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ cartItemId, quantity: newQuantity }),
-        })
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to update item');
-                return response.json();
-            })
-            .catch((error) => {
-                console.error("Error updating quantity:", error);
-                setError('Failed to update item quantity.');
-                // Revert UI in case of error
-                setCart(cart.map(item =>
-                    item.cart_id === cartItemId ? { ...item, quantity: originalQuantity } : item
-                ));
+        try {
+            const response = await fetch(`http://localhost:3001/api/user/update/${cartItemId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ quantity: newQuantity }),
+                credentials: 'include', // Ensure this is included to send cookies
             });
+
+            if (!response.ok) {
+                throw new Error('Failed to update item');
+            }
+        } catch (error) {
+            console.error("Error updating quantity:", error);
+            setError('Failed to update item quantity.');
+            // Revert UI in case of error
+            setCart(cart.map(item =>
+                item.cart_id === cartItemId ? { ...item, quantity: originalQuantity } : item
+            ));
+        }
     };
 
-    const handleRemoveItem = async (cartItemId) => {
-        try {
-            const confirmRemove = window.confirm("Are you sure you want to remove this item?");
-            if (!confirmRemove) return;
 
-            await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
-                method: "DELETE",
-                credentials: 'include',
-            });
-            setCart(cart.filter(item => item.cart_id !== cartItemId));
-        } catch (error) {
-            console.error("Error removing item:", error);
-            setError('Failed to remove item.');
+    const handleRemoveItem = async (cartItemId) => {
+        if (window.confirm('Are you sure you want to remove this item?')) {
+            try {
+                const response = await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
+                    method: "DELETE",
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    setCart(cart.filter(item => item.cart_id !== cartItemId));
+                } else {
+                    console.error('Failed to remove item, status:', response.status);
+                    setError('Failed to remove item.');
+                }
+            } catch (error) {
+                console.error('Error removing item:', error);
+                setError('Error removing item.');
+            }
         }
     };
 
@@ -108,7 +116,7 @@ const ShoppingCart = () => {
                                     <tr key={item.cart_id} className="border-b hover:bg-gray-50 transition duration-200">
                                         <td className="p-4 flex items-center">
                                             <img
-                                                src={`data:image/jpeg;base64,${item.image}`} // Ensure this is correct
+                                                src={`data:image/jpeg;base64,${item.image}`}
                                                 alt={item.product_name}
                                                 className="w-24 h-24 object-cover rounded-lg shadow-sm mr-4"
                                             />

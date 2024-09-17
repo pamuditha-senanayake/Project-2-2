@@ -45,8 +45,8 @@ router.get('/', async (req, res) => {
 router.put('/update', async (req, res) => {
     const {  itemId, quantity } = req.body;
 
-    if (!userId || !itemId || quantity == null) {
-        return res.status(400).json({ error: 'userId, itemId, and quantity are required.' });
+    if ( !itemId || quantity == null) {
+        return res.status(400).json({ error: ' itemId, and quantity are required.' });
     }
 
     try {

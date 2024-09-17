@@ -139,72 +139,57 @@ router.get('/cartget', async (req, res) => {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+// UPDATE the quantity of a cart item by cart_id
+router.put('/update/:cartItemId', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const { cartItemId } = req.params;
+        const { quantity } = req.body;
 
+        if (quantity < 1) {
+            return res.status(400).json({ error: 'Quantity must be at least 1' });
+        }
 
-// PUT - Update item quantity in cart
-// router.put('/update', async (req, res) => {
-//     if (req.isAuthenticated()) {
-//         const { user_id, itemId, quantity } = req.body;
-//
-//         if (quantity < 1) {
-//             return res.status(400).json({ message: 'Quantity must be at least 1.' });
-//         }
-//
-//         try {
-//             const result = await db.query(
-//                 'UPDATE cart SET quantity = $1 WHERE user_id = $2 AND product_id = $3 RETURNING *',
-//                 [quantity, user_id, itemId]
-//             );
-//
-//             if (result.rowCount > 0) {
-//                 res.status(200).json({ message: 'Cart item updated', cartItem: result.rows[0] });
-//             } else {
-//                 res.status(404).json({ message: 'Item not found in cart.' });
-//             }
-//         } catch (err) {
-//             console.error('Error updating cart item:', err.message);
-//             res.status(500).json({ message: 'Server error' });
-//         }
-//     } else {
-//         res.status(401).json({ message: 'Unauthorized' });
-//     }
-// });
+        try {
+            const query = 'UPDATE cart SET quantity = $1 WHERE cart_id = $2 RETURNING *';
+            const params = [quantity, cartItemId];
+            const result = await db.query(query, params);
 
-// Delete an item from the cart
-router.delete('/:userId/:itemId', async (req, res) => {
-    const { userId, itemId } = req.params;
-    try {
-        await cartService.removeItem(userId, itemId);
-        res.json({ message: 'Item removed from cart' });
-    } catch (error) {
-        console.error('Error removing item from cart:', error.message);
-        res.status(500).json({ message: 'Server error' });
+            if (result.rowCount > 0) {
+                res.status(200).json({ message: 'Cart item updated', cartItem: result.rows[0] });
+            } else {
+                res.status(404).json({ error: 'Cart item not found' });
+            }
+        } catch (err) {
+            console.error('Error updating cart item:', err.message);
+            res.status(500).json({ error: 'Error updating cart item' });
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
     }
 });
-// DELETE an item from the cart by item ID (only for the logged-in user)
-// router.delete('/cart/delete/:itemId', async (req, res) => {
-//     if (req.isAuthenticated()) {
-//         const userId = req.user.id;  // Assuming user ID is available from session or token
-//         const { itemId } = req.params;
-//
-//         try {
-//             // Check if the item exists for the logged-in user in their cart
-//             const result = await db.query('DELETE FROM cart WHERE user_id = $1 AND product_id = $2', [userId, itemId]);
-//
-//             if (result.rowCount > 0) {
-//                 res.status(200).json({ message: 'Item removed from cart' });
-//             } else {
-//                 res.status(404).json({ error: 'Item not found in your cart' });
-//             }
-//         } catch (err) {
-//             console.error('Error removing item from cart:', err.message);
-//             res.status(500).json({ error: 'Error removing item from cart' });
-//         }
-//     } else {
-//         res.status(401).json({ error: 'Unauthorized' });
-//     }
-// });
 
+// DELETE a cart item by cart_id
+router.delete('/remove/:cart_id', async (req, res) => {
+    const { cart_id } = req.params;
+
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({ error: 'Unauthorized' });
+    }
+
+    try {
+        // Delete the cart item by cart_id
+        const result = await db.query('DELETE FROM cart WHERE cart_id = $1', [cart_id]);
+
+        if (result.rowCount > 0) {
+            res.status(200).json({ message: 'Cart item removed' });
+        } else {
+            res.status(404).json({ error: 'Cart item not found' });
+        }
+    } catch (error) {
+        console.error('Error removing cart item:', error.message);
+        res.status(500).json({ error: 'Error removing cart item' });
+    }
+});
 
 
 

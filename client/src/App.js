@@ -20,7 +20,7 @@ import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
 import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
-import S from "./pages/sasanka/s";
+import Ca from "./pages/sasanka/ca";
 
 
 const AnimatedRoutes = () => {
@@ -56,7 +56,10 @@ const AnimatedRoutes = () => {
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
                         <Route path="/cart" element={<Cart/>}/>
                         <Route path="/ProductList" element={<ProductList/>}/>
-                        <Route path="/Checkout" element={<Checkout/>}/>                    </Routes>
+                        <Route path="/Checkout" element={<Checkout/>}/>
+                        <Route path="/ca" element={<Ca/>}/>
+
+                    </Routes>
                 </div>
             </CSSTransition>
         </TransitionGroup>

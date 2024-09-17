@@ -9,18 +9,21 @@ const Checkout = () => {
         city: "",
         contactNumber: "",
     });
-    const [cartItems, setCartItems] = useState([]); // Assume this is populated from a global state or context
+    const [cartItems, setCartItems] = useState([]);
+    const [error, setError] = useState(""); // For error messages
     const navigate = useNavigate();
 
-    // Fetch cart items from backend or context
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/cart'); // Update endpoint if needed
+                const response = await fetch(`http://localhost:3001/api/user/cartget`, {
+                    credentials: 'include',
+                });
                 if (!response.ok) throw new Error('Network response was not ok');
                 const data = await response.json();
                 setCartItems(data);
             } catch (error) {
+                setError("Failed to load cart items. Please try again later.");
                 console.error("Error fetching cart items:", error);
             }
         };
@@ -28,18 +31,23 @@ const Checkout = () => {
         fetchCartItems();
     }, []);
 
-    // Handle input change
     const handleChange = (e) => {
         const { name, value } = e.target;
         setShippingDetails({ ...shippingDetails, [name]: value });
     };
 
-    // Calculate total cost
-    const totalCost = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
+    const validatePhoneNumber = (number) => {
+        const phonePattern = /^[0-9]{10}$/; // Simple validation for a 10-digit phone number
+        return phonePattern.test(number);
+    };
 
-    // Handle checkout submission
     const handleCheckout = async (e) => {
         e.preventDefault();
+
+        if (!validatePhoneNumber(shippingDetails.contactNumber)) {
+            setError("Please enter a valid 10-digit contact number.");
+            return;
+        }
 
         try {
             const response = await fetch('http://localhost:3001/api/checkout', {
@@ -53,19 +61,18 @@ const Checkout = () => {
                 }),
             });
 
-            if (!response.ok) {
-                throw new Error('Network response was not ok');
-            }
+            if (!response.ok) throw new Error('Checkout failed');
 
             const result = await response.json();
             console.log('Checkout successful:', result);
-
-            // Redirect to confirmation page or payment page
             navigate('/payment');
         } catch (error) {
+            setError("Checkout failed. Please try again.");
             console.error('Error during checkout:', error);
         }
     };
+
+    const totalCost = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 p-8">
@@ -73,6 +80,7 @@ const Checkout = () => {
             <div className="flex flex-col justify-center items-center min-h-screen">
                 <div className="max-w-4xl w-full mx-auto bg-white p-12 rounded-lg shadow-lg">
                     <h2 className="text-2xl font-bold mb-6">Checkout</h2>
+                    {error && <p className="text-red-500 mb-4">{error}</p>}
                     <form onSubmit={handleCheckout}>
                         <div className="mb-4">
                             <label htmlFor="name" className="block text-lg font-medium mb-2">Name</label>
@@ -127,7 +135,7 @@ const Checkout = () => {
                             <h3 className="text-xl font-semibold mb-2">Order Summary</h3>
                             <ul>
                                 {cartItems.map(item => (
-                                    <li key={item.product_id} className="flex justify-between mb-2">
+                                    <li key={item.cart_id} className="flex justify-between mb-2">
                                         <span>{item.product_name}</span>
                                         <span>${(item.price * item.quantity).toFixed(2)}</span>
                                     </li>
