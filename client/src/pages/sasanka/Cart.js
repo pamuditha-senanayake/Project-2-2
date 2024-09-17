@@ -29,37 +29,39 @@ const ShoppingCart = () => {
         fetchCart();
     }, []);
 
-    const handleUpdateQuantity = (cartItemId, newQuantity) => {
-        if (newQuantity < 1) return; // Prevent negative or zero quantity
+    const handleUpdateQuantity = async (cartItemId, newQuantity) => {
+        try {
+            if (newQuantity < 1) {
+                alert("Quantity must be at least 1.");
+                return;
+            }
 
-        const originalQuantity = cart.find(item => item.cart_id === cartItemId).quantity;
-
-        // Optimistic UI update
-        setCart(cart.map(item =>
-            item.cart_id === cartItemId ? { ...item, quantity: newQuantity } : item
-        ));
-
-        fetch(`http://localhost:3001/api/user/update`, {
-            method: "PUT",
-            headers: {
-                "Content-Type": "application/json",
-            },
-            body: JSON.stringify({ cartItemId, quantity: newQuantity }),
-        })
-            .then((response) => {
-                if (!response.ok) throw new Error('Failed to update item');
-                return response.json();
-            })
-            .catch((error) => {
-                console.error("Error updating quantity:", error);
-                setError('Failed to update item quantity.');
-                // Revert UI in case of error
-                setCart(cart.map(item =>
-                    item.cart_id === cartItemId ? { ...item, quantity: originalQuantity } : item
-                ));
+            const response = await fetch(`http://localhost:3001/api/cart/update/${cartItemId}`, {
+                method: "PUT",
+                headers: {
+                    "Content-Type": "application/json",
+                },
+                body: JSON.stringify({ quantity: newQuantity }),
+                credentials: "include", // Ensure authentication is included
             });
-    };
 
+            if (!response.ok) {
+                throw new Error('Failed to update item');
+            }
+
+            const updatedItem = await response.json();
+            console.log("Item updated successfully:", updatedItem);
+
+            // Update the cart state with the new quantity
+            setCart((prevCart) =>
+                prevCart.map((item) =>
+                    item.cart_id === cartItemId ? { ...item, quantity: newQuantity } : item
+                )
+            );
+        } catch (error) {
+            console.error("Error updating quantity:", error);
+        }
+    };
     const handleRemoveItem = async (cartItemId) => {
         try {
             const confirmRemove = window.confirm("Are you sure you want to remove this item?");

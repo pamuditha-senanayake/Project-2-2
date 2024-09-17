@@ -138,36 +138,32 @@ router.get('/cartget', async (req, res) => {
     } else {
         res.status(401).json({error: 'Unauthorized'});
     }
-});
-// UPDATE the quantity of a cart item by cart_id
-router.put('/update/:cartItemId', async (req, res) => {
-    if (req.isAuthenticated()) {
-        const { cartItemId } = req.params;
-        const { quantity } = req.body;
+});router.put('/update/:cartItemId', async (req, res) => {
+    const { cartItemId } = req.params;
+    let { quantity } = req.body;
 
-        if (quantity < 1) {
-            return res.status(400).json({ error: 'Quantity must be at least 1' });
+    // Ensure quantity is a valid number and at least 1
+    quantity = parseInt(quantity, 10);
+    if (isNaN(quantity) || quantity < 1) {
+        return res.status(400).json({ error: 'Quantity must be a valid number and at least 1' });
+    }
+
+    try {
+        const query = 'UPDATE cart SET quantity = $1 WHERE cart_id = $2 RETURNING *';
+        const params = [quantity, cartItemId];
+        const result = await db.query(query, params);
+
+        if (result.rowCount > 0) {
+            res.status(200).json({ message: 'Cart item updated', cartItem: result.rows[0] });
+        } else {
+            res.status(404).json({ error: 'Cart item not found' });
         }
-
-        try {
-            const query = 'UPDATE cart SET quantity = $1 WHERE cart_id = $2 RETURNING *';
-            const params = [quantity, cartItemId];
-            const result = await db.query(query, params);
-
-            if (result.rowCount > 0) {
-                res.status(200).json({ message: 'Cart item updated', cartItem: result.rows[0] });
-            } else {
-                res.status(404).json({ error: 'Cart item not found' });
-            }
-        } catch (err) {
-            console.error('Error updating cart item:', err.message);
-            res.status(500).json({ error: 'Error updating cart item' });
-        }
-    } else {
-        res.status(401).json({ error: 'Unauthorized' });
+    } catch (err) {
+        // Log the error more descriptively
+        console.error('Error updating cart item:', err);
+        res.status(500).json({ error: 'Error updating cart item' });
     }
 });
-
 // DELETE a cart item by cart_id
 router.delete('/remove/:cart_id', async (req, res) => {
     const { cart_id } = req.params;

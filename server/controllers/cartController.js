@@ -1,6 +1,6 @@
 import express from 'express';
 import cartService from '../services/cartService.js'; // Adjust import according to your project structure
-
+import db from '../db.js';
 const router = express.Router();
 
 // Add or update item in the cart
@@ -42,24 +42,51 @@ router.get('/', async (req, res) => {
     }
 });
 
-router.put('/update', async (req, res) => {
-    const {  itemId, quantity } = req.body;
+// router.put('/update', async (req, res) => {
+//     const {  itemId, quantity } = req.body;
+//
+//     if ( !itemId || quantity == null) {
+//         return res.status(400).json({ error: ' itemId, and quantity are required.' });
+//     }
+//
+//     try {
+//         const updatedItem = await cartService.updateItemQuantity(itemId, quantity);
+//
+//         if (!updatedItem) {
+//             return res.status(404).json({ error: 'Item not found in cart.' });
+//         }
+//
+//         return res.json(updatedItem);
+//     } catch (err) {
+//         console.error('Error updating item quantity:', err.message);
+//         return res.status(500).json({ error: 'Server error.' });
+//     }
+// });
 
-    if ( !itemId || quantity == null) {
-        return res.status(400).json({ error: ' itemId, and quantity are required.' });
+router.put('/update/:cartItemId', async (req, res) => {
+    const { cartItemId } = req.params;
+    let { quantity } = req.body;
+
+    // Ensure quantity is a valid number and at least 1
+    quantity = parseInt(quantity, 10);
+    if (isNaN(quantity) || quantity < 1) {
+        return res.status(400).json({ error: 'Quantity must be a valid number and at least 1' });
     }
 
     try {
-        const updatedItem = await cartService.updateItemQuantity(itemId, quantity);
+        const query = 'UPDATE cart SET quantity = $1 WHERE cart_id = $2 RETURNING *';
+        const params = [quantity, cartItemId];
+        const result = await db.query(query, params);
 
-        if (!updatedItem) {
-            return res.status(404).json({ error: 'Item not found in cart.' });
+        if (result.rowCount > 0) {
+            res.status(200).json({ message: 'Cart item updated', cartItem: result.rows[0] });
+        } else {
+            res.status(404).json({ error: 'Cart item not found' });
         }
-
-        return res.json(updatedItem);
     } catch (err) {
-        console.error('Error updating item quantity:', err.message);
-        return res.status(500).json({ error: 'Server error.' });
+        // Log the error more descriptively
+        console.error('Error updating cart item:', err);
+        res.status(500).json({ error: 'Error updating cart item' });
     }
 });
 

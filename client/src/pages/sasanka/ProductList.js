@@ -63,8 +63,6 @@ const ProductList = () => {
         }
     };
 
-
-
     const handleCancel = () => {
         setVisible(false);
     };
@@ -77,8 +75,7 @@ const ProductList = () => {
     if (error) return <p className="text-center mt-4 text-red-500">{error}</p>;
 
     return (
-
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 mt-[100px] px-6  md:p-10">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 mt-[100px] px-6 md:p-10">
             <Navbar/>
             {/* Search Bar */}
             <div className="flex justify-end mb-8">
@@ -87,7 +84,8 @@ const ProductList = () => {
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search products..."
-                    className="w-full md:w-80 p-4 text-gray-800 rounded-lg shadow-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300"
+                    aria-label="Search products"
+                    className="w-full md:w-80 p-4 text-gray-800 rounded-lg shadow-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
                     style={{ fontSize: '1rem' }}
                 />
             </div>
@@ -105,10 +103,13 @@ const ProductList = () => {
                         <div className="p-5">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
                             <p className="text-pink-600 font-bold mb-3">${product.price}</p>
-                            <p className="text-gray-600 mb-2">{product.description?.substring(0, 100)}{product.description?.length > 100 ? '...' : ''}</p>
-                            <p className="text-gray-500 mb-3">Rating: {product.rating} / 5</p>
+                            <p className="text-gray-500 mb-3"><strong>Category:</strong> {product.category}</p>
+                            <p className="text-gray-600 mb-2">
+                                {product.description?.substring(0, 100)}{product.description?.length > 100 ? '...' : ''}
+                            </p>
                             <button
                                 onClick={() => handleAddToCart(product)}
+                                aria-label={`Add ${product.name} to cart`}
                                 className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors duration-300"
                             >
                                 Add to Cart
@@ -171,6 +172,7 @@ const ProductList = () => {
                                         value={quantity}
                                         onChange={(value) => setQuantity(value)}
                                         className="w-24"
+                                        aria-label="Product Quantity"
                                     />
                                 </Tooltip>
                             </div>
