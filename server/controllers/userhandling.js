@@ -1,6 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
+import checkoutService from '../services/checkoutService.js'; // Adjust import path
 
 const router = express.Router();
 
@@ -186,6 +187,61 @@ router.delete('/remove/:cart_id', async (req, res) => {
         res.status(500).json({ error: 'Error removing cart item' });
     }
 });
+router.put("/checkout", async (req, res) => {
+    // Check if user is authenticated
+    if (req.isAuthenticated()) {
+        // Debug user authentication
+        if (req.user && req.user.id) {
+            console.log("User authenticated. User ID:", req.user.id); // Log authenticated user
+        } else {
+            console.error("User authentication failed. req.user is undefined or lacks an id.");
+            return res.status(401).json({ message: "Unauthorized" });
+        }
+
+        // Extract shipping details and cart items from the request body
+        const { shippingDetails, cartItems } = req.body;
+        console.log("Shipping details received:", shippingDetails); // Debug shipping details
+        console.log("Cart items received:", cartItems); // Debug cart items
+
+        try {
+            // Log before calling the service
+            console.log("Calling cartService.addOrUpdateItem with User ID:", req.user.id);
+
+            // Call service to add or update items
+            const result = await cartService.addOrUpdateItem(req.user.id, shippingDetails, cartItems);
+
+            // Send response to client
+            res.json(result);
+
+            // Log success
+            console.log("Checkout successful for User ID:", req.user.id);
+
+        } catch (error) {
+            // Log error details
+            console.error("Error during checkout for User ID:", req.user.id, "Error:", error.message);
+
+            // Send error response
+            res.status(500).json({ message: "Server error" });
+        }
+    } else {
+        // User not authenticated
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
+// router.post('/', async (req, res) => {
+//     const { shippingDetails, cartItems } = req.body;
+//     const userId = 1; // Replace with authentication logic
+//
+//     try {
+//         const result = await checkoutService.checkout(userId, shippingDetails, cartItems);
+//         res.json(result);
+//     } catch (err) {
+//         console.error('Error during checkout:', err.message);
+//         res.status(500).json({ error: 'Server error' });
+//     }
+// });
+
 
 
 

@@ -5,7 +5,7 @@ const router = express.Router();
 
 router.post('/', async (req, res) => {
     const { shippingDetails, cartItems } = req.body;
-    const userId = 1; // Replace with authentication logic
+
 
     try {
         const result = await checkoutService.checkout(userId, shippingDetails, cartItems);

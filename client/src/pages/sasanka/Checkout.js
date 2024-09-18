@@ -54,25 +54,26 @@ const Checkout = () => {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
-                    'Credentials': 'include', // Include credentials if needed
                 },
                 body: JSON.stringify({
                     shippingDetails,
                     cartItems,
                 }),
+                credentials: 'include', // Include credentials to handle authentication
             });
 
-            if (!response.ok) throw new Error('Checkout failed');
-
             const result = await response.json();
-            console.log('Checkout successful:', result);
-            navigate('/payment');
+            if (response.ok) {
+                console.log('Checkout successful:', result);
+                navigate('/payment');
+            } else {
+                throw new Error(result.message || 'Checkout failed');
+            }
         } catch (error) {
             setError("Checkout failed. Please try again.");
-            console.error('Error during checkout:', error);
+            console.error('Error during checkout:', error); // Debug log
         }
     };
-
 
     const totalCost = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
