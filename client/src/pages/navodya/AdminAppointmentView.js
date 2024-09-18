@@ -54,7 +54,7 @@ const AdminAppointmentView = () => {
             {appointments.map(app => (
                 <div key={app.appointment_id} className="bg-white rounded-lg shadow-md p-6 mb-4">
                     <div className="flex justify-between items-center">
-                        <div className="text-lg font-medium">{app.user_name}</div>
+                        <div className="text-lg font-medium">{app.firstname}</div>
                         <div className="text-gray-500">
                             {app.service_names.join(', ')} - {app.total_time.hours} hours
                         </div>
@@ -67,19 +67,27 @@ const AdminAppointmentView = () => {
                             <div> Time: {app.time_numbers.map(index => timeslots[index] || 'Unknown').join(', ')}</div>
                         </div>
                         <div className="space-x-4">
-                            <button
-                                className={`px-4 py-2 rounded ${app.status === 'confirmed' ? 'bg-green-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                                onClick={() => handleConfirm(app.appointment_id)}
-                            >
-                                Confirm
-                            </button>
-                            <button
-                                className={`px-4 py-2 rounded ${app.status === 'rejected' ? 'bg-red-500 text-white' : 'bg-gray-200 text-gray-700'}`}
-                                onClick={() => handleReject(app.appointment_id)}
-                            >
-                                Reject
-                            </button>
+                            {/* Show Confirm button if status is pending or confirmed */}
+                            {app.status === 'pending' || app.status === 'confirmed' ? (
+                                <button
+                                    className="py-2.5 px-6 rounded-lg text-sm font-medium bg-green-500 text-teal-800"
+                                    onClick={() => handleConfirm(app.appointment_id)}
+                                >
+                                    Confirm
+                                </button>
+                            ) : null}
+
+                            {/* Show Reject button if status is pending or rejected */}
+                            {app.status === 'pending' || app.status === 'rejected' ? (
+                                <button
+                                    className="py-2.5 px-6 rounded-lg text-sm font-medium text-white bg-red-500"
+                                    onClick={() => handleReject(app.appointment_id)}
+                                >
+                                    Reject
+                                </button>
+                            ) : null}
                         </div>
+
                     </div>
                 </div>
             ))}
