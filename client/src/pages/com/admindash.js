@@ -49,6 +49,15 @@ const Sidebar = () => {
             ],
         },
         {
+            title: 'Appoinment',
+            links: [
+                {text: 'View', url: '/view'},
+                /*{text: 'Processed', url: '#'},
+                {text: 'Shipped', url: '#'},
+                {text: 'Returned', url: '#'},*/
+            ],
+        },
+        {
             title: 'Orders',
             links: [
                 {text: 'New', url: '#'},
