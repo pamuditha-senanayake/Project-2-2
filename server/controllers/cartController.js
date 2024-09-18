@@ -3,6 +3,134 @@ import cartService from '../services/cartService.js'; // Adjust import according
 import db from '../db.js';
 const router = express.Router();
 
+
+
+
+router.post("/categories", async (req, res) => {
+    try {
+        const {name} = req.body; // 'name' is sent in the request body
+        const newCategory = await db.query(
+            "INSERT INTO categories (name) VALUES($1) RETURNING *",
+            [name]
+        );
+
+        res.json(newCategory.rows[0]); // Send the added category back as a response
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+});
+
+// Add a new service with a category
+router.post("/services", async (req, res) => {
+    try {
+        const {name, description, price, time_taken, category_id} = req.body;
+        const newService = await db.query(
+            "INSERT INTO services (name, description, price, time_taken, category_id) VALUES($1, $2, $3, $4, $5) RETURNING *",
+            [name, description, price, time_taken, category_id]
+        );
+
+        res.json(newService.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+});
+
+
+router.get("/categories", async (req, res) => {
+    try {
+        const allCategories = await db.query("SELECT * FROM categories");
+        res.json(allCategories.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+});
+
+//get all servise
+router.get("/services", async (req, res) => {
+    try {
+        const allCategories = await db.query("SELECT * FROM services");
+        res.json(allCategories.rows);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+});
+
+// Get all services by category
+// router.get("/categories/services", async (req, res) => {
+//     try {
+//         const { category_id } = req.params;
+//
+//         if (!category_id) {
+//             return res.status(400).json({ error: "Category ID is required" });
+//         }
+//
+//         const services = await db.query(
+//             "SELECT * FROM services "
+//
+//         );
+//
+//         res.json(services.rows);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// });
+
+/// Edit a service
+router.put("/services/:id", async (req, res) => {
+    try {
+        const {id} = req.params;
+        const {name, description, price, time_taken, category_id} = req.body;
+
+        const updatedService = await db.query(
+            `UPDATE services 
+           SET name = $1, description = $2, price = $3, time_taken = $4, category_id = $5 
+           WHERE id = $6 RETURNING *`,
+            [name, description, price, time_taken, category_id, id]
+        );
+
+        if (updatedService.rows.length === 0) {
+            return res.status(404).json({error: "Service not found"});
+        }
+
+        res.json(updatedService.rows[0]);
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+});
+
+// Delete a category
+router.delete("/categories/:id", async (req, res) => {
+    try {
+        const {id} = req.params;
+
+        // Optional: Handle services linked to the category
+        await db.query(
+            "UPDATE services SET category_id = NULL WHERE category_id = $1",
+            [id]
+        );
+
+        const deleteCategory = await db.query(
+            "DELETE FROM categories WHERE id = $1 RETURNING *",
+            [id]
+        );
+
+        if (deleteCategory.rows.length === 0) {
+            return res.status(404).json({error: "Category not found"});
+        }
+
+        res.json({message: "Category deleted successfully"});
+    } catch (err) {
+        console.error(err.message);
+        res.status(500).json({error: "Internal server error"});
+    }
+});
+
 // Add or update item in the cart
 // router.put('/add', async (req, res) => {
 //     const { userId, itemId, quantity } = req.body;
