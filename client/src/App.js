@@ -21,6 +21,7 @@ import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
 import Ca from "./pages/sasanka/ca";
+import Add from "./pages/sasanka/ScategoryAdd";
 
 
 const AnimatedRoutes = () => {
@@ -58,6 +59,7 @@ const AnimatedRoutes = () => {
                         <Route path="/ProductList" element={<ProductList/>}/>
                         <Route path="/Checkout" element={<Checkout/>}/>
                         <Route path="/ca" element={<Ca/>}/>
+                        <Route path="/Add" element={<Add/>}/>
 
                     </Routes>
                 </div>
