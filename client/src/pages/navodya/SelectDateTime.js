@@ -1,9 +1,10 @@
 import React, {useState} from "react";
 import NavigationBar from "./NavigationBar";
 import axios from "axios";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {useLocation, useNavigate} from "react-router-dom";
+import DatePicker from "react-datepicker";
+
 
 const SelectDateTime = () => {
     const [selectedDate, setSelectedDate] = useState(null);
@@ -46,7 +47,6 @@ const SelectDateTime = () => {
     const handleSave = async () => {
         try {
             const appointmentData = {
-                user_id: 5, // Replace with actual user ID
                 professional_id: selectedProfessional ? selectedProfessional.id : null,
                 appointment_date: selectedDate,
                 total_time: `${formattedTotalTime.hours}:${formattedTotalTime.minutes}:00`,
@@ -57,21 +57,34 @@ const SelectDateTime = () => {
             const timeNumbers = selectedTimeSlots; // Assuming selectedTimeSlots contains time numbers
 
             // Send the POST request and get the response
-            const response = await axios.post(process.env.REACT_APP_API_URL + '/api/appointmentservice/confirm', {
-                appointmentData,
-                serviceIds,
-                time_numbers: timeNumbers
+            const response = await fetch(process.env.REACT_APP_API_URL + '/api/user/confirm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appointmentData,
+                    serviceIds,
+                    time_numbers: timeNumbers
+                }),
+                credentials: 'include',
             });
 
-            // Accessing the response data
-            appointmentId = response.data.appointmentId;
-            console.log('Response data:', appointmentId);
+            // Check if the response is ok
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            appointmentId = data.appointmentId;
+            console.log('Response data:', appointmentId); // Debug log
 
         } catch (error) {
-            console.error("Error saving appointment:", error);
-            alert("An error occurred while saving the appointment.");
+            console.error('Error saving appointment:', error); // Debug log
+            alert('An error occurred while saving the appointment.');
         }
     };
+
 
     const handleContinue = async () => {
         try {
@@ -117,17 +130,17 @@ const SelectDateTime = () => {
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             {/* Navigation Bar */}
             <NavigationBar activeTab={3}/>
 
-            <div className="flex flex-col md:flex-row w-full mt-4">
+            <div className="flex flex-col md:flex-row w-full mt-[150px]">
                 {/* Left side - Date & Time Selection */}
-                <div className="w-full md:w-2/3 bg-gray-100 p-8">
+                <div className="w-full md:w-2/3 bg-gray-100 p-8 max-h-screen">
                     <h2 className="text-2xl font-bold mb-6">Select Date & Time</h2>
 
                     {/* Date Picker */}
-                    <div className="bg-white rounded-lg p-4 mb-4 max-w-sm mx-auto shadow-lg">
+                    <div className="bg-white rounded-lg p-4 mb-4 max-w-auto mx-auto shadow-lg">
                         <DatePicker
                             onChange={handleDateSelect}
                             dateFormat="MMMM d, yyyy"
@@ -139,7 +152,7 @@ const SelectDateTime = () => {
                     </div>
 
                     {/* Timeslots */}
-                    <div className="flex flex-col gap-4 items-center justify-center">
+                    <div className="flex flex-col gap-4 items-center justify-center overflow-auto">
                         {timeslots.map((time, index) => (
                             <button
                                 key={index}

@@ -78,10 +78,10 @@ const SelectProfessional = () => {
     // };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             <NavigationBar activeTab={2}/>
 
-            <div className="flex flex-col md:flex-row w-full mt-4">
+            <div className="flex flex-col md:flex-row w-full mt-[150px]">
                 {/* Left side - Professional Selection */}
                 <div className="w-full md:w-2/3 bg-gray-100 p-8">
                     <h2 className="text-2xl font-bold mb-6">Select Professional</h2>

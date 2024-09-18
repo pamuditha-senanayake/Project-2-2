@@ -6,37 +6,11 @@ import axios from "axios";
 const SelectServices = () => {
     const navigate = useNavigate();
 
-    useEffect(() => {
-        const checkUser = async () => {
-            try {
-                const response = await fetch('http://localhost:3001/api/user/verify', {
-                    credentials: 'include' // Include credentials with the request
-                });
-
-                if (response.status === 403 || response.status === 401) {
-                    navigate('/'); // Redirect if not authorized
-                    return;
-                }
-
-                const data = await response.json();
-                if (!data.isUser) {
-                    navigate('/'); // Redirect if the user is not an admin
-                }
-            } catch (error) {
-                console.error('Error checking user role:', error);
-                navigate('/'); // Redirect in case of an error
-            }
-        };
-
-        checkUser();
-    }, [navigate]);
-
-
     const [services, setServices] = useState([]);
     const [selectedServices, setSelectedServices] = useState([]);
     const [total, setTotal] = useState(0);
     const [totalTime, setTotalTime] = useState(0);
-    
+    const [showAlert, setShowAlert] = useState(false); // Add state for the alert
 
     // Fetch all services
     useEffect(() => {
@@ -69,6 +43,7 @@ const SelectServices = () => {
 
     const handleAddService = (service) => {
         setSelectedServices([...selectedServices, service]);
+        setShowAlert(false); // Hide the alert if a service is added
     };
 
     const handleRemoveService = (indexToRemove) => {
@@ -82,18 +57,34 @@ const SelectServices = () => {
     };
 
     const handleContinue = () => {
-        navigate("/professional", {state: {selectedServices}});
+        if (selectedServices.length > 0) {
+            navigate("/professional", {state: {selectedServices}});
+        } else {
+            setShowAlert(true); // Show the alert if no services are selected
+        }
     };
-    console.log(process.env.REACT_APP_SERVER_URL)
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             <NavigationBar activeTab={1}/>
 
-            <div className="flex flex-col md:flex-row w-full mt-4">
+            <div className="flex flex-col md:flex-row w-full mt-[150px]">
+
                 {/* Left side - Services */}
-                <div className="w-full md:w-2/3 bg-gray-100 p-8">
+                <div className="w-full md:w-2/3 bg-gray-100 p-8 max-h-screen overflow-y-auto">
+
+                    {/* Custom alert - Conditionally render */}
+                    {showAlert && (
+                        <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-6"
+                             role="alert">
+                            <p className="font-bold">Be Warned</p>
+                            <p>Please select at least one service before continuing.</p>
+                        </div>
+                    )}
+
                     <h2 className="text-2xl font-bold mb-6">Select Services</h2>
+
+
                     {services.map((service) => (
                         <div
                             key={service.id}
@@ -168,7 +159,10 @@ const SelectServices = () => {
                     </div>
                     <button
                         onClick={handleContinue}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"
+                        /* disabled={selectedServices.length === 0}*/
+                        className={`w-full mt-6 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white 
+                          ${selectedServices.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-800 hover:before:left-0'}
+                        `}
                     >
                         Continue
                     </button>
