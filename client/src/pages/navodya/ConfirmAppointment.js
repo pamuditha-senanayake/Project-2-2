@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar";
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
 
 const ConfirmAppointment = () => {
     const navigate = useNavigate();
@@ -26,27 +25,28 @@ const ConfirmAppointment = () => {
 
     useEffect(() => {
         const getAppointmentStatus = async () => {
-            try {
-                const response = await axios.get(
-                    `http://localhost:3001/api/appointmentstatus/status/${appointmentId}`
-                );
-                const data = response.data;
-                setAppointmentStatus(data.status);
-                setAppointmentDate(data.appointment_date);
-                setAppointmentProfessionalName(data.professional_name);
-                setServiceNames(data.service_names || []); // Ensure it's an array
-                setTimeSlots(data.time_slots || []); // Ensure it's an array
-                setTotalCost(data.total_cost);
-                setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
-            } catch (err) {
-                console.error(err);
-            }
+            fetch(`http://localhost:3001/api/user/status/${appointmentId}`, {credentials: 'include'})
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('Fetched appointment status data:', data); // Debug log
+
+                    // Set the fetched data to the appropriate state variables
+                    setAppointmentStatus(data.status);
+                    setAppointmentDate(data.appointment_date);
+                    setAppointmentProfessionalName(data.professional_name);
+                    setServiceNames(data.service_names || []); // Ensure it's an array
+                    setTimeSlots(data.time_slots || []); // Ensure it's an array
+                    setTotalCost(data.total_cost);
+                    setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
+                })
+                .catch((error) => console.error('Fetch error:', error)); // Debug log
         };
 
         if (appointmentId) {
             getAppointmentStatus();
         }
     }, [appointmentId]);
+
 
     const handlePay = async () => {
         try {
@@ -60,21 +60,25 @@ const ConfirmAppointment = () => {
         }
     };
 
-    const handleDelete = async () => {
-        console.log("id " + appointmentId)
-        try {
-            if (appointmentStatus === "pending") {
-                const response = await axios.delete(
-                    `http://localhost:3001/api/appointmentdelete/delete/` + appointmentId
-                );
-                console.log(response);
-            } else {
-                setErrorMsg("You cannot cancel a confirmation or rejection appointment.");
-            }
-        } catch (err) {
-            console.error(err);
+    const handleDelete = (appointmentId) => {
+        console.log("id " + appointmentId);
+
+        if (appointmentStatus === "pending") {
+            fetch(`http://localhost:3001/api/user/delete/${appointmentId}`, {
+                method: 'DELETE',
+                credentials: 'include',
+            })
+                .then(response => response.json())
+                .then(data => {
+                    console.log(data); // Optional: Log the response data for debugging
+                    // You can add additional code here if needed, such as updating state or UI
+                })
+                .catch(error => console.error('Delete error:', error)); // Debug log
+        } else {
+            setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };
+
 
     const renderStatusContent = () => {
         switch (appointmentStatus) {
@@ -104,10 +108,10 @@ const ConfirmAppointment = () => {
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             <NavigationBar activeTab={4}/>
 
-            <div className="flex flex-col md:flex-row w-full mt-4">
+            <div className="flex flex-col md:flex-row w-full mt-[150px]">
                 {/* Left side - Status */}
                 <div className="w-full md:w-2/3 bg-gray-100 p-8">
                     <h2 className="text-2xl font-bold mb-6">Appointment Status</h2>
@@ -122,7 +126,7 @@ const ConfirmAppointment = () => {
                             <div className="text-red-500 text-center mb-4">{errorMsg}</div>
                         )}
                         <button
-                            onClick={handleDelete}
+                            onClick={() => handleDelete(appointmentId)}
                             className="w-full bg-gray-300 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-gray-700"
                         >
                             Cancel
