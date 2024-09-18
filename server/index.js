@@ -60,6 +60,36 @@ app.get("/logout", (req, res) => {
   });
 });
 
+// Add a new category
+
+
+
+app.post("/categories", async (req, res) => {
+  try {
+    const { name } = req.body;
+    const newCategory = await db.query(
+        "INSERT INTO categories (name) VALUES($1) RETURNING *",
+        [name]
+    );
+
+    res.json(newCategory.rows[0]);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
+
+
+// Get all categories
+app.get("/categories", async (req, res) => {
+  try {
+    const allCategories = await pool.query("SELECT * FROM categories");
+    res.json(allCategories.rows);
+  } catch (err) {
+    console.error(err.message);
+    res.status(500).json({ error: "Internal server error" });
+  }
+});
 
 app.get("/crud", async (req, res) => {
   //console.log(req.user);
