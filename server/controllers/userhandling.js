@@ -1,7 +1,7 @@
 import express from 'express';
 import db from '../db.js';
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
-import checkoutService from '../services/checkoutService.js'; // Adjust import path
+import checkoutService from '../services/checkoutService.js';
 
 const router = express.Router();
 
@@ -208,7 +208,7 @@ router.put("/checkout", async (req, res) => {
             console.log("Calling cartService.addOrUpdateItem with User ID:", req.user.id);
 
             // Call service to add or update items
-            const result = await cartService.addOrUpdateItem(req.user.id, shippingDetails, cartItems);
+            const result = await checkoutService.checkout(req.user.id, shippingDetails, cartItems);
 
             // Send response to client
             res.json(result);
