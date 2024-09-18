@@ -16,7 +16,7 @@ const Checkout = () => {
     useEffect(() => {
         const fetchCartItems = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/user/cartget`, {
+                const response = await fetch('http://localhost:3001/api/user/cartget', {
                     credentials: 'include',
                 });
                 if (!response.ok) throw new Error('Network response was not ok');
@@ -50,10 +50,11 @@ const Checkout = () => {
         }
 
         try {
-            const response = await fetch('http://localhost:3001/api/checkout', {
-                method: 'POST',
+            const response = await fetch('http://localhost:3001/api/user/checkout', {
+                method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Credentials': 'include', // Include credentials if needed
                 },
                 body: JSON.stringify({
                     shippingDetails,
@@ -71,6 +72,7 @@ const Checkout = () => {
             console.error('Error during checkout:', error);
         }
     };
+
 
     const totalCost = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
