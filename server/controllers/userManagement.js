@@ -202,6 +202,27 @@ const roleRedirect = async (req, res, next) => {
 };
 
 
+// Route to fetch user role
+router.get('/role', async (req, res) => {
+    if (req.user) {
+        try {
+            const result = await db.query("SELECT role FROM users WHERE id = $1", [req.user.id]);
+
+            if (result.rows.length > 0) {
+                return res.json({user: {role: result.rows[0].role}});
+            } else {
+                return res.status(404).json({message: 'User not found'});
+            }
+        } catch (err) {
+            console.error('Error fetching user role:', err);
+            return res.status(500).json({message: 'Internal server error'});
+        }
+    } else {
+        return res.status(401).json({message: 'Not authenticated'});
+    }
+});
+
+
 router.post("/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {
         if (err) return next(err);
