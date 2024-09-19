@@ -6,12 +6,121 @@ import GoogleStrategy from "passport-google-oauth20";
 import db from "../db.js";
 import env from "dotenv";
 import {GoogleGenerativeAI} from '@google/generative-ai';
+import crypto from 'crypto';
+import nodemailer from 'nodemailer';
 
 env.config();
 
 const router = express.Router();
 const saltRounds = 10;
 
+
+router.post('/forgot-password', async (req, res) => {
+    console.log("Received request for /forgot-password");
+    const {email} = req.body;
+
+    try {
+        const userResult = await db.query("SELECT * FROM users WHERE email = $1", [email]);
+
+        if (userResult.rows.length === 0) {
+            return res.status(404).json({message: "User not found"});
+        }
+
+        const user = userResult.rows[0];
+
+        // Generate a unique token and set expiration time (1 hour)
+        const resetToken = crypto.randomBytes(32).toString('hex');
+        const resetTokenExpiration = new Date(Date.now() + 3600000);  // 1 hour
+
+        // Save the reset token and expiration to the database (use user's id)
+        await db.query(
+            "UPDATE users SET reset_password_token = $1, reset_password_expiration = $2 WHERE id = $3",
+            [resetToken, resetTokenExpiration, user.id]
+        );
+
+        // Create a reset link (assuming your frontend will handle the token)
+        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+
+        // Send an email with the reset link (using Nodemailer or any other email service)
+        const transporter = nodemailer.createTransport({
+            service: 'gmail',
+            auth: {
+                user: process.env.EMAIL_USER,
+                pass: process.env.EMAIL_PASSWORD
+            },
+            secure: true,
+            port: 465,
+            // logger: true, // Enable logger
+            // debug: true   // Enable debug
+        });
+
+        const mailOptions = {
+            from: process.env.EMAIL_USER,
+            to: email,
+            subject: "Password Reset Request",
+            text: `You requested a password reset. Click this link to reset your password: ${resetLink}`
+        };
+
+        try {
+            await transporter.sendMail(mailOptions);
+            res.json({message: "Password reset link sent to your email"});
+        } catch (err) {
+            console.error("Error sending email:", err);
+            res.status(500).json({message: "Error sending reset email"});
+        }
+
+    } catch (err) {
+        console.error("Error processing forgot password request:", err);
+        res.status(500).json({message: "Server error"});
+    }
+});
+
+router.post('/reset-password', async (req, res) => {
+    const {token, password} = req.body; // Extract the token and password from the request body
+
+    console.debug(`Reset password request received. Token: ${token}, Password: ${password}`);
+
+    if (!token) {
+        console.error('Token is missing');
+        return res.status(400).json({message: 'Token is missing'});
+    }
+
+    try {
+        // Query to check if the token is valid and not expired
+        const result = await db.query(
+            "SELECT * FROM users WHERE reset_password_token = $1 AND reset_password_expiration > NOW()",
+            [token]
+        );
+
+        console.debug(`Database query result: ${JSON.stringify(result.rows)}`);
+
+        if (result.rows.length === 0) {
+            console.warn('Invalid or expired token');
+            return res.status(400).json({message: 'Invalid or expired token'});
+        }
+
+        const user = result.rows[0];
+        console.debug(`User found: ${JSON.stringify(user)}`);
+
+        // Hash the new password
+        const hashedPassword = await bcrypt.hash(password, saltRounds);
+        console.debug(`Hashed password: ${hashedPassword}`);
+
+        // Update user's password in the database and clear the reset token
+        await db.query(
+            "UPDATE users SET password = $1, reset_password_token = NULL, reset_password_expiration = NULL WHERE id = $2",
+            [hashedPassword, user.id]
+        );
+
+        console.debug(`Password updated for user ID: ${user.id}`);
+
+        res.json({message: 'Password has been reset successfully'});
+
+    } catch (err) {
+        console.error('Error resetting password:', err);
+        res.status(500).json({message: 'Server error'});
+    }
+});
 router.get("/", (req, res) => {
     res.redirect("http://localhost:3000/");
 });

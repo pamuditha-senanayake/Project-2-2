@@ -107,7 +107,14 @@ const Login = () => {
                                     placeholder="Enter your password"
                                 />
                             </div>
-
+                            <div className="mb-6">
+                                <a
+                                    href="/forgot-password"
+                                    className="text-sm text-blue-500 hover:underline julius-sans-one-regular"
+                                >
+                                    Forgot Password?
+                                </a>
+                            </div>
                             <button
                                 type="submit"
                                 className="w-full py-2 px-4 julius-sans-one-regular bg-neutral-800 text-white font-semibold rounded-lg shadow-md hover:bg-pink-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"

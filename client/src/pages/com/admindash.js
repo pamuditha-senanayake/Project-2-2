@@ -49,9 +49,16 @@ const Sidebar = () => {
             ],
         },
         {
-            title: 'Orders',
+            title: 'Testimonials',
+            id: 'Testimonials-collapse',
             links: [
-                {text: 'New', url: '#'},
+                {text: 'Testimonials', url: '/admin-testimonials'},
+            ],
+        },
+        {
+            title: 'Appointments',
+            links: [
+                {text: 'Appointments', url: '/view'},
                 {text: 'Processed', url: '#'},
                 {text: 'Shipped', url: '#'},
                 {text: 'Returned', url: '#'},
@@ -77,7 +84,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="julius-sans-one-regular top-0 left-0 h-100 w-72 text-dark overflow-auto"
+        <div className="julius-sans-one-regular top-0 left-0 h-100 w-full text-dark overflow-auto"
              style={{
                  borderRadius: '0.375rem', // 6px border-radius (Bootstrap default)
                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',
