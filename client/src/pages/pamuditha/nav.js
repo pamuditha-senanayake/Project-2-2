@@ -12,7 +12,25 @@ function Navbar() {
 
     React.useEffect(() => {
         const cookie = Cookies.get('diamond');
-        setCookieExists(!!cookie);
+
+        if (cookie) {
+            fetch('http://localhost:3001/role', {
+                method: 'GET',
+                credentials: 'include' // Include credentials to ensure session or cookie is sent
+            })
+                .then(response => response.json())
+                .then(data => {
+                    const role = data?.user?.role;
+                    const hasValidRole = role === 'customer' || role === 'admin';
+                    setCookieExists(hasValidRole);  // Set state based on valid roles
+                })
+                .catch(err => {
+                    console.error('Error fetching user role:', err);
+                    setCookieExists(false);  // If there's an error, don't consider the cookie valid
+                });
+        } else {
+            setCookieExists(false);  // No cookie exists
+        }
 
         // Detect section to scroll after navigating from another page
         const hash = location.hash;
@@ -21,6 +39,7 @@ function Navbar() {
             scrollToSection(sectionId);
         }
     }, [location]);
+
 
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
