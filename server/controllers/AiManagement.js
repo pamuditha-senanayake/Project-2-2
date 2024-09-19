@@ -7,6 +7,7 @@ import env from "dotenv";
 
 env.config();
 
+
 const apiKey = process.env.API_KEY;
 const genAI = new GoogleGenerativeAI(apiKey);
 
