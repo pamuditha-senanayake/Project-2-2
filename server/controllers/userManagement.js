@@ -222,6 +222,53 @@ router.get('/role', async (req, res) => {
     }
 });
 
+router.put('/resetu', async (req, res) => {
+    console.log('Reset Password Endpoint Hit'); // Log when the endpoint is accessed
+
+    if (req.isAuthenticated()) {
+        console.log('User is authenticated'); // Log if the user is authenticated
+
+        const {password} = req.body;
+        console.log('Received Password:', password); // Log the received password
+
+        if (!password) {
+            console.log('Password is missing'); // Log if password is not provided
+            return res.status(400).json({message: 'Password is required'});
+        }
+
+        try {
+            // Hash the new password
+            const hashedPassword = await bcrypt.hash(password, 10);
+            console.log('Hashed Password:', hashedPassword); // Log the hashed password
+
+            const userId = req.user.id; // Get the logged-in user ID from the session
+            console.log('User ID:', userId); // Log the user ID
+
+            // Fetch user from the database
+            const result = await db.query("SELECT * FROM users WHERE id = $1", [userId]);
+            const user = result.rows[0]; // Get the user object
+            console.log('User Found:', user); // Log the user found
+
+            if (!user) {
+                console.log('User not found'); // Log if user is not found
+                return res.status(404).json({message: 'User not found'});
+            }
+
+            // Update user's password
+            await db.query("UPDATE users SET password = $1 WHERE id = $2", [hashedPassword, userId]);
+            console.log('Password updated successfully'); // Log success message
+
+            res.status(200).json({message: 'Password updated successfully'});
+        } catch (error) {
+            console.error('Error resetting password:', error); // Log the error
+            res.status(500).json({message: 'Server error'});
+        }
+    } else {
+        console.log('User is unauthorized'); // Log if the user is unauthorized
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
 
 router.post("/login", (req, res, next) => {
     passport.authenticate("local", (err, user, info) => {

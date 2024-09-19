@@ -24,6 +24,7 @@ import TestimonialPage from './pages/amalie/TestimonialPage';
 import AdminTestimonials from './pages/amalie/AdminTestimonials';
 import Fpass from "./pages/pamuditha/fpassword";
 import Rpass from "./pages/pamuditha/resetpass";
+import Upass from "./pages/pamuditha/userPassReset";
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -63,6 +64,7 @@ const AnimatedRoutes = () => {
                         <Route path="/admin-testimonials" element={<AdminTestimonials/>}/>
                         <Route path="/forgot-password" element={<Fpass/>}/>
                         <Route path="/reset-password/:token" element={<Rpass/>}/>
+                        <Route path="/reset" element={<Upass/>}/>
 
                     </Routes>
                 </div>
