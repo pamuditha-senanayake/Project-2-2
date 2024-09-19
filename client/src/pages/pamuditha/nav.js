@@ -111,7 +111,7 @@ function Navbar() {
                                             <>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/userp">Profile</a>
+                                                   href="/userp">Settings</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/supporthome">Support</a>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#"
