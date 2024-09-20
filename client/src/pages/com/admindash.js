@@ -51,9 +51,9 @@ const Sidebar = () => {
         {
             title: 'Appoinment',
             links: [
-                {text: 'View', url: '/view'},
-                /*{text: 'Processed', url: '#'},
-                {text: 'Shipped', url: '#'},
+                {text: 'Pending Appointment', url: '/view'},
+                {text: 'All Appointment', url: '/viewList'},
+                /*{text: 'Shipped', url: '#'},
                 {text: 'Returned', url: '#'},*/
             ],
         },
