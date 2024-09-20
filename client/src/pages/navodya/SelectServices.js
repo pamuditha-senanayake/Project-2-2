@@ -124,7 +124,7 @@ const SelectServices = () => {
                 </div>
 
                 {/* Right side - Selected Services */}
-                <div className="w-full md:w-1/3 bg-gray-200 p-8">
+                <div className="w-full md:w-1/3 h-auto bg-gray-200 p-8">
                     <h2 className="text-2xl font-bold mb-6">Salon Diamond</h2>
                     {selectedServices.map((service, index) => (
                         <div

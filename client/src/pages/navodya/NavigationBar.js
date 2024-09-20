@@ -2,7 +2,7 @@ import {Link} from "react-router-dom";
 
 const NavigationBar = ({activeTab}) => {
     return (
-        <nav className="flexed bg-gray-500 fixed top-0 left-1/2 transform -translate-x-1/2 w-[97%] z-50 shadow-md mt-2"
+        <nav className="flexed bg-gray-500 fixed top-0 left-1/2 transform -translate-x-1/2 w-[80%] z-50 shadow-md mt-2"
              style={{borderRadius: 40}}>
             <div className="mx-auto max-w-7xl px-2 sm:px-6 lg:px-8">
                 <div className="relative flex h-16 items-center justify-between">
