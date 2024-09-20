@@ -20,6 +20,8 @@ import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
 import Adminhome from "./pages/pamuditha/adminhome";
 import Adminprofile from "./pages/pamuditha/admin_profile";
 import Adminreg from "./pages/pamuditha/admin-register";
+import Myticket from "./pages/shamika/Myticket";
+import Profile from "./pages/shamika/Profile";
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -43,6 +45,8 @@ const AnimatedRoutes = () => {
                         <Route path="/admin-users" element={<Adminp/>}/>
                         <Route path="/supporthome" element={<Support/>}/>
                         <Route path="/ticket" element={<STickets/>}/>
+                        <Route path="/myticket" element={<Myticket/>}/>
+                        <Route path="/profile" element={<Profile/>}/>
                         <Route path="/crud" element={<Ct1/>}/>
                         <Route path="/update/:id" element={<UpdateRecord/>}/>
                         <Route path="/services" element={<SelectServices/>}/>

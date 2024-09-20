@@ -102,7 +102,7 @@ function Myticket() {
                             Ticket   </h1>
                         <div
                             className="lg:mx-20 text-1xl justify-items-stretch text-black julius-sans-one-regular font-bold mb-12 ">
-                            <form onSubmit={handleSubmit}
+                            <form /*onSubmit={handleSubmit}*/
                                   style={{
                                       display: 'flex',
                                       flexDirection: 'column',
@@ -192,7 +192,7 @@ function Myticket() {
                                         type="text"
                                         name="current_date"
                                         className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        value={date}
+                                        /*value={date}*/
                                         readOnly
                                     />
                                 </div>

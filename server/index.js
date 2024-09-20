@@ -18,7 +18,9 @@ import appointmentStatusRoutes from './controllers/appointment.controller.js';
 import appointmentConfirmedRoutes from './controllers/appointment.controller.js';
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
-
+import ticketDeleteRoutes from './controllers/ticket.controller.js';
+import ticketSubmitRoutes from './controllers/ticket.controller.js';
+import ticketStatusRoutes from './controllers/ticket.controller.js';
 dotenv.config();
 
 const app = express();
@@ -53,7 +55,9 @@ app.use('/api/appointmentstatus', appointmentStatusRoutes);
 app.use('/api/appointmentconfirmed', appointmentConfirmedRoutes);
 app.use('/api/appointmentrejected', appointmentRejectedRoutes);
 app.use('/api/appointmentdelete', appointmentDeleteRoutes)
-
+app.use('/api/ticketdelete', ticketDeleteRoutes)
+app.use('/api/ticketsubmit', ticketSubmitRoutes)
+app.use('/api/ticketstatus', ticketStatusRoutes)
 
 app.use(ErrorHandler)
 
