@@ -181,23 +181,15 @@ function Profile() {
                                 </div>
                                 <div style={{display: 'flex', marginBottom: '0.5rem'}}>
                                     <label style={{width: '150px', marginBottom: '0.5rem'}}>Category:</label>
-                                    <select
-                                        name="category"
-                                        className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
-                                        value={ticket.category}
-                                        onChange={handleChange}
-                                    >
-                                        <option value="Booking and Appointment Issues">Booking and Appointment Issues
-                                        </option>
-                                        <option value="Payment and Billing Concerns">Payment and Billing Concerns
-                                        </option>
-                                        <option value="Service-Related Complaints">Service-Related Complaints</option>
-                                        <option value="Technical Problems with the Online Platform">Technical Problems
-                                            with the Online Platform
-                                        </option>
-                                        <option value="Product Inquiries and Issues">Product Inquiries and Issues
-                                        </option>
-                                    </select>
+                                    <input style={{width: '350px', marginBottom: '0.5rem'}}
+                                           type="text"
+                                           name="inquiry_description"
+                                           className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
+                                           value={ticket.category}
+                                           onChange={handleChange}
+
+                                           readOnly
+                                    />
                                 </div>
                                 <div style={{display: 'flex', marginBottom: '0.5rem'}}>
                                     <label style={{width: '150px', marginBottom: '0.5rem'}}> Description:</label>

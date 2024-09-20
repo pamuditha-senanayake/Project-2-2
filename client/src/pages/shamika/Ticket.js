@@ -97,6 +97,32 @@ function Ticket() {
     }, []); // Empty dependency array ensures this runs once on component mount
 
 
+    const [selectedCategory, setSelectedCategory] = useState('');
+    const [catalog, setCatalog] = useState('');
+
+    const handleCategoryChange = (event) => {
+        const category = event.target.value;
+        setSelectedCategory(category);
+        setCatalog(getCatalogForCategory(category));
+    };
+    const getCatalogForCategory = (category) => {
+        switch (category) {
+            case 'Booking and Appointment Issues':
+                return 'Catalog 1';
+            case 'Payment and Billing Concerns':
+                return 'Catalog 2';
+            case 'Service-Related Complaints':
+                return 'Catalog 3';
+            case 'Technical Problems with the Online Platform':
+                return 'Catalog 4';
+            case 'Product Inquiries and Issues':
+                return 'Catalog 5';
+            default:
+                return 'Unknown Catalog';
+        }
+    };
+
+
     return (
 
         <div
@@ -180,6 +206,7 @@ function Ticket() {
                                 </div>
                                 <div style={{marginBottom: '1rem'}}>
                                     <label style={{marginBottom: '0.5rem'}}>Category:</label>
+
                                     <select
                                         name="category"
                                         className="block w-full px-3 py-1 border julius-sans-one-regular border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"

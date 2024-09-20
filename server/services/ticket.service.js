@@ -87,6 +87,16 @@ const deleteTicket = async (ticketId) => {
     return result.rows[0].id; // Return the deleted ticket ID
 };
 
+
+// GET route to fetch categories
+router.get('/categories', async (req, res, next) => {
+    try {
+        const result = await db.query('SELECT id, name FROM categories'); // Adjust your query as needed
+        res.status(200).json(result.rows);
+    } catch (error) {
+        next(error);
+    }
+});
 export default {
     addTicket,
     getTicketById,

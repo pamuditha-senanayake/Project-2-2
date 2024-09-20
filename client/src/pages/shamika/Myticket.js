@@ -5,6 +5,7 @@ import backgroundImage from "../../images/5.jpg"; // For toast messages
 
 function Myticket() {
     const navigate = useNavigate(); // Hook for redirection
+    const { category, catalog } = useNavigate().state || {};
     const initialTicketState = {
         ticket_no: '', // Automatically generated ticket number
         customer_id: '',
@@ -45,6 +46,15 @@ function Myticket() {
         }
     };
 
+
+    // Mapping of categories to catalogs
+    const categoryToCatalogMap = {
+        'Booking and Appointment Issues': 'Catelog 1',
+        'Payment and Billing Concerns': 'Catelog 2',
+        'Service-Related Complaints': 'Catelog 3',
+        'Technical Problems with the Online Platform': 'Catelog 4',
+        'Product Inquiries and Issues': 'Catelog 5',
+    };
     // Auto-response messages based on the category
     const getAutoResponse = (category) => {
         const responses = {
@@ -156,23 +166,16 @@ function Myticket() {
                                 </div>
                                 <div style={{display: 'flex', marginBottom: '0.5rem'}}>
                                     <label style={{width: '150px', marginBottom: '0.5rem'}}>Category:</label>
-                                    <select
-                                        name="category"
+                                    <input style={{width: '350px', marginBottom: '0.5rem'}}
+                                        type="text"
+                                        name="inquiry_description"
                                         className="lg:mx-20 border julius-sans-one-regular h-8 border-gray-300 rounded-md shadow-sm focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 sm:text-sm"
                                         value={ticket.category}
                                         onChange={handleChange}
-                                    >
-                                        <option value="Booking and Appointment Issues">Booking and Appointment Issues
-                                        </option>
-                                        <option value="Payment and Billing Concerns">Payment and Billing Concerns
-                                        </option>
-                                        <option value="Service-Related Complaints">Service-Related Complaints</option>
-                                        <option value="Technical Problems with the Online Platform">Technical Problems
-                                            with the Online Platform
-                                        </option>
-                                        <option value="Product Inquiries and Issues">Product Inquiries and Issues
-                                        </option>
-                                    </select>
+
+                                        readOnly
+
+                                    />
                                 </div>
                                 <div style={{display: 'flex', marginBottom: '0.5rem'}}>
                                     <label style={{width: '150px', marginBottom: '0.5rem'}}> Description:</label>
@@ -247,6 +250,13 @@ function Myticket() {
 
 
                                 <div className="lg:mx-20 flex 1 space-x-4 pl-12 mt-6-">
+
+                                    <a
+                                        href="/catelog"
+                                        className="flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-black text-white border-[1px] rounded-lg transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                                    >
+                                        Catelog
+                                    </a>
                                     <a
                                         href="/profile"
                                         className=" flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-pink-500 text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
@@ -266,7 +276,7 @@ function Myticket() {
                 </div>
             </div>
         </div>
-    );
+        );
 }
 
 export default Myticket;
