@@ -156,29 +156,42 @@ router.get('/status/:appointmentId', async (req, res) => {
     }
 });
 
-router.delete('/delete/:appointmentId', async (req, res) => {
+router.delete('/delete', async (req, res) => {
+    console.log("DELETE request received");
+
     if (req.isAuthenticated()) {
-        const {appointmentId} = req.params;
+        const {appointmentId} = req.query;  // Fetch the appointmentId from the query parameters
+
+        console.log(`Authenticated user attempting to delete appointment with ID: ${appointmentId}`);
 
         // Ensure the appointmentId is provided
         if (!appointmentId) {
+            console.error('Appointment ID is missing');
             return res.status(400).json({message: 'Appointment ID is required'});
         }
 
         try {
             // Delete related services and time slots first
-            await db.query('DELETE FROM appointment_services WHERE appointment_id = $1', [appointmentId]);
-            await db.query('DELETE FROM appointment_time_slots WHERE appointment_id = $1', [appointmentId]);
+            console.log(`Deleting services for appointment ID: ${appointmentId}`);
+            const deleteServicesResult = await db.query('DELETE FROM appointment_services WHERE appointment_id = $1', [appointmentId]);
+            console.log('Services deleted:', deleteServicesResult.rowCount);
+
+            console.log(`Deleting time slots for appointment ID: ${appointmentId}`);
+            const deleteTimeSlotsResult = await db.query('DELETE FROM appointment_time_slots WHERE appointment_id = $1', [appointmentId]);
+            console.log('Time slots deleted:', deleteTimeSlotsResult.rowCount);
 
             // Then delete the appointment
-            await db.query('DELETE FROM appointments WHERE id = $1', [appointmentId]);
+            console.log(`Deleting appointment with ID: ${appointmentId}`);
+            const deleteAppointmentResult = await db.query('DELETE FROM appointments WHERE id = $1', [appointmentId]);
+            console.log('Appointment deleted:', deleteAppointmentResult.rowCount);
 
             res.status(200).json({message: 'Appointment deleted successfully'});
         } catch (err) {
-            console.log(err);
+            console.error('Error during deletion:', err);
             res.status(500).json({error: 'Error deleting appointment'});
         }
     } else {
+        console.error('Unauthorized request: user not authenticated');
         res.status(401).json({error: 'Unauthorized'});
     }
 });

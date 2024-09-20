@@ -177,6 +177,35 @@ const updateRejectedAppointment = async (appointmentId) => {
     }
 };
 
+const getDoneAppointmentDetails = async () => {
+    try {
+        const result = await db.query(
+            `SELECT a.user_id,
+                    u.firstname                         AS firstname,
+                    a.id                                AS appointment_id,
+                    a.appointment_date,
+                    p.name                              AS professional_name,
+                    ARRAY_AGG(DISTINCT s.name)          AS service_names,
+                    ARRAY_AGG(DISTINCT ats.time_number) AS time_numbers,
+                    a.total_time,
+                    a.total_cost,
+                    a.status                            AS status
+             FROM appointments a
+                      JOIN appointment_services aps ON a.id = aps.appointment_id
+                      JOIN services s ON aps.service_id = s.id
+                      JOIN appointment_time_slots ats ON a.id = ats.appointment_id
+                      JOIN professionals p ON a.professional_id = p.id
+                      JOIN users u ON a.user_id = u.id
+             GROUP BY a.id, p.name, u.firstname, a.appointment_date, a.status
+             ORDER BY a.id ASC` // Change to order by appointment_id in ascending order
+        );
+
+        return result.rows; // Return an array of objects containing all required fields, including appointment_date and status
+    } catch (error) {
+        throw error;
+    }
+};
+
 
 export default {
     addAppointment,
@@ -189,5 +218,6 @@ export default {
     getAllAppointmentDetails,
     getAppointmentStatus,
     updateConfirmedAppointment,
-    updateRejectedAppointment
+    updateRejectedAppointment,
+    getDoneAppointmentDetails
 };

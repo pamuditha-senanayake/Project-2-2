@@ -79,6 +79,7 @@ router.post('/confirm', async (req, res, next) => {
     }
 });*/
 
+/*
 router.delete('/delete/:appointmentId', async (req, res, next) => {
     const {appointmentId} = req.params;
 
@@ -100,6 +101,7 @@ router.delete('/delete/:appointmentId', async (req, res, next) => {
         next(error);
     }
 });
+*/
 
 router.get('/unavailable/:professional_id/:appointment_date', async (req, res, next) => {
     const {professional_id, appointment_date} = req.params;
@@ -154,6 +156,16 @@ router.put('/rejected/:appointmentId', async (req, res, next) => {
     try {
         const status = await appointment.updateRejectedAppointment(appointmentId);
         res.send(status);
+
+    } catch (error) {
+        next(error)
+    }
+});
+
+router.get('/all/done', async (req, res, next) => {
+    try {
+        const appointments = await appointment.getDoneAppointmentDetails();
+        res.send(appointments);
 
     } catch (error) {
         next(error)
