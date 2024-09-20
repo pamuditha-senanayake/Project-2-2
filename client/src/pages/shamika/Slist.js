@@ -102,9 +102,9 @@ function Slist() {
                 backgroundPosition: 'center',
             }}
         >
-            <div className="flex flex-row w-[80%] h-[500px] bg-opacity-70">
+            <div className="lg:mx-10 flex flex-row w-[90%] h-[500px] bg-opacity-70">
                 <div
-                    className="div flex flex-col w-[60%] h-full justify-center pl-6 pamlogin1"
+                    className="div flex flex-col w-[80%] h-full justify-center pl-6 pamlogin1"
                     style={{
                         background: 'rgb(87, 40, 215, 0.2)',
                         borderRadius: '0',
@@ -145,21 +145,37 @@ function Slist() {
                                     ))}
                                     </tbody>
                                 </table>
+
                             </div>
 
                         </div>
                     </div>
                 </div>
-                <div className="lg:mx-10 bottflex space-x-8 pl-12">
-                    <a
-                        href="/supporthome"
-                        className="flex items-center justify-center h-10 julius-sans-one-regular w-40 bg-black text-white border-[1px]  rounded-lg  transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
-                    >
-                        Back
-                    </a>
-                </div>
+
             </div>
+            <div className="flex space-x-4 pl-12 mb-1">
+                <a
+                    href="/supporthome"
+                    className="flex items-center justify-center h-8 julius-sans-one-regular w-40 bg-black text-white border-[1px] rounded-lg transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                >
+                    Back
+                </a>
+                <button
+                    type="update"
+                    className="flex items-center justify-center h-8 julius-sans-one-regular w-40 bg-pink-400 text-white border-[1px] rounded-lg transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                >
+                    Update
+                </button>
+                <button
+                    type="delete"
+                    className="flex items-center justify-center h-8 julius-sans-one-regular w-40 bg-pink-600 text-white border-[1px] rounded-lg transition-transform transform hover:translate-y-[-2px] hover:shadow-xl hover:translate-x-[-5px]"
+                >
+                    Delete
+                </button>
+            </div>
+
         </div>
+
     );
 }
 

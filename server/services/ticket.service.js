@@ -46,7 +46,7 @@ const updateTicket = async (ticketId, updatedData) => {
         inquiry_description,
         status,
         catalog,
-        notifications,
+        notification,
         remarks
     } = updatedData;
 
@@ -60,7 +60,7 @@ const updateTicket = async (ticketId, updatedData) => {
             inquiry_description = $6,
             status = $7,
             catalog = $8,
-            notifications = $9,
+            notification = $9,
             remarks = $10
          WHERE id = $11 RETURNING id`,
         [ticket_no, user_id, email, contact_no, category, inquiry_description, status, catalog, notifications, remarks, ticketId]

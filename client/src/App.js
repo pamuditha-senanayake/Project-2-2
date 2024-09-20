@@ -23,6 +23,7 @@ import Adminreg from "./pages/pamuditha/admin-register";
 import Myticket from "./pages/shamika/Myticket";
 import Profile from "./pages/shamika/Profile";
 import Catelog from "./pages/shamika/Catelog";
+import Slist from "./pages/shamika/Slist";
 const AnimatedRoutes = () => {
     const location = useLocation();
 
@@ -48,6 +49,7 @@ const AnimatedRoutes = () => {
                         <Route path="/myticket" element={<Myticket/>}/>
                         <Route path="/profile" element={<Profile/>}/>
                         <Route path="/catelog" element={<Catelog/>}/>
+                        <Route path="/slist" element={<Slist/>}/>
                         <Route path="/crud" element={<Ct1/>}/>
                         <Route path="/update/:id" element={<UpdateRecord/>}/>
                         <Route path="/services" element={<SelectServices/>}/>
