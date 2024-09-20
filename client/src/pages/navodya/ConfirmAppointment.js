@@ -61,20 +61,33 @@ const ConfirmAppointment = () => {
     };
 
     const handleDelete = (appointmentId) => {
-        console.log("id " + appointmentId);
+        console.log("Attempting to delete appointment with ID:", appointmentId);
 
+        // Ensure the appointment status is "pending"
         if (appointmentStatus === "pending") {
-            fetch(`http://localhost:3001/api/user/delete/${appointmentId}`, {
+            console.log("Appointment status is pending, proceeding with deletion.");
+
+            // Make DELETE request to the server, passing appointmentId as a query parameter
+            fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
                 method: 'DELETE',
                 credentials: 'include',
             })
-                .then(response => response.json())
-                .then(data => {
-                    console.log(data); // Optional: Log the response data for debugging
-                    // You can add additional code here if needed, such as updating state or UI
+                .then(response => {
+                    // Check if the response is OK (status in the range 200-299)
+                    if (!response.ok) {
+                        throw new Error(`Failed to delete: ${response.statusText}`);
+                    }
+                    return response.json();
                 })
-                .catch(error => console.error('Delete error:', error)); // Debug log
+                .then(data => {
+                    console.log("Appointment deletion successful:", data);
+                    // Optional: Update state or UI here if needed
+                })
+                .catch(error => {
+                    console.error('Delete error:', error.message);
+                });
         } else {
+            console.warn("Cannot delete appointment. Status is not pending.");
             setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };

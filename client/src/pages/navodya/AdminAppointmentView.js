@@ -27,6 +27,12 @@ const AdminAppointmentView = () => {
                 `http://localhost:3001/api/appointmentconfirmed/confirmed/${id}`
             );
             console.log('Appointment confirmed:', response.data);
+
+            // Option 1: Reload the page
+            window.location.reload();
+
+            // Option 2: Navigate back to the same page (if using React Router)
+            // navigate('/appointments');  // assuming you have the route
         } catch (err) {
             console.error(err);
         }
@@ -43,6 +49,12 @@ const AdminAppointmentView = () => {
                 `http://localhost:3001/api/appointmentrejected/rejected/${id}`
             );
             console.log('Appointment rejected:', response.data);
+
+            // Option 1: Reload the page
+            window.location.reload();
+
+            // Option 2: Navigate back to the same page
+            // navigate('/appointments');
         } catch (err) {
             console.error(err);
         }
