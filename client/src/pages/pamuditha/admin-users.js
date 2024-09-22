@@ -181,12 +181,13 @@ const Layout = () => {
         doc.text('User Report', 14, 22);
 
         // Define table column headers and data
-        const columns = ['User ID', 'Name', 'Email', 'Phone Number'];
+        const columns = ['User ID', 'Name', 'Email', 'Phone Number', 'Date'];
         const data = filteredUsers.map(user => [
             user.id,
             user.firstname,
             user.email,
-            user.phone_number
+            user.phone_number,
+            new Date(user.date).toLocaleDateString()
         ]);
 
         // Add table to PDF
@@ -253,6 +254,7 @@ const Layout = () => {
                             <th className="py-2 px-4 text-left">Name</th>
                             <th className="py-2 px-4 text-left">Email</th>
                             <th className="py-2 px-4 text-left">Phone Number</th>
+                            <th className="py-2 px-4 text-left">Date</th>
                             <th className="py-2 px-4 text-left">Actions</th>
                         </tr>
                         </thead>
@@ -263,6 +265,7 @@ const Layout = () => {
                                 <td className="py-2 px-4 text-gray-700">{user.firstname}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.email}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.phone_number}</td>
+                                <td className="py-2 px-4 text-gray-700">{new Date(user.date).toLocaleDateString()}</td>
                                 <td className="py-2 px-4">
                                     <button
                                         className="text-blue-500 hover:text-blue-700 mr-2"

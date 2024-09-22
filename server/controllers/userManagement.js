@@ -144,9 +144,10 @@ router.post("/register", async (req, res) => {
                     res.status(500).json({message: "Server error during registration"});
                 } else {
                     const result = await db.query(
-                        "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING *",
+                        "INSERT INTO users (email, password, role, date) VALUES ($1, $2, $3, CURRENT_DATE) RETURNING *",
                         [email, hash, role]
                     );
+
                     const user = result.rows[0];
 
                     req.login(user, (err) => {
