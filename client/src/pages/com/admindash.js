@@ -64,15 +64,7 @@ const Sidebar = () => {
                 {text: 'Testimonials', url: '/admin-testimonials'},
             ],
         },
-        {
-            title: 'Appointments',
-            links: [
-                {text: 'Appointments', url: '/view'},
-                {text: 'Processed', url: '#'},
-                {text: 'Shipped', url: '#'},
-                {text: 'Returned', url: '#'},
-            ],
-        },
+
         {
             title: 'Account',
             links: [
