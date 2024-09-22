@@ -1,10 +1,9 @@
-import pg from "pg";
-import env from "dotenv";
+import pg from 'pg';
+import env from 'dotenv';
 
 env.config();
 
-
-const db = new pg.Client({
+const pool = new pg.Pool({
     user: process.env.PG_USER,
     host: process.env.PG_HOST,
     database: process.env.PG_DATABASE,
@@ -12,6 +11,4 @@ const db = new pg.Client({
     port: process.env.PG_PORT,
 });
 
-
-db.connect();
-export default db;
+export default pool;
