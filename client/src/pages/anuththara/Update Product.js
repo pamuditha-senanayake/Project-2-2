@@ -59,7 +59,7 @@ const UpdateProduct = () => {
             });
 
             alert('Product updated successfully!');
-            navigate('/ProductList');
+            navigate('/ProductLists');
         } catch (error) {
             console.error('Error updating product:', error);
             alert('Error updating product. Please try again.');

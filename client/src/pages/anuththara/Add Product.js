@@ -72,7 +72,7 @@ const AddItem = () => {
             setImage(null);
             setImagePreview(null);
 
-            navigate('/ProductList');
+            navigate('/ProductLists');
 
         } catch (error) {
             console.error('Error adding product:', error);

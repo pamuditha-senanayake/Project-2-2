@@ -45,7 +45,7 @@ const Sidebar = () => {
             id: 'dashboard-collapse',
             links: [
                 {text: 'Overview', url: '/products'},
-                {text: 'Product List', url: '/ProductList'}
+                {text: 'Product List', url: '/ProductLists'}
 
 
             ],

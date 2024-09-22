@@ -43,7 +43,7 @@ const StatsPage = () => {
                 </div>
             </div>
             <button
-                onClick={() => navigate('/ProductList')}
+                onClick={() => navigate('/ProductLists')}
                 className="mt-6 px-4 py-2 bg-blue-500 text-white rounded-lg shadow hover:bg-blue-600"
             >
                 Go to Product List
