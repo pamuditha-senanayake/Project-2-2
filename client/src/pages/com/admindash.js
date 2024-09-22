@@ -49,6 +49,15 @@ const Sidebar = () => {
             ],
         },
         {
+            title: 'Appoinment',
+            links: [
+                {text: 'Pending Appointment', url: '/view'},
+                {text: 'All Appointment', url: '/viewList'},
+                /*{text: 'Shipped', url: '#'},
+                {text: 'Returned', url: '#'},*/
+            ],
+        },
+        {
             title: 'Testimonials',
             id: 'Testimonials-collapse',
             links: [

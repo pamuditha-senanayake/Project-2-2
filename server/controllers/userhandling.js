@@ -1,5 +1,6 @@
 import express from 'express';
 import db from '../db.js';
+import service from "../services/appointment.service.js"; // Replace with your actual DB connection module
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
 
@@ -102,6 +103,101 @@ router.delete('/delete/:id', async (req, res) => {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+
+router.post('/confirm', async (req, res, next) => {
+    console.log('Request received at /confirm');
+
+    if (req.isAuthenticated()) {
+        console.log('User is authenticated');
+
+        try {
+            const uid = req.user.id;
+            const {appointmentData, serviceIds, time_numbers} = req.body;
+
+            // Ensure the required data is present
+            if (!appointmentData || !Array.isArray(serviceIds) || !Array.isArray(time_numbers)) {
+                return res.status(400).json({message: 'Invalid input data'});
+            }
+
+            // Create the appointment
+            const appointmentId = await service.addAppointment(appointmentData, uid);
+
+            // Add services and time slots to the appointment
+            await service.addAppointmentServices(appointmentId, serviceIds);
+
+            await service.addAppointmentTimeSlots(appointmentId, time_numbers);
+
+            res.status(201).json({appointmentId});
+        } catch (error) {
+            console.error('Error occurred:', error);
+            next(error);
+        }
+    } else {
+        console.log('User is not authenticated');
+        res.status(401).json({message: 'Unauthorized'});
+    }
+});
+
+router.get('/status/:appointmentId', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {appointmentId} = req.params;
+        try {
+            const status = await service.getAppointmentStatus(appointmentId);
+
+            if (status) {
+                res.json(status);
+            } else {
+                res.status(404).json({error: 'Appointment not found'});
+            }
+        } catch (error) {
+            console.error(error);
+            res.status(500).json({error: 'Error fetching appointment status'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+router.delete('/delete', async (req, res) => {
+    console.log("DELETE request received");
+
+    if (req.isAuthenticated()) {
+        const {appointmentId} = req.query;  // Fetch the appointmentId from the query parameters
+
+        console.log(`Authenticated user attempting to delete appointment with ID: ${appointmentId}`);
+
+        // Ensure the appointmentId is provided
+        if (!appointmentId) {
+            console.error('Appointment ID is missing');
+            return res.status(400).json({message: 'Appointment ID is required'});
+        }
+
+        try {
+            // Delete related services and time slots first
+            console.log(`Deleting services for appointment ID: ${appointmentId}`);
+            const deleteServicesResult = await db.query('DELETE FROM appointment_services WHERE appointment_id = $1', [appointmentId]);
+            console.log('Services deleted:', deleteServicesResult.rowCount);
+
+            console.log(`Deleting time slots for appointment ID: ${appointmentId}`);
+            const deleteTimeSlotsResult = await db.query('DELETE FROM appointment_time_slots WHERE appointment_id = $1', [appointmentId]);
+            console.log('Time slots deleted:', deleteTimeSlotsResult.rowCount);
+
+            // Then delete the appointment
+            console.log(`Deleting appointment with ID: ${appointmentId}`);
+            const deleteAppointmentResult = await db.query('DELETE FROM appointments WHERE id = $1', [appointmentId]);
+            console.log('Appointment deleted:', deleteAppointmentResult.rowCount);
+
+            res.status(200).json({message: 'Appointment deleted successfully'});
+        } catch (err) {
+            console.error('Error during deletion:', err);
+            res.status(500).json({error: 'Error deleting appointment'});
+        }
+    } else {
+        console.error('Unauthorized request: user not authenticated');
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
 
 //cart
 //add to cart
@@ -241,10 +337,6 @@ router.put("/checkout", async (req, res) => {
 //         res.status(500).json({ error: 'Server error' });
 //     }
 // });
-
-
-
-
 
 
 export default router;
