@@ -19,6 +19,12 @@ import appointmentConfirmedRoutes from './controllers/appointment.controller.js'
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 
+
+//Anuththara
+import productsRoutes from './controllers/products.controller.js';
+
+
+
 dotenv.config();
 
 const app = express();
@@ -72,6 +78,10 @@ app.use('/api/user', UserH);
 
 
 // app.use("/api/ai", aiController); // Updated route for AiManagement
+//Anuththara
+app.use('/api/products',productsRoutes)
+app.use('/uploads', express.static('uploads'));
+
 
 app.get("/", (req, res) => {
     res.redirect("http://localhost:3000/home");
@@ -84,6 +94,11 @@ db.query("SELECT 1")
         console.log('DB connection succeeded.');
     })
     .catch(err => console.log('DB connection failed.\n' + err));
+
+
+
+
+
 
 
 app.use((req, res, next) => {

@@ -110,17 +110,12 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
 // Fetch product statistics
 router.get('/stats', async (req, res, next) => {
     try {
-        const products = await service.getAllProducts1();
-        const totalProducts = products.length;
-        const totalValue = products.reduce((sum, product) => sum + product.price * product.quantity, 0);
-        const outOfStock = products.filter(product => product.quantity === 0).length;
-
-        res.json({ totalProducts, totalValue, outOfStock });
+        const stats = await service.getStats();
+        res.json(stats);
     } catch (error) {
         next(error);
     }
 });
-
 
 
 export default router;
