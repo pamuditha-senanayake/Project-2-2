@@ -1,7 +1,9 @@
 import React, {useEffect, useState} from 'react';
 import Navigation from './nav';
+import {useNavigate} from 'react-router-dom';
 import homepic4 from "../../images/f.jpg"; // Adjust the path if necessary
 import homepic3 from "../../images/a.jpg";
+import Swal from 'sweetalert2'; // Import SweetAlert
 
 const UserProfile = () => {
     const [userData, setUserData] = useState(null);
@@ -80,31 +82,67 @@ const UserProfile = () => {
     };
 
     const handleDelete = async () => {
-        if (window.confirm('Are you sure you want to delete your profile?')) {
-            try {
-                const response = await fetch(`http://localhost:3001/api/user/delete/${userData.id}`, {
-                    method: 'DELETE',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    credentials: 'include',
-                });
+        const swalWithBootstrapButtons = Swal.mixin({
+            customClass: {
+                confirmButton: "btn btn-success",
+                cancelButton: "btn btn-danger"
+            },
+            buttonsStyling: false
+        });
 
-                if (response.ok) {
-                    console.log('User deleted');
-                    // Redirect or handle user deletion, e.g., navigate to login page
-                } else {
-                    console.error('Failed to delete user, status:', response.status);
+        swalWithBootstrapButtons.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonText: "Yes, delete it!",
+            cancelButtonText: "No, cancel!",
+            reverseButtons: true
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`http://localhost:3001/api/user/delete/${userData.id}`, {
+                        method: 'DELETE',
+                        headers: {
+                            'Content-Type': 'application/json',
+                        },
+                        credentials: 'include',
+                    });
+
+                    if (response.ok) {
+                        swalWithBootstrapButtons.fire({
+                            title: "Deleted!",
+                            text: "Your profile has been deleted.",
+                            icon: "success"
+                        }).then(() => {
+                            navigate('/'); // Redirect to home page after deletion
+                        });
+                    } else {
+                        console.error('Failed to delete user, status:', response.status);
+                    }
+                } catch (error) {
+                    console.error('Error deleting user:', error);
                 }
-            } catch (error) {
-                console.error('Error deleting user:', error);
+            } else if (result.dismiss === Swal.DismissReason.cancel) {
+                swalWithBootstrapButtons.fire({
+                    title: "Cancelled",
+                    text: "Your profile is safe :)",
+                    icon: "error"
+                });
             }
-        }
+        });
+    };
+
+
+    const navigate = useNavigate();
+    const handleReset = () => {
+        navigate('/reset'); // Redirect to /reset
     };
 
     if (!userData) {
         return <div>Loading...</div>;
     }
+
 
     return (
         <div className="flex flex-col h-screen w-full julius-sans-one-regular"
@@ -131,8 +169,11 @@ const UserProfile = () => {
 
                         <div className="flex order-2 w-full h-[80%] bg-pink-700 rounded-2xl">
                             <div className="max-w-4xl mx-auto p-8 rounded-lg text-white">
+
                                 <div className="flex flex-wrap -mx-4">
+
                                     <div className="w-full md:w-1/2 px-4 mb-6">
+
                                         <div>
                                             <label htmlFor="firstname" className="block font-bold mb-2">First
                                                 Name</label>
@@ -205,12 +246,23 @@ const UserProfile = () => {
                             </div>
                         </div>
                     </div>
-                    <div className="w-[30%] h-full rounded-2xl justify-between bg-pink-300 px-2 pt-3">
-                        <h1 className="julius-sans-one-regular text-3xl">Do you want to delete the profile?</h1>
+                    <div className="w-[30%] h-full rounded-4xl justify-between bg-pink-300 px-2 pt-3">
+                        <h1 className="julius-sans-one-regular text-4xl mt-[60px]">Settings</h1>
+                        <br/><br/>
+                        <h1 className="julius-sans-one-regular text-2xl">Do you want to delete the profile?</h1>
                         <button
                             className="bg-pink-600 julius-sans-one-regular hover:bg-pink-400 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out mt-auto"
                             onClick={handleDelete}>
                             Delete
+                        </button>
+                        <br/><br/>
+                        <br/><br/>
+
+                        <h1 className="julius-sans-one-regular text-2xl">Reset the password</h1>
+                        <button
+                            className="bg-pink-600 julius-sans-one-regular hover:bg-pink-400 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out mt-auto"
+                            onClick={handleReset}>
+                            Reset
                         </button>
                     </div>
                 </div>

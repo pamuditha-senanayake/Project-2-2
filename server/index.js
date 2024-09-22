@@ -18,6 +18,7 @@ import appointmentStatusRoutes from './controllers/appointment.controller.js';
 import appointmentConfirmedRoutes from './controllers/appointment.controller.js';
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
+import testimonialRoutes from './controllers/testimonial.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
 
 dotenv.config();
@@ -53,6 +54,8 @@ app.use('/api/appointmentdetails', appointmentDetailsRoutes);
 app.use('/api/appointmentstatus', appointmentStatusRoutes);
 app.use('/api/appointmentconfirmed', appointmentConfirmedRoutes);
 app.use('/api/appointmentrejected', appointmentRejectedRoutes);
+app.use('/api/appointmentdelete', appointmentDeleteRoutes)
+app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/appointmentdelete', appointmentDeleteRoutes);
 app.use('/api/appointmentdone', appointmentDoneRoutes);
 
