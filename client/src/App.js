@@ -17,6 +17,14 @@ import UpdateRecord from "./pages/com/updatec";
 import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
 import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
+import Adminhome from "./pages/pamuditha/adminhome";
+import Adminprofile from "./pages/pamuditha/admin_profile";
+import Adminreg from "./pages/pamuditha/admin-register";
+import TestimonialPage from './pages/amalie/TestimonialPage';
+import AdminTestimonials from './pages/amalie/AdminTestimonials';
+import Fpass from "./pages/pamuditha/fpassword";
+import Rpass from "./pages/pamuditha/resetpass";
+import Upass from "./pages/pamuditha/userPassReset";
 import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
@@ -54,6 +62,14 @@ const AnimatedRoutes = () => {
                         <Route path="/view" element={<AdminAppointmentView/>}/>
                         <Route path="/pay" element={<Home/>}/>
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
+                        <Route path="/adminhome" element={<Adminhome/>}/>
+                        <Route path="/adminprofile" element={<Adminprofile/>}/>
+                        <Route path="/adminreg" element={<Adminreg/>}/>
+                        <Route path="/testimonials" element={<TestimonialPage/>}/>
+                        <Route path="/admin-testimonials" element={<AdminTestimonials/>}/>
+                        <Route path="/forgot-password" element={<Fpass/>}/>
+                        <Route path="/reset-password/:token" element={<Rpass/>}/>
+                        <Route path="/reset" element={<Upass/>}/>
                         <Route path="/cart" element={<Cart/>}/>
                         <Route path="/ProductList" element={<ProductList/>}/>
                         <Route path="/Checkout" element={<Checkout/>}/>
