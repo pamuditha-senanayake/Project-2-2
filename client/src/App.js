@@ -25,6 +25,11 @@ import AdminTestimonials from './pages/amalie/AdminTestimonials';
 import Fpass from "./pages/pamuditha/fpassword";
 import Rpass from "./pages/pamuditha/resetpass";
 import Upass from "./pages/pamuditha/userPassReset";
+import Cart from "./pages/sasanka/Cart";
+import Checkout from "./pages/sasanka/Checkout";
+import ProductList  from "./pages/sasanka/ProductList";
+import Ca from "./pages/sasanka/ca";
+
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -65,6 +70,10 @@ const AnimatedRoutes = () => {
                         <Route path="/forgot-password" element={<Fpass/>}/>
                         <Route path="/reset-password/:token" element={<Rpass/>}/>
                         <Route path="/reset" element={<Upass/>}/>
+                        <Route path="/cart" element={<Cart/>}/>
+                        <Route path="/ProductList" element={<ProductList/>}/>
+                        <Route path="/Checkout" element={<Checkout/>}/>
+                        <Route path="/ca" element={<Ca/>}/>
 
                     </Routes>
                 </div>
