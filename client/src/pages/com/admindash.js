@@ -40,12 +40,19 @@ const Sidebar = () => {
             ],
         },
         {
-
-            title: 'Inventory',
-            id: 'dashboard-collapse',
+            title: 'User Dashboard',
             links: [
-                {text: 'Overview', url: '/products'},
-                {text: 'Product List', url: '/ProductLists'}
+                {text: 'User-List', url: '/admin-users'},
+
+
+            ],
+        },
+        {
+            title: 'Service/Category',
+            links: [
+                {text: 'Add New Service', url: '/af'},
+                {text: 'Add New Category', url: '/cadd'},
+                {text: 'Services', url: '/vstb'},
 
 
             ],
