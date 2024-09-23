@@ -47,7 +47,6 @@ const ConfirmAppointment = () => {
         }
     }, [appointmentId]);
 
-
     const handlePay = async () => {
         try {
             navigate("/pay", {
@@ -60,38 +59,41 @@ const ConfirmAppointment = () => {
         }
     };
 
-    const handleDelete = (appointmentId) => {
+    const handleDelete = async (appointmentId) => {
         console.log("Attempting to delete appointment with ID:", appointmentId);
 
         // Ensure the appointment status is "pending"
         if (appointmentStatus === "pending") {
             console.log("Appointment status is pending, proceeding with deletion.");
 
-            // Make DELETE request to the server, passing appointmentId as a query parameter
-            fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            })
-                .then(response => {
-                    // Check if the response is OK (status in the range 200-299)
-                    if (!response.ok) {
-                        throw new Error(`Failed to delete: ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Appointment deletion successful:", data);
-                    // Optional: Update state or UI here if needed
-                })
-                .catch(error => {
-                    console.error('Delete error:', error.message);
+            try {
+                // Make DELETE request to the server, passing appointmentId as a query parameter
+                const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
                 });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to delete: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log("Appointment deletion successful:", data);
+
+                // Show an alert to indicate successful deletion
+                alert("Appointment deleted successfully.");
+
+                // Optional: Navigate back to the appointments list after deletion
+                navigate('/appointments'); // Assuming you have a route to show the appointments list
+            } catch (error) {
+                console.error('Delete error:', error.message);
+                setErrorMsg("An error occurred while trying to delete the appointment. Please try again later.");
+            }
         } else {
             console.warn("Cannot delete appointment. Status is not pending.");
             setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };
-
 
     const renderStatusContent = () => {
         switch (appointmentStatus) {
@@ -136,7 +138,11 @@ const ConfirmAppointment = () => {
 
                     <div className="bg-white rounded-lg p-8">
                         {errorMsg && (
-                            <div className="text-red-500 text-center mb-4">{errorMsg}</div>
+                            <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4"
+                                 role="alert">
+                                <p className="font-bold">Be Warned</p>
+                                <p>{errorMsg}</p>
+                            </div>
                         )}
                         <button
                             onClick={() => handleDelete(appointmentId)}
@@ -155,13 +161,6 @@ const ConfirmAppointment = () => {
                         serviceNames.map((service, index) => (
                             <div key={index} className="mb-2">
                                 <h3 className="text-lg font-semibold">{service}</h3>
-                                {/* Assuming price and duration are not provided, they need to be displayed if available */}
-                                {/* <p>LKR {service.price}</p> */}
-                                {/* <p>
-                                    {service.duration?.hours ? `${service.duration.hours} hr` : ''}
-                                    {service.duration?.hours && service.duration?.minutes ? ' ' : ''}
-                                    {service.duration?.minutes ? `${service.duration.minutes} min` : ''}
-                                </p> */}
                             </div>
                         ))
                     ) : (

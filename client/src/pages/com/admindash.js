@@ -40,8 +40,13 @@ const Sidebar = () => {
             ],
         },
         {
-            title: 'User Dashboard',
+
+            title: 'Inventory',
+            id: 'dashboard-collapse',
             links: [
+                {text: 'Overview', url: '/products'},
+                {text: 'Product List', url: '/ProductLists'}
+
                 {text: 'User-List', url: '/admin-users'},
 
 

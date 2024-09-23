@@ -25,6 +25,12 @@ import addService from './controllers/AddService.js';
 import productsController from './controllers/productsController.js';
 import cartController from './controllers/cartController.js'; // Ensure this import is correct
 import checkoutRoutes from './controllers/checkoutController.js'
+
+//Anuththara
+import productsRoutes from './controllers/products.controller.js';
+
+
+
 dotenv.config();
 
 const app = express();
@@ -85,6 +91,10 @@ app.use('/service', addService);
 app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
+//Anuththara
+app.use('/api/products',productsRoutes)
+app.use('/uploads', express.static('uploads'));
+
 
 app.get("/", (req, res) => {
     res.redirect("http://localhost:3000/home");
