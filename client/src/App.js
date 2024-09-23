@@ -30,6 +30,12 @@ import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
 import Ca from "./pages/sasanka/ca";
 
+import Addf from './pages/ishan/Addf';
+import Vservice from './pages/ishan/Vservice';
+import ScategoryAdd from "./pages/ishan/ScategoryAdd";
+import Vservice_tb from "./pages/ishan/Vservice_tb";
+import Service from './pages/ishan/Service';
+
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -74,6 +80,13 @@ const AnimatedRoutes = () => {
                         <Route path="/ProductList" element={<ProductList/>}/>
                         <Route path="/Checkout" element={<Checkout/>}/>
                         <Route path="/ca" element={<Ca/>}/>
+
+
+                        <Route path="/af" element={<Addf/>}/>
+                        <Route path="/vs" element={<Vservice/>}/>
+                        <Route path="/cadd" element={<ScategoryAdd/>}/>
+                        <Route path="/vstb" element={<Vservice_tb/>}/>
+                        <Route path="/services" element={<Service/>}/>
 
                     </Routes>
                 </div>
