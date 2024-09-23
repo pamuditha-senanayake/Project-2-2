@@ -1,14 +1,16 @@
 import React, {useState} from "react";
 import NavigationBar from "./NavigationBar";
 import axios from "axios";
-import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import {useLocation, useNavigate} from "react-router-dom";
+import DatePicker from "react-datepicker";
+
 
 const SelectDateTime = () => {
     const [selectedDate, setSelectedDate] = useState(null);
     const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
     const [unavailableTimeSlots, setUnavailableTimeSlots] = useState([]);
+    const [error, setError] = useState(null); // State for displaying error
     const location = useLocation();
     const {selectedServices, selectedProfessional} = location.state || {
         selectedServices: [],
@@ -46,7 +48,6 @@ const SelectDateTime = () => {
     const handleSave = async () => {
         try {
             const appointmentData = {
-                user_id: 5, // Replace with actual user ID
                 professional_id: selectedProfessional ? selectedProfessional.id : null,
                 appointment_date: selectedDate,
                 total_time: `${formattedTotalTime.hours}:${formattedTotalTime.minutes}:00`,
@@ -54,26 +55,41 @@ const SelectDateTime = () => {
             };
 
             const serviceIds = selectedServices.map(service => service.id);
-            const timeNumbers = selectedTimeSlots; // Assuming selectedTimeSlots contains time numbers
+            const timeNumbers = selectedTimeSlots;
 
-            // Send the POST request and get the response
-            const response = await axios.post('http://localhost:3001/api/appointmentservice/confirm', {
-                appointmentData,
-                serviceIds,
-                time_numbers: timeNumbers
+            const response = await fetch(process.env.REACT_APP_API_URL + '/api/user/confirm', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({
+                    appointmentData,
+                    serviceIds,
+                    time_numbers: timeNumbers
+                }),
+                credentials: 'include',
             });
 
-            // Accessing the response data
-            appointmentId = response.data.appointmentId;
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+
+            const data = await response.json();
+            appointmentId = data.appointmentId;
             console.log('Response data:', appointmentId);
 
         } catch (error) {
-            console.error("Error saving appointment:", error);
-            alert("An error occurred while saving the appointment.");
+            console.error('Error saving appointment:', error);
+            alert('An error occurred while saving the appointment.');
         }
     };
 
     const handleContinue = async () => {
+        if (!selectedDate || selectedTimeSlots.length === 0) {
+            setError("Please select both a date and a time slot.");
+            return;
+        }
+
         try {
             await handleSave();
             navigate('/confirm/' + appointmentId, {
@@ -99,7 +115,7 @@ const SelectDateTime = () => {
         if (selectedProfessional && date) {
             try {
                 const response = await axios.get(`http://localhost:3001/api/appointmentservice/unavailable/` + selectedProfessional.id + '/' + formattedDate);
-                const bookedTimeSlots = response.data; // Assuming the response data contains the booked time slots
+                const bookedTimeSlots = response.data;
                 setUnavailableTimeSlots(bookedTimeSlots);
             } catch (error) {
                 console.error("Error fetching time slots:", error);
@@ -117,17 +133,25 @@ const SelectDateTime = () => {
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             {/* Navigation Bar */}
             <NavigationBar activeTab={3}/>
 
-            <div className="flex flex-col md:flex-row w-full mt-4">
+            <div className="flex flex-col md:flex-row w-full mt-[150px]">
                 {/* Left side - Date & Time Selection */}
-                <div className="w-full md:w-2/3 bg-gray-100 p-8">
+                <div className="w-full md:w-2/3 bg-gray-100 p-8 max-h-screen">
                     <h2 className="text-2xl font-bold mb-6">Select Date & Time</h2>
 
+                    {error && (
+                        <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4"
+                             role="alert">
+                            <p className="font-bold">Be Warned</p>
+                            <p>{error}</p>
+                        </div>
+                    )}
+
                     {/* Date Picker */}
-                    <div className="bg-white rounded-lg p-4 mb-4 max-w-sm mx-auto shadow-lg">
+                    <div className="bg-white rounded-lg p-4 mb-4 max-w-auto mx-auto shadow-lg">
                         <DatePicker
                             onChange={handleDateSelect}
                             dateFormat="MMMM d, yyyy"
@@ -139,7 +163,7 @@ const SelectDateTime = () => {
                     </div>
 
                     {/* Timeslots */}
-                    <div className="flex flex-col gap-4 items-center justify-center">
+                    <div className="flex flex-col gap-4 items-center justify-center overflow-auto">
                         {timeslots.map((time, index) => (
                             <button
                                 key={index}
@@ -204,9 +228,8 @@ const SelectDateTime = () => {
                     </div>
                     <button
                         onClick={handleContinue}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"
-                    >
-                        Continue
+                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105">
+                        <p className="text-white text-lg font-semibold">Continue</p>
                     </button>
                 </div>
             </div>

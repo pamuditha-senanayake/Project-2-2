@@ -1,7 +1,6 @@
 import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar";
 import {useNavigate, useParams} from "react-router-dom";
-import axios from "axios";
 
 const ConfirmAppointment = () => {
     const navigate = useNavigate();
@@ -26,21 +25,21 @@ const ConfirmAppointment = () => {
 
     useEffect(() => {
         const getAppointmentStatus = async () => {
-            try {
-                const response = await axios.get(
-                    `http://localhost:3001/api/appointmentstatus/status/${appointmentId}`
-                );
-                const data = response.data;
-                setAppointmentStatus(data.status);
-                setAppointmentDate(data.appointment_date);
-                setAppointmentProfessionalName(data.professional_name);
-                setServiceNames(data.service_names || []); // Ensure it's an array
-                setTimeSlots(data.time_slots || []); // Ensure it's an array
-                setTotalCost(data.total_cost);
-                setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
-            } catch (err) {
-                console.error(err);
-            }
+            fetch(`http://localhost:3001/api/user/status/${appointmentId}`, {credentials: 'include'})
+                .then((response) => response.json())
+                .then((data) => {
+                    console.log('Fetched appointment status data:', data); // Debug log
+
+                    // Set the fetched data to the appropriate state variables
+                    setAppointmentStatus(data.status);
+                    setAppointmentDate(data.appointment_date);
+                    setAppointmentProfessionalName(data.professional_name);
+                    setServiceNames(data.service_names || []); // Ensure it's an array
+                    setTimeSlots(data.time_slots || []); // Ensure it's an array
+                    setTotalCost(data.total_cost);
+                    setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
+                })
+                .catch((error) => console.error('Fetch error:', error)); // Debug log
         };
 
         if (appointmentId) {
@@ -60,19 +59,39 @@ const ConfirmAppointment = () => {
         }
     };
 
-    const handleDelete = async () => {
-        console.log("id " + appointmentId)
-        try {
-            if (appointmentStatus === "pending") {
-                const response = await axios.delete(
-                    `http://localhost:3001/api/appointmentdelete/delete/` + appointmentId
-                );
-                console.log(response);
-            } else {
-                setErrorMsg("You cannot cancel a confirmation or rejection appointment.");
+    const handleDelete = async (appointmentId) => {
+        console.log("Attempting to delete appointment with ID:", appointmentId);
+
+        // Ensure the appointment status is "pending"
+        if (appointmentStatus === "pending") {
+            console.log("Appointment status is pending, proceeding with deletion.");
+
+            try {
+                // Make DELETE request to the server, passing appointmentId as a query parameter
+                const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to delete: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log("Appointment deletion successful:", data);
+
+                // Show an alert to indicate successful deletion
+                alert("Appointment deleted successfully.");
+
+                // Optional: Navigate back to the appointments list after deletion
+                navigate('/appointments'); // Assuming you have a route to show the appointments list
+            } catch (error) {
+                console.error('Delete error:', error.message);
+                setErrorMsg("An error occurred while trying to delete the appointment. Please try again later.");
             }
-        } catch (err) {
-            console.error(err);
+        } else {
+            console.warn("Cannot delete appointment. Status is not pending.");
+            setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };
 
@@ -104,10 +123,10 @@ const ConfirmAppointment = () => {
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-4">
+        <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             <NavigationBar activeTab={4}/>
 
-            <div className="flex flex-col md:flex-row w-full mt-4">
+            <div className="flex flex-col md:flex-row w-full mt-[150px]">
                 {/* Left side - Status */}
                 <div className="w-full md:w-2/3 bg-gray-100 p-8">
                     <h2 className="text-2xl font-bold mb-6">Appointment Status</h2>
@@ -119,10 +138,14 @@ const ConfirmAppointment = () => {
 
                     <div className="bg-white rounded-lg p-8">
                         {errorMsg && (
-                            <div className="text-red-500 text-center mb-4">{errorMsg}</div>
+                            <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4"
+                                 role="alert">
+                                <p className="font-bold">Be Warned</p>
+                                <p>{errorMsg}</p>
+                            </div>
                         )}
                         <button
-                            onClick={handleDelete}
+                            onClick={() => handleDelete(appointmentId)}
                             className="w-full bg-gray-300 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-gray-700"
                         >
                             Cancel
@@ -138,13 +161,6 @@ const ConfirmAppointment = () => {
                         serviceNames.map((service, index) => (
                             <div key={index} className="mb-2">
                                 <h3 className="text-lg font-semibold">{service}</h3>
-                                {/* Assuming price and duration are not provided, they need to be displayed if available */}
-                                {/* <p>LKR {service.price}</p> */}
-                                {/* <p>
-                                    {service.duration?.hours ? `${service.duration.hours} hr` : ''}
-                                    {service.duration?.hours && service.duration?.minutes ? ' ' : ''}
-                                    {service.duration?.minutes ? `${service.duration.minutes} min` : ''}
-                                </p> */}
                             </div>
                         ))
                     ) : (
