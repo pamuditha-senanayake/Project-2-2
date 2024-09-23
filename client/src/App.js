@@ -38,6 +38,12 @@ import Add_Product from './pages/anuththara/Add Product';
 import Product_List from './pages/anuththara/Product List';
 import UpdateProduct from './pages/anuththara/Update Product';
 import ProductDetailPage from './pages/anuththara/ProductDetailPage';
+import Addf from './pages/ishan/Addf';
+import Vservice from './pages/ishan/Vservice';
+import ScategoryAdd from "./pages/ishan/ScategoryAdd";
+import Vservice_tb from "./pages/ishan/Vservice_tb";
+import Service from './pages/ishan/Service';
+
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -90,6 +96,13 @@ const AnimatedRoutes = () => {
                         <Route path="/ProductLists" element={<Product_List />} />
                         <Route path="/AllProducts" element={<AllProduct />} />
                         <Route path="/product/:id" element={<ProductDetailPage />} />
+
+                        <Route path="/af" element={<Addf/>}/>
+                        <Route path="/vs" element={<Vservice/>}/>
+                        <Route path="/cadd" element={<ScategoryAdd/>}/>
+                        <Route path="/vstb" element={<Vservice_tb/>}/>
+                        <Route path="/services" element={<Service/>}/>
+
                     </Routes>
                 </div>
             </CSSTransition>
@@ -100,7 +113,7 @@ const AnimatedRoutes = () => {
 function App() {
     return (
         <Router>
-            <AnimatedRoutes />
+            <AnimatedRoutes/>
         </Router>
     );
 }
