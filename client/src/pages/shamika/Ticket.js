@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import backgroundImage from "../../images/5.jpg";
+import { useNavigate } from 'react-router-dom';  // For redirection
 
 function Ticket() {
 
@@ -97,14 +98,18 @@ function Ticket() {
     }, []); // Empty dependency array ensures this runs once on component mount
 
 
+
     const [selectedCategory, setSelectedCategory] = useState('');
     const [catalog, setCatalog] = useState('');
+
+    const navigate = useNavigate();
 
     const handleCategoryChange = (event) => {
         const category = event.target.value;
         setSelectedCategory(category);
         setCatalog(getCatalogForCategory(category));
     };
+
     const getCatalogForCategory = (category) => {
         switch (category) {
             case 'Booking and Appointment Issues':
@@ -122,6 +127,11 @@ function Ticket() {
         }
     };
 
+// When the user clicks "Next" to go to the next page
+    const handleNextPage = () => {
+        // Pass the selected category and catalog to the next page
+        navigate('/next-page', { state: { selectedCategory, catalog } });
+    };
 
     return (
 

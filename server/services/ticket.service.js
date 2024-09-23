@@ -1,4 +1,8 @@
 import db from "../db.js";
+import express from 'express';
+
+
+const router = express.Router();
 
 const addTicket = async (ticketData) => {
     const {
@@ -17,7 +21,7 @@ const addTicket = async (ticketData) => {
     const result = await db.query(
         `INSERT INTO support_ticket (ticket_no, user_id, email, contact_no, category, inquiry_description, status, catalog, notifications, remarks)
          VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9, $10) RETURNING id`,
-        [ticket_no, user_id, email, contact_no, category, inquiry_description, status, catalog, notifications, remarks]
+        [ticket_no, user_id, email, contact_no, category, inquiry_description, status, catalog, notifications, remarks,ticket_no]
     );
 
     return result.rows[0].id; // Return the ticket ID
@@ -26,7 +30,7 @@ const addTicket = async (ticketData) => {
 
 const getTicketById = async (ticketId) => {
     const result = await db.query(
-        `SELECT * FROM support_ticket WHERE id = $1`,
+        `SELECT * FROM support_ticket WHERE id= $1`,
         [ticketId]
     );
 
@@ -36,7 +40,7 @@ const getTicketById = async (ticketId) => {
 
     return result.rows[0]; // Return the ticket data
 };
-const updateTicket = async (ticketId, updatedData) => {
+const updateTicket = async (ticket_no, updatedData) => {
     const {
         ticket_no,
         user_id,
@@ -62,8 +66,8 @@ const updateTicket = async (ticketId, updatedData) => {
             catalog = $8,
             notification = $9,
             remarks = $10
-         WHERE id = $11 RETURNING id`,
-        [ticket_no, user_id, email, contact_no, category, inquiry_description, status, catalog, notifications, remarks, ticketId]
+         WHERE ticket_no = $11 RETURNING id`,
+        [ticket_no, user_id, email, contact_no, category, inquiry_description, status, catalog, notifications, remarks]
     );
 
     if (result.rows.length === 0) {
@@ -74,10 +78,10 @@ const updateTicket = async (ticketId, updatedData) => {
 };
 
 
-const deleteTicket = async (ticketId) => {
+const deleteTicket = async (ticketid) => {
     const result = await db.query(
-        `DELETE FROM support_ticket WHERE id = $1 RETURNING id`,
-        [ticketId]
+        `DELETE FROM support_ticket WHERE id= $1 RETURNING id`,
+        [ticketid]
     );
 
     if (result.rows.length === 0) {

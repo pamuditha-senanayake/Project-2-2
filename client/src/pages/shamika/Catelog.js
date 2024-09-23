@@ -57,7 +57,7 @@ function Catelog() {
                   backgroundPosition: 'center',
               }}
           >
-              <div className="flex flex-row w-[75%] h-[450px] bg-opacity-70">
+              <div className="flex flex-row w-[75%] h-[500px] bg-opacity-70">
                   {Array(5).fill(null).map((_, index) => (
                       <div
                           key={index}
@@ -74,21 +74,41 @@ function Catelog() {
                           <div
                               className="lg:mx-10 text-1xl justify-items-stretch text-black julius-sans-one-regular font-bold mb-12">
                               {/* Adding different content for each division */}
-                              {index === 0 && <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 1</h2>
-                                  <p>step 1:</p>
-                                  <p>step 1:</p></div>}
+                              {index === 0 && <div><h2 class="julius-sans-one text-2xl font-bold">Catelog 1</h2>
+                                  <p>step 1: </p>  <p>login to the system.</p>
+                                  <p>step 2: </p>  <p>Go to home page </p>
+                                  <p>step 3:  </p> <p>Go appointment page , select new.</p>
+                                      <p>step 4:  </p> <p>Select the date & time , select services.</p>
+                                      <p>step 5:  </p> <p>Confirm the appointment , proceed payment.</p>
+                              </div>}
                               {index === 1 &&
-                                  <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 2</h2><p>Content
-                                      for division 2</p></div>}
+                                  <div><h2 class="julius-sans-one text-2xl font-bold">Catelog 2</h2>
+                                      <p>step 1: login to the system.</p>
+                                      <p>step 2: Go to home page </p>
+                                      <p>step 3: Go appointment page , select new, the system.</p>
+                                      <p>step 4: Select the date & time , select services.</p>
+                                      <p>step 5: Confirm the appointment , proceed payment.</p></div>}
                               {index === 2 &&
-                                  <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 3</h2><p>Content
-                                      for division 3</p></div>}
+                                  <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 3</h2>
+                                      <p>step 1: login to the system.</p>
+                                      <p>step 2:Go to home page </p>
+                                      <p>step 3: Go appointment page , select new, the system.</p>
+                                      <p>step 4: Select the date & time , select services.</p>
+                                      <p>step 5: Confirm the appointment , proceed payment.</p></div>}
                               {index === 3 &&
-                                  <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 4</h2><p>Content
-                                      for division 4</p></div>}
+                                  <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 4</h2>
+                                      <p>step 1: login to the system.</p>
+                                      <p>step 2:Go to home page </p>
+                                      <p>step 3: Go appointment page , select new, the system.</p>
+                                      <p>step 4: Select the date & time , select services.</p>
+                                      <p>step 5: Confirm the appointment , proceed payment.</p></div>}
                               {index === 4 &&
-                                  <div><h2 class="julius-sans-one-regular text-2xl font-bold">Catelog 5</h2><p>Content
-                                      for division 5</p></div>}
+                                  <div><h2 class="julius-sans-one text-2xl font-bold">Catelog 5</h2>
+                                      <p>step 1: login to the system.</p>
+                                      <p>step 2:Go to home page </p>
+                                      <p>step 3: Go appointment page , select new, the system.</p>
+                                      <p>step 4: Select the date & time , select services.</p>
+                                      <p>step 5: Confirm the appointment , proceed payment.</p></div>}
                           </div>
                       </div>
                   ))}
