@@ -51,14 +51,22 @@ const Sidebar = () => {
             ],
         },
         {
-            title: 'Orders',
+            title: 'Appoinment',
             links: [
-                {text: 'New', url: '#'},
-                {text: 'Processed', url: '#'},
-                {text: 'Shipped', url: '#'},
-                {text: 'Returned', url: '#'},
+                {text: 'Pending Appointment', url: '/view'},
+                {text: 'All Appointment', url: '/viewList'},
+                /*{text: 'Shipped', url: '#'},
+                {text: 'Returned', url: '#'},*/
             ],
         },
+        {
+            title: 'Testimonials',
+            id: 'Testimonials-collapse',
+            links: [
+                {text: 'Testimonials', url: '/admin-testimonials'},
+            ],
+        },
+
         {
             title: 'Account',
             links: [
@@ -79,7 +87,7 @@ const Sidebar = () => {
     ];
 
     return (
-        <div className="julius-sans-one-regular top-0 left-0 h-100 w-72 text-dark overflow-auto"
+        <div className="julius-sans-one-regular top-0 left-0 h-100 w-full text-dark overflow-auto"
              style={{
                  borderRadius: '0.375rem', // 6px border-radius (Bootstrap default)
                  boxShadow: '0 4px 30px rgba(0, 0, 0, 0.1)',

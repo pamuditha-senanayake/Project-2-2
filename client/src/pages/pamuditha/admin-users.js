@@ -7,6 +7,7 @@ import 'jspdf-autotable';
 import homepic7 from "../../images/f.jpg";
 import homepic6 from "../../images/c.jpg";
 import logo from "../../images/logo.jpeg";
+import Swal from 'sweetalert2'; // Import SweetAlert
 
 const Layout = () => {
     const [users, setUsers] = useState([]);
@@ -65,23 +66,47 @@ const Layout = () => {
         fetchUsers(); // Call the async function and handle the promise.
     }, []); // Empty dependency array means this effect runs once after the initial render.
 
-    const handleDelete = async (id) => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/user/delete/${id}`, {
-                method: 'DELETE',
-                credentials: 'include'  // Include credentials with the request
-            });
+    const handleDelete = (id) => {
+        Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: "#3085d6",
+            cancelButtonColor: "#d33",
+            confirmButtonText: "Yes, delete it!"
+        }).then(async (result) => {
+            if (result.isConfirmed) {
+                try {
+                    const response = await fetch(`http://localhost:3001/api/user/delete/${id}`, {
+                        method: 'DELETE',
+                        credentials: 'include'
+                    });
 
-            if (!response.ok) {
-                throw new Error(`HTTP error! Status: ${response.status}`);
+                    if (!response.ok) {
+                        throw new Error(`HTTP error! Status: ${response.status}`);
+                    }
+
+                    // Update the state to remove the deleted user from the UI
+                    setUsers(users.filter(user => user.id !== id));
+
+                    Swal.fire({
+                        title: "Deleted!",
+                        text: "Your file has been deleted.",
+                        icon: "success"
+                    });
+                } catch (error) {
+                    console.error('Error deleting user:', error);
+                    Swal.fire({
+                        title: "Error!",
+                        text: "Failed to delete the user.",
+                        icon: "error"
+                    });
+                }
             }
-
-            // Update the state to remove the deleted user from the UI
-            setUsers(users.filter(user => user.id !== id));
-        } catch (error) {
-            console.error('Error deleting user:', error);
-        }
+        });
     };
+
 
     const handleEditClick = (user) => {
         setEditUser(user);
@@ -107,16 +132,28 @@ const Layout = () => {
             });
 
             if (!response.ok) {
+                Swal.fire({
+                    title: "Error!",
+                    text: "Failed to update the user.",
+                    icon: "error"
+                });
                 throw new Error(`HTTP error! Status: ${response.status}`);
             }
 
             const data = await response.json();
             setUsers(users.map(user => user.id === data.user.id ? data.user : user));
             setShowModal(false);
+
+            Swal.fire({
+                title: "Good job!",
+                text: "User updated successfully!",
+                icon: "success"
+            });
         } catch (error) {
             console.error('Error updating user:', error);
         }
     };
+
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;

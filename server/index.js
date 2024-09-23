@@ -18,7 +18,12 @@ import appointmentStatusRoutes from './controllers/appointment.controller.js';
 import appointmentConfirmedRoutes from './controllers/appointment.controller.js';
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
+import testimonialRoutes from './controllers/testimonial.controller.js';
+import appointmentDoneRoutes from './controllers/appointment.controller.js';
 
+import productsController from './controllers/productsController.js';
+import cartController from './controllers/cartController.js'; // Ensure this import is correct
+import checkoutRoutes from './controllers/checkoutController.js'
 
 //Anuththara
 import productsRoutes from './controllers/products.controller.js';
@@ -41,7 +46,7 @@ app.use(
         resave: false,
         saveUninitialized: true,
         cookie: {
-            maxAge: 1000 * 60 * 100, // 10 minutes
+            maxAge: 1000 * 60 * 10, // 10 minutes
             httpOnly: false,
             secure: false
         },
@@ -59,6 +64,9 @@ app.use('/api/appointmentstatus', appointmentStatusRoutes);
 app.use('/api/appointmentconfirmed', appointmentConfirmedRoutes);
 app.use('/api/appointmentrejected', appointmentRejectedRoutes);
 app.use('/api/appointmentdelete', appointmentDeleteRoutes)
+app.use('/api/testimonials', testimonialRoutes);
+app.use('/api/appointmentdelete', appointmentDeleteRoutes);
+app.use('/api/appointmentdone', appointmentDoneRoutes);
 
 
 app.use(ErrorHandler)
@@ -78,6 +86,9 @@ app.use('/api/user', UserH);
 
 
 // app.use("/api/ai", aiController); // Updated route for AiManagement
+app.use('/api/cart', cartController);
+app.use('/products', productsController);
+app.use('/api/checkout', checkoutRoutes);
 //Anuththara
 app.use('/api/products',productsRoutes)
 app.use('/uploads', express.static('uploads'));
@@ -94,11 +105,6 @@ db.query("SELECT 1")
         console.log('DB connection succeeded.');
     })
     .catch(err => console.log('DB connection failed.\n' + err));
-
-
-
-
-
 
 
 app.use((req, res, next) => {

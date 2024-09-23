@@ -363,6 +363,14 @@ const Home = () => {
                         Hear what our clients have to say about us. Their feedback reflects our commitment to delivering
                         exceptional service and quality. Read their stories and see why we are trusted by so many.
                     </p>
+                    <div className="flex">
+                        <button
+                            onClick={() => (window.location.href = '/testimonials')}
+                            className="julius-sans-one-regular mb-3 bg-black w-[100px] backdrop-blur-md text-white font-semibold rounded-lg shadow-lg border border-black/20 hover:bg-black/40 transition duration-300">
+                            See More
+                        </button>
+                    </div>
+
 
                     <div className="w-[80%] flex justify-center">
                         <div className="w-full max-w-6xl">
@@ -373,6 +381,7 @@ const Home = () => {
                             </div>
                         </div>
                     </div>
+
                 </div>
             </div>
 
