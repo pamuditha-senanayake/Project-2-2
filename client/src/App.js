@@ -1,6 +1,6 @@
 import React from 'react';
-import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
-import {CSSTransition, TransitionGroup} from 'react-transition-group';
+import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
+import { CSSTransition, TransitionGroup } from 'react-transition-group';
 import './App.css';
 import Home from './pages/pamuditha/home';
 import Register from './pages/pamuditha/register';
@@ -29,7 +29,15 @@ import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
 import Ca from "./pages/sasanka/ca";
+import AllProduct from './pages/anuththara/All Product';
 
+
+import StatsPage from './pages/anuththara/StatsPage';
+//new Anuththara
+import Add_Product from './pages/anuththara/Add Product';
+import Product_List from './pages/anuththara/Product List';
+import UpdateProduct from './pages/anuththara/Update Product';
+import ProductDetailPage from './pages/anuththara/ProductDetailPage';
 import Addf from './pages/ishan/Addf';
 import Vservice from './pages/ishan/Vservice';
 import ScategoryAdd from "./pages/ishan/ScategoryAdd";
@@ -81,6 +89,13 @@ const AnimatedRoutes = () => {
                         <Route path="/Checkout" element={<Checkout/>}/>
                         <Route path="/ca" element={<Ca/>}/>
 
+
+                        <Route path="/update-item/:id" element={<UpdateProduct />} />
+                        <Route path="/products" element={<StatsPage />} />
+                        <Route path="/Addproduct" element={<Add_Product />} />
+                        <Route path="/ProductLists" element={<Product_List />} />
+                        <Route path="/AllProducts" element={<AllProduct />} />
+                        <Route path="/product/:id" element={<ProductDetailPage />} />
 
                         <Route path="/af" element={<Addf/>}/>
                         <Route path="/vs" element={<Vservice/>}/>
