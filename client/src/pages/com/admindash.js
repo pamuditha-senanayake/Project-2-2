@@ -40,6 +40,14 @@ const Sidebar = () => {
             ],
         },
         {
+            title: 'User Dashboard',
+            links: [
+                {text: 'User-List', url: '/admin-users'},
+
+
+            ],
+        },
+        {
 
             title: 'Inventory',
             id: 'dashboard-collapse',
@@ -48,6 +56,16 @@ const Sidebar = () => {
                 {text: 'Product List', url: '/ProductLists'}
 
                 {text: 'User-List', url: '/admin-users'},
+
+
+            ],
+        },
+        {
+            title: 'Service/Category',
+            links: [
+                {text: 'Add New Service', url: '/af'},
+                {text: 'Add New Category', url: '/cadd'},
+                {text: 'Services', url: '/vstb'},
 
 
             ],
