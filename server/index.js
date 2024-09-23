@@ -20,6 +20,7 @@ import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 import testimonialRoutes from './controllers/testimonial.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+import addService from './controllers/AddService.js';
 
 import productsController from './controllers/productsController.js';
 import cartController from './controllers/cartController.js'; // Ensure this import is correct
@@ -77,6 +78,7 @@ app.use("/api/employees", employeeRoutes);
 app.use("/", userManagementController);
 app.use('/api/crud', crudController);
 app.use('/api/user', UserH);
+app.use('/service', addService);
 
 
 // app.use("/api/ai", aiController); // Updated route for AiManagement
@@ -88,8 +90,7 @@ app.get("/", (req, res) => {
     res.redirect("http://localhost:3000/home");
 });
 
-// Error handling middleware should be last
-// First, make sure the DB connection is successful, then start the express server.
+
 db.query("SELECT 1")
     .then(() => {
         console.log('DB connection succeeded.');

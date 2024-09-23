@@ -43,8 +43,17 @@ const Sidebar = () => {
             title: 'User Dashboard',
             links: [
                 {text: 'User-List', url: '/admin-users'},
-                {text: 'Overview', url: '#'},
-                {text: 'Weekly', url: '#'},
+
+
+            ],
+        },
+        {
+            title: 'Service/Category',
+            links: [
+                {text: 'Add New Service', url: '/af'},
+                {text: 'Add New Category', url: '/cadd'},
+                {text: 'Services', url: '/vstb'},
+
 
             ],
         },
