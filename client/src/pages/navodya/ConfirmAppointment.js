@@ -81,7 +81,12 @@ const ConfirmAppointment = () => {
                 })
                 .then(data => {
                     console.log("Appointment deletion successful:", data);
-                    // Optional: Update state or UI here if needed
+
+                    // Show an alert to indicate successful deletion
+                    alert("Appointment deleted successfully.");
+
+                    // Optional: Navigate back or update state/UI if needed
+                    navigate('/appointments'); // Assuming you have a route to show the appointments list
                 })
                 .catch(error => {
                     console.error('Delete error:', error.message);
