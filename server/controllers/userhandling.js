@@ -64,7 +64,7 @@ router.get('/verify', (req, res) => {
 //     }
 // });
 
-router.patch('/update/:id', async (req, res) => {
+router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
         const {firstname, email, phone_number, lastname, address, role} = req.body;

@@ -22,7 +22,7 @@ const ForgotPassword = () => {
                 if (data.success) {
                     setMessage("Password reset link has been sent to your email.");
                 } else {
-                    setMessage("Failed to send reset link. Please try again.");
+                    // setMessage("Failed to send reset link. Please try again.");
                 }
             })
             .catch((error) => {
