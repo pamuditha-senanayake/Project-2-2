@@ -124,7 +124,7 @@ const Layout = () => {
 
         try {
             const response = await fetch(`http://localhost:3001/api/user/update/${editUser.id}`, {
-                method: 'PUT',
+                method: 'PATCH',
                 headers: {
                     'Content-Type': 'application/json',
                 },
@@ -247,6 +247,20 @@ const Layout = () => {
         setEndDate("");
     };
 
+    const getRowClass = (role) => {
+        switch (role) {
+            case 'admin':
+                return 'bg-blue-200'; // Light blue for admin
+            case 'customer':
+                return 'bg-green-200'; // Light green for customers
+            case 'staff':
+                return 'bg-yellow-200'; // Light yellow for staff
+            default:
+                return ''; // Default class (no color)
+        }
+    };
+
+
     return (
         <div className="flex h-screen">
             <div className="w-[20%] h-full text-white"
@@ -333,7 +347,7 @@ const Layout = () => {
                         </thead>
                         <tbody>
                         {filteredUsers.map((user) => (
-                            <tr key={user.id} className="border-b border-gray-300">
+                            <tr key={user.id} className={getRowClass(user.role)}>
                                 <td className="py-2 px-4 text-gray-700">{user.id}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.firstname}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.lastname}</td>

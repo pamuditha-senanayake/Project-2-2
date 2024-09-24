@@ -64,7 +64,7 @@ router.get('/verify', (req, res) => {
 //     }
 // });
 
-router.put('/update/:id', async (req, res) => {
+router.patch('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
         const {firstname, email, phone_number, lastname, address, role} = req.body;
@@ -77,12 +77,11 @@ router.put('/update/:id', async (req, res) => {
                 SET firstname = $1, 
                     email = $2, 
                     phone_number = $3, 
-                    lastname = $4, 
-                    address = $5, 
-                    role = $6 
-                WHERE id = $7 
+                   
+                    role = $4 
+                WHERE id = $5 
                 RETURNING *`;
-            const params = [firstname, email, phone_number, lastname, address, role, id]; // Fixed the order here
+            const params = [firstname, email, phone_number, role, id]; // Fixed the order here
 
             const result = await db.query(query, params);
 

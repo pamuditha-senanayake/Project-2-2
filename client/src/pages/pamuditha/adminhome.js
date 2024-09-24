@@ -1,9 +1,6 @@
 import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash'; // Import your Sidebar component
-import {FaEdit, FaTrash} from 'react-icons/fa';
 import {useNavigate} from 'react-router-dom';
-import jsPDF from 'jspdf';
-import 'jspdf-autotable';
 import homepic7 from "../../images/f.jpg";
 
 
@@ -54,6 +51,7 @@ const Layout = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
+                //
 
             </div>
 
