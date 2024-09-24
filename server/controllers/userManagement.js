@@ -357,7 +357,7 @@ passport.use(
         async (accessToken, refreshToken, profile, cb) => {
             try {
                 // Log profile object to debug
-                console.log("Google profile:", profile);
+                //console.log("Google profile:", profile);
 
                 // Extract email from profile
                 const email = profile.email || (profile.emails && profile.emails[0].value);
