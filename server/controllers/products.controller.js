@@ -98,7 +98,7 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         });
 
         if (updatedProduct) {
-            res.send(updatedProduct);
+            res.send(updatedProduct); // Ensure the updated product details are sent back
         } else {
             res.status(404).json('No record with given id: ' + req.params.id);
         }
@@ -107,15 +107,23 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
     }
 });
 
-// Fetch product statistics
+
+
+// routes/products.js (or your routes file)
 router.get('/stats', async (req, res, next) => {
     try {
-        const stats = await service.getStats();
-        res.json(stats);
+        const stats = await service.getProductStats(); // Directly call the stats service
+        res.json(stats); // Send the stats back as JSON
     } catch (error) {
-        next(error);
+        next(error); // Pass the error to the error handler
     }
 });
+
+
+
+
+
+
 
 
 export default router;

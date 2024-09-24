@@ -15,6 +15,7 @@ const UpdateProduct = () => {
     const [quantity, setQuantity] = useState('');
     const [image, setImage] = useState(null);
     const [existingImage, setExistingImage] = useState('');
+    const [imagePreview, setImagePreview] = useState(''); // For displaying the selected image
     const [loading, setLoading] = useState(false);
 
     // Fetch the existing product details
@@ -29,6 +30,7 @@ const UpdateProduct = () => {
                 setDescription(product.description);
                 setQuantity(product.quantity);
                 setExistingImage(product.image);
+                setImagePreview(`http://localhost:3001/uploads/${product.image}`); // Set existing image preview
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
@@ -36,10 +38,18 @@ const UpdateProduct = () => {
         fetchProduct();
     }, [id]);
 
+    // Handle image file selection and preview
+    const handleImageChange = (e) => {
+        const file = e.target.files[0];
+        setImage(file);
+        if (file) {
+            setImagePreview(URL.createObjectURL(file)); // Create a preview for the selected image
+        }
+    };
+
     // Handle form submission to update the product
     const handleSubmit = async (e) => {
         e.preventDefault();
-
         if (loading) return;
 
         const formData = new FormData();
@@ -48,8 +58,11 @@ const UpdateProduct = () => {
         formData.append('category', category);
         formData.append('description', description);
         formData.append('quantity', quantity);
-        if (image) formData.append('image', image);
-        formData.append('existingImage', existingImage); // Send existing image if no new image is provided
+        if (image) {
+            formData.append('image', image); // Add new image if selected
+        } else {
+            formData.append('existingImage', existingImage); // Keep the existing image
+        }
 
         setLoading(true);
 
@@ -187,13 +200,13 @@ const UpdateProduct = () => {
                                 <label className="block text-gray-700 font-semibold">Image</label>
                                 <input
                                     type="file"
-                                    onChange={(e) => setImage(e.target.files[0])}
+                                    onChange={handleImageChange}
                                     className="w-full mt-2 p-2 border border-gray-300 rounded-lg shadow-sm"
                                 />
-                                {existingImage && (
+                                {imagePreview && (
                                     <img
-                                        src={`http://localhost:3001/uploads/${existingImage}`}
-                                        alt="Existing product"
+                                        src={imagePreview}
+                                        alt="Preview"
                                         className="w-32 h-32 mt-4 object-cover border border-gray-300 rounded-lg"
                                     />
                                 )}

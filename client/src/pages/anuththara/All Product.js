@@ -84,8 +84,8 @@ const AllProductsPage = () => {
                     {/* Products grid */}
                     <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
                         {filteredProducts.map((product) => (
-                            <Link key={product.id} to={`/product/${product.id}`} className="block transform hover:scale-105 transition-transform duration-300 ease-in-out">
-                                <div className="bg-white rounded-lg shadow-lg p-4">
+                            <Link key={product.id} to={`/product/${product.id}`} className="block">
+                                <div className="bg-white rounded-lg shadow-lg p-4 h-full">
                                     <img
                                         src={product.image ? `http://localhost:3001/uploads/${product.image}` : 'default-image-url'}
                                         alt={product.title}
