@@ -41,14 +41,50 @@ router.get('/verify', (req, res) => {
 
 
 // UPDATE a user by ID
-router.put('/update/:id', async (req, res) => {
+// router.put('/update/:id', async (req, res) => {
+//     if (req.isAuthenticated()) {
+//         const {id} = req.params;
+//         const {firstname, email, phone_number, lastname, address, role} = req.body; // Use firstName here
+//         try {
+//             const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6, role=$7 WHERE id = $4 RETURNING *';
+//             const params = [firstname, email, phone_number, id, lastname, address, role]; // Pass firstName here
+//             const result = await db.query(query, params);
+//             // console.log(result);
+//             if (result.rows.length) {
+//                 res.status(200).json({user: result.rows[0]});
+//             } else {
+//                 res.status(404).json({error: 'User not found'});
+//             }
+//         } catch (err) {
+//             console.error('Error updating user:', err.message);
+//             res.status(500).json({error: 'Error updating user'});
+//         }
+//     } else {
+//         res.status(401).json({error: 'Unauthorized'});
+//     }
+// });
+
+router.patch('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
-        const {firstname, email, phone_number, lastname, address} = req.body; // Use firstName here
+        const {firstname, email, phone_number, lastname, address, role} = req.body;
+        console.log(firstname, email, phone_number, lastname, address, role);
+
         try {
-            const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6 WHERE id = $4 RETURNING *';
-            const params = [firstname, email, phone_number, id, lastname, address]; // Pass firstName here
+            // Corrected the parameter order in the query and the params array
+            const query = `
+                UPDATE users 
+                SET firstname = $1, 
+                    email = $2, 
+                    phone_number = $3, 
+                   
+                    role = $4 
+                WHERE id = $5 
+                RETURNING *`;
+            const params = [firstname, email, phone_number, role, id]; // Fixed the order here
+
             const result = await db.query(query, params);
+
             if (result.rows.length) {
                 res.status(200).json({user: result.rows[0]});
             } else {
@@ -62,6 +98,7 @@ router.put('/update/:id', async (req, res) => {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+
 
 // In your Express router file (e.g., userRoutes.js)
 router.get("/profile", async (req, res) => {
@@ -207,7 +244,7 @@ router.put("/cartadd", async (req, res) => {
     if (!req.isAuthenticated()) {
         return res.status(401).json({message: "Unauthorized"});
     }
-    const {  itemId, quantity } = req.body;
+    const {itemId, quantity} = req.body;
     try {
         const updatedItem = await cartService.addOrUpdateItem(req.user.id, itemId, quantity);
         res.json(updatedItem);
@@ -235,14 +272,15 @@ router.get('/cartget', async (req, res) => {
     } else {
         res.status(401).json({error: 'Unauthorized'});
     }
-});router.put('/update/:cartItemId', async (req, res) => {
-    const { cartItemId } = req.params;
-    let { quantity } = req.body;
+});
+router.put('/update/:cartItemId', async (req, res) => {
+    const {cartItemId} = req.params;
+    let {quantity} = req.body;
 
     // Ensure quantity is a valid number and at least 1
     quantity = parseInt(quantity, 10);
     if (isNaN(quantity) || quantity < 1) {
-        return res.status(400).json({ error: 'Quantity must be a valid number and at least 1' });
+        return res.status(400).json({error: 'Quantity must be a valid number and at least 1'});
     }
 
     try {
@@ -251,22 +289,22 @@ router.get('/cartget', async (req, res) => {
         const result = await db.query(query, params);
 
         if (result.rowCount > 0) {
-            res.status(200).json({ message: 'Cart item updated', cartItem: result.rows[0] });
+            res.status(200).json({message: 'Cart item updated', cartItem: result.rows[0]});
         } else {
-            res.status(404).json({ error: 'Cart item not found' });
+            res.status(404).json({error: 'Cart item not found'});
         }
     } catch (err) {
         // Log the error more descriptively
         console.error('Error updating cart item:', err);
-        res.status(500).json({ error: 'Error updating cart item' });
+        res.status(500).json({error: 'Error updating cart item'});
     }
 });
 // DELETE a cart item by cart_id
 router.delete('/remove/:cart_id', async (req, res) => {
-    const { cart_id } = req.params;
+    const {cart_id} = req.params;
 
     if (!req.isAuthenticated()) {
-        return res.status(401).json({ error: 'Unauthorized' });
+        return res.status(401).json({error: 'Unauthorized'});
     }
 
     try {
@@ -274,13 +312,13 @@ router.delete('/remove/:cart_id', async (req, res) => {
         const result = await db.query('DELETE FROM cart WHERE cart_id = $1', [cart_id]);
 
         if (result.rowCount > 0) {
-            res.status(200).json({ message: 'Cart item removed' });
+            res.status(200).json({message: 'Cart item removed'});
         } else {
-            res.status(404).json({ error: 'Cart item not found' });
+            res.status(404).json({error: 'Cart item not found'});
         }
     } catch (error) {
         console.error('Error removing cart item:', error.message);
-        res.status(500).json({ error: 'Error removing cart item' });
+        res.status(500).json({error: 'Error removing cart item'});
     }
 });
 router.put("/checkout", async (req, res) => {
@@ -291,11 +329,11 @@ router.put("/checkout", async (req, res) => {
             console.log("User authenticated. User ID:", req.user.id); // Log authenticated user
         } else {
             console.error("User authentication failed. req.user is undefined or lacks an id.");
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(401).json({message: "Unauthorized"});
         }
 
         // Extract shipping details and cart items from the request body
-        const { shippingDetails, cartItems } = req.body;
+        const {shippingDetails, cartItems} = req.body;
         console.log("Shipping details received:", shippingDetails); // Debug shipping details
         console.log("Cart items received:", cartItems); // Debug cart items
 
@@ -317,11 +355,11 @@ router.put("/checkout", async (req, res) => {
             console.error("Error during checkout for User ID:", req.user.id, "Error:", error.message);
 
             // Send error response
-            res.status(500).json({ message: "Server error" });
+            res.status(500).json({message: "Server error"});
         }
     } else {
         // User not authenticated
-        res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({error: 'Unauthorized'});
     }
 });
 

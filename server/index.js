@@ -29,7 +29,6 @@ import checkoutRoutes from './controllers/checkoutController.js'
 import productsRoutes from './controllers/products.controller.js';
 
 
-
 dotenv.config();
 
 const app = express();
@@ -46,7 +45,7 @@ app.use(
         resave: false,
         saveUninitialized: true,
         cookie: {
-            maxAge: 1000 * 60 * 10, // 10 minutes
+            maxAge: 1000 * 60 * 100, // 10 minutes
             httpOnly: false,
             secure: false
         },
@@ -90,7 +89,7 @@ app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
 //Anuththara
-app.use('/api/products',productsRoutes)
+app.use('/api/products', productsRoutes)
 app.use('/uploads', express.static('uploads'));
 
 
