@@ -59,6 +59,16 @@ const Sidebar = () => {
             ],
         },
         {
+
+            title: 'Inquaries',
+            id: 'dashboard-collapse',
+            links: [
+                {text: 'All Inquaries', url: '/admin_inq'},
+
+
+            ],
+        },
+        {
             title: 'Service/Category',
             links: [
                 {text: 'Add New Service', url: '/af'},
