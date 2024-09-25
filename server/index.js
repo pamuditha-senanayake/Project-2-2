@@ -18,8 +18,9 @@ import appointmentStatusRoutes from './controllers/appointment.controller.js';
 import appointmentConfirmedRoutes from './controllers/appointment.controller.js';
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
-import testimonialRoutes from './controllers/testimonial.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
+import testimonialRoutes from './controllers/testimonial.controller.js';
 
 import productsController from './controllers/productsController.js';
 import cartController from './controllers/cartController.js'; // Ensure this import is correct
@@ -66,6 +67,7 @@ app.use('/api/appointmentdelete', appointmentDeleteRoutes)
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/appointmentdelete', appointmentDeleteRoutes);
 app.use('/api/appointmentdone', appointmentDoneRoutes);
+app.use('/api/myappointment', myAllAppointmentsRoutes);
 
 
 app.use(ErrorHandler)

@@ -82,14 +82,13 @@ router.put('/update/:id', async (req, res) => {
         try {
             // Corrected the parameter order in the query and the params array
             const query = `
-                UPDATE users 
-                SET firstname = $1, 
-                    email = $2, 
-                    phone_number = $3, 
-                   
-                    role = $4 
-                WHERE id = $5 
-                RETURNING *`;
+                UPDATE users
+                SET firstname    = $1,
+                    email        = $2,
+                    phone_number = $3,
+
+                    role         = $4
+                WHERE id = $5 RETURNING *`;
             const params = [firstname, email, phone_number, role, id]; // Fixed the order here
 
             const result = await db.query(query, params);
@@ -519,5 +518,51 @@ router.post('/inquiries/:id/respond', async (req, res) => {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+
+router.get('/myappointment/fetch', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const userId = req.user.id; // Directly assign the user ID
+        try {
+            // Define the userAppointments function within the route handler
+            const userAppointments = async (userId) => {
+                const result = await db.query(
+                    `SELECT a.id                                AS appointment_id,
+                            a.status,
+                            a.appointment_date,
+                            a.total_time,
+                            a.total_cost,
+                            ARRAY_AGG(DISTINCT s.name)          AS service_names,
+                            p.name                              AS professional_name,
+                            ARRAY_AGG(DISTINCT ats.time_number) AS time_slots
+                     FROM appointments a
+                              JOIN appointment_services aps ON a.id = aps.appointment_id
+                              JOIN services s ON aps.service_id = s.id
+                              JOIN appointment_time_slots ats ON a.id = ats.appointment_id
+                              JOIN professionals p ON a.professional_id = p.id
+                     WHERE a.user_id = $1
+                     GROUP BY a.id, p.name
+                     ORDER BY a.appointment_date DESC`, // Optional: to order by most recent appointment
+                    [userId]
+                );
+
+                return result.rows; // Return all appointments for the user
+            };
+
+            const appointments = await userAppointments(userId); // Call the function to get user appointments
+
+            if (appointments.length > 0) {
+                res.json({appointments});
+            } else {
+                res.status(404).json({error: 'No appointments found for this user'});
+            }
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({error: 'Error fetching appointments'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
 
 export default router;

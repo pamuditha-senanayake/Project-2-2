@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigate, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {useLogout} from './authUtils';
 import logo2 from "../../images/logow.png";
@@ -93,6 +93,8 @@ function Navbar() {
                                                 <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/userp">Profile</a>
+                                                <a className="dropdown-item julius-sans-one-regular"
+                                                   href="/myappointment">My Appointments</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/inq">Support</a>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#"
