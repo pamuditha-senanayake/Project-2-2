@@ -1,6 +1,6 @@
 import React from 'react';
-import { BrowserRouter as Router, Route, Routes, useLocation } from 'react-router-dom';
-import { CSSTransition, TransitionGroup } from 'react-transition-group';
+import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
+import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import './App.css';
 import Home from './pages/pamuditha/home';
 import Register from './pages/pamuditha/register';
@@ -27,9 +27,13 @@ import Rpass from "./pages/pamuditha/resetpass";
 import Upass from "./pages/pamuditha/userPassReset";
 import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
-import ProductList  from "./pages/sasanka/ProductList";
+import ProductList from "./pages/sasanka/ProductList";
 import Ca from "./pages/sasanka/ca";
 import AllProduct from './pages/anuththara/All Product';
+import InqHome from './pages/shamika/inq_home';
+import Admin_inq from './pages/shamika/admin_inq';
+
+
 import StatsPage from './pages/anuththara/StatsPage';
 //new Anuththara
 import Add_Product from './pages/anuththara/Add Product';
@@ -90,17 +94,20 @@ const AnimatedRoutes = () => {
                         <Route path="/ca" element={<Ca/>}/>
 
 
-                        <Route path="/update-item/:id" element={<UpdateProduct />} />
-                        <Route path="/products" element={<StatsPage />} />
-                        <Route path="/Addproduct" element={<Add_Product />} />
-                        <Route path="/ProductLists" element={<Product_List />} />
-                        <Route path="/AllProducts" element={<AllProduct />} />
-                        <Route path="/product/:id" element={<ProductDetailPage />} />
+                        <Route path="/update-item/:id" element={<UpdateProduct/>}/>
+                        <Route path="/products" element={<StatsPage/>}/>
+                        <Route path="/Addproduct" element={<Add_Product/>}/>
+                        <Route path="/ProductLists" element={<Product_List/>}/>
+                        <Route path="/AllProducts" element={<AllProduct/>}/>
+                        <Route path="/product/:id" element={<ProductDetailPage/>}/>
 
                         <Route path="/addservice" element={<Addservice/>}/>
                         <Route path="/addcategory" element={<Addcategory/>}/>
                         <Route path="/adminservicview" element={<Adminservicview/>}/>
                         <Route path="/services" element={<Service/>}/>
+
+                        <Route path="/inq" element={<InqHome/>}/>
+                        <Route path="/admin_inq" element={<Admin_inq/>}/>
 
                     </Routes>
                 </div>

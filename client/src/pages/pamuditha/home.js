@@ -112,20 +112,21 @@ export {Card};
 const InfoCards = () => {
     const cards = [
         {
-            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-            heading: "Hair Dresser",
-            text: "Donec sed odio dui. Etiam porta sem malesuada magna mollis euismod. Nullam id dolor id nibh ultricies vehicula ut id elit. Morbi leo risus, porta ac consectetur ac, vestibulum at eros. Praesent commodo cursus magna.",
+            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", // Removed the image source
+            heading: "Sophia Turner - Senior Hair Stylist",
+            text: "Sophia has over 10 years of experience in hair styling and coloring. She specializes in balayage techniques and has a passion for creating stunning transformations. Sophia believes in personalized consultations to achieve the best results for her clients."
         },
         {
-            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-            heading: "Hair Dresser",
-            text: "Duis mollis, est non commodo luctus, nisi erat porttitor ligula, eget lacinia odio sem nec elit. Cras mattis consectetur purus sit amet fermentum. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh.",
+            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", // Removed the image source
+            heading: "James Smith - Barber and Grooming Expert",
+            text: "James is a skilled barber with 7 years of experience in men’s grooming. He excels in modern haircuts and classic shaves, ensuring a refined and stylish look for every client. His friendly demeanor makes every visit enjoyable."
         },
         {
-            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==",
-            heading: "Hair Dresser",
-            text: "Donec sed odio dui. Cras justo odio, dapibus ac facilisis in, egestas eget quam. Vestibulum id ligula porta felis euismod semper. Fusce dapibus, tellus ac cursus commodo, tortor mauris condimentum nibh, ut fermentum massa justo sit amet risus.",
-        },
+            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", // Removed the image source
+            heading: "Emily Johnson - Makeup Artist",
+            text: "Emily is a certified makeup artist with 5 years of experience in bridal and special event makeup. She uses high-quality products to create beautiful, long-lasting looks that enhance her clients' natural beauty. Emily loves helping clients feel confident and radiant."
+        }
+
     ];
 
     return (
@@ -303,8 +304,12 @@ const Home = () => {
                             we create a serene oasis for modern women seeking the ultimate in self-care.
                         </p>
                         <div className="mt-6 flex space-x-4 julius-sans-one-regular">
-                            <button className="mx-0 custom-button">Shop Now</button>
-                            <button className="custom-button2">Appointments</button>
+                            <Link to="/products">
+                                <button className="mx-0 custom-button">Shop Now</button>
+                            </Link>
+                            <Link to="/services">
+                                <button className="mx-0 custom-button2">Appointments</button>
+                            </Link>
                         </div>
                     </div>
                 </div>

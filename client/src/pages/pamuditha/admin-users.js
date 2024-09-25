@@ -14,6 +14,11 @@ const Layout = () => {
     const [editUser, setEditUser] = useState(null); // State to hold user data for editing
     const [showModal, setShowModal] = useState(false); // State to control the visibility of the modal
     const [searchQuery, setSearchQuery] = useState(""); // New state for search query
+    const [role, setRole] = useState('');
+    const [roleFilter, setRoleFilter] = useState(''); // To store selected role
+    const [startDate, setStartDate] = useState(''); // To store start date
+    const [endDate, setEndDate] = useState(''); // To store end date
+
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -113,6 +118,17 @@ const Layout = () => {
         setShowModal(true);
     };
 
+    const UserCountCard = ({users}) => {
+        const userCount = users.length; // Count total number of users
+
+        return (
+            <div className="bg-pink-300 p-4 rounded shadow-md">
+                <h2 className="text-lg font-semibold">Total Users</h2>
+                <p className="text-2xl font-bold">{userCount}</p>
+            </div>
+        );
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
         if (!editUser) return;
@@ -128,6 +144,7 @@ const Layout = () => {
                     firstname: editUser.firstname,
                     email: editUser.email,
                     phone_number: editUser.phone_number,
+                    role: editUser.role
                 }),
             });
 
@@ -154,6 +171,29 @@ const Layout = () => {
         }
     };
 
+    const handleRoleChange = (e) => {
+        setRoleFilter(e.target.value);
+    };
+
+    const handleStartDateChange = (e) => {
+        setStartDate(e.target.value);
+    };
+
+    const handleEndDateChange = (e) => {
+        setEndDate(e.target.value);
+    };
+
+    const filteredUsers = users.filter((user) => {
+        const isRoleMatch = roleFilter ? user.role === roleFilter : true;
+        const isStartDateMatch = startDate ? new Date(user.date) >= new Date(startDate) : true;
+        const isEndDateMatch = endDate ? new Date(user.date) <= new Date(endDate) : true;
+        const isSearchMatch = (user.firstname && user.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+            (user.phone_number && user.phone_number.toString().includes(searchQuery));
+
+        return isRoleMatch && isStartDateMatch && isEndDateMatch && isSearchMatch;
+    });
+
 
     const handleInputChange = (e) => {
         const {name, value} = e.target;
@@ -161,15 +201,19 @@ const Layout = () => {
             ...prevState,
             [name]: value
         }));
+        if (name === 'role') {
+            setEditUser(prevState => ({...prevState, role: value}));
+        }
     };
 
+
     // Filter users based on search query
-    const filteredUsers = users.filter(
-        (user) =>
-            (user.firstname && user.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
-            (user.phone_number && user.phone_number.toString().includes(searchQuery))
-    );
+    // const filteredUsers = users.filter(
+    //     (user) =>
+    //         (user.firstname && user.firstname.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    //         (user.email && user.email.toLowerCase().includes(searchQuery.toLowerCase())) ||
+    //         (user.phone_number && user.phone_number.toString().includes(searchQuery))
+    // );
 
 
     // Handle report generation as PDF
@@ -207,6 +251,27 @@ const Layout = () => {
         doc.save('users_report.pdf');
     };
 
+    const resetFilters = () => {
+        setSearchQuery("");
+        setRoleFilter("");
+        setStartDate("");
+        setEndDate("");
+    };
+
+    const getRowClass = (role) => {
+        switch (role) {
+            case 'admin':
+                return 'bg-blue-200'; // Light blue for admin
+            case 'customer':
+                return 'bg-green-200'; // Light green for customers
+            case 'staff':
+                return 'bg-yellow-200'; // Light yellow for staff
+            default:
+                return ''; // Default class (no color)
+        }
+    };
+
+
     return (
         <div className="flex h-screen">
             <div className="w-[20%] h-full text-white"
@@ -228,41 +293,88 @@ const Layout = () => {
                 <div className="p-6 bg-white rounded-lg shadow-md overflow-x-auto">
                     <h1 className="text-3xl">User Information</h1>
                     <br/>
+                    <div className="flex flex-row w-full">
+                        <div className="flex flex-col w-1/2  order-1">
+                            {/* Search Bar */}
+                            <input
+                                type="text"
+                                placeholder="Search users..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="mb-4 p-2 border border-gray-300 rounded"
+                            />
+                            <br/>
 
-                    {/* Search Bar */}
-                    <input
-                        type="text"
-                        placeholder="Search users..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="mb-4 p-2 border border-gray-300 rounded"
-                    />
+                            <select value={roleFilter} onChange={handleRoleChange}
+                                    className="mb-4 p-2 border border-gray-300 rounded">
+                                <option value="">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="customer">Customer</option>
+                                <option value="staff">Staff</option>
 
-                    {/* Report Generation Button */}
-                    <button
-                        onClick={generateReport}
-                        className="mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
-                    >
-                        Generate Report
-                    </button>
+                            </select>
+
+
+                            <div className="flex mb-4">
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={handleStartDateChange}
+                                    className="mr-2 p-2 border border-gray-300 rounded"
+                                />
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={handleEndDateChange}
+                                    className="p-2 border border-gray-300 rounded"
+                                />
+                            </div>
+                            <button
+                                className="bg-pink-500 text-white py-2 px-4 rounded mt-4"
+                                onClick={resetFilters}>
+                                Reset Filters
+                            </button>
+
+                            {/* Report Generation Button */}
+                            <button
+                                onClick={generateReport}
+                                className="mb-4 bg-pink-700 text-white px-4 py-2 rounded hover:bg-green-700"
+                            >
+                                Generate Report
+                            </button>
+
+                        </div>
+                        <div className="flex order-2 w-1/2 justify-end items-center content-end">
+                            <UserCountCard users={users}/>
+                        </div>
+                    </div>
+
 
                     <table className="min-w-full bg-gray-100 border border-gray-300 rounded-lg">
                         <thead>
                         <tr className="bg-gray-200 text-gray-600 border-b border-gray-300">
                             <th className="py-2 px-4 text-left">User ID</th>
-                            <th className="py-2 px-4 text-left">Name</th>
+                            <th className="py-2 px-4 text-left">First Name</th>
+                            <th className="py-2 px-4 text-left">Last Name</th>
                             <th className="py-2 px-4 text-left">Email</th>
+                            <th className="py-2 px-4 text-left">Role</th>
+                            <th className="py-2 px-4 text-left">Reg Date</th>
                             <th className="py-2 px-4 text-left">Phone Number</th>
+                            <th className="py-2 px-4 text-left">Address</th>
                             <th className="py-2 px-4 text-left">Actions</th>
                         </tr>
                         </thead>
                         <tbody>
                         {filteredUsers.map((user) => (
-                            <tr key={user.id} className="border-b border-gray-300">
+                            <tr key={user.id} className={getRowClass(user.role)}>
                                 <td className="py-2 px-4 text-gray-700">{user.id}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.firstname}</td>
+                                <td className="py-2 px-4 text-gray-700">{user.lastname}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.email}</td>
+                                <td className="py-2 px-4 text-gray-700">{user.role}</td>
+                                <td className="py-2 px-4 text-gray-700">{user.date}</td>
                                 <td className="py-2 px-4 text-gray-700">{user.phone_number}</td>
+                                <td className="py-2 px-4 text-gray-700">{user.address}</td>
                                 <td className="py-2 px-4">
                                     <button
                                         className="text-blue-500 hover:text-blue-700 mr-2"
@@ -333,6 +445,23 @@ const Layout = () => {
                                             className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
                                             required
                                         />
+                                    </div>
+                                    <div className="mb-3">
+                                        <label htmlFor="role" className="block text-gray-600">Role</label>
+                                        <select
+                                            id="role"
+                                            name="role"
+                                            value={editUser.role || ''}
+                                            onChange={handleInputChange}
+                                            className="border border-gray-300 p-2 rounded w-full focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                            required
+                                        >
+                                            <option value="" disabled>Select role</option>
+                                            <option value="admin">Admin</option>
+                                            <option value="customer">Customer</option>
+                                            <option value="staff">Staff</option>
+
+                                        </select>
                                     </div>
                                     <div className="flex justify-end">
                                         <button

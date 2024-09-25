@@ -42,7 +42,7 @@ const Sidebar = () => {
         {
             title: 'User Dashboard',
             links: [
-                {text: 'User-List', url: '/admin-users'},
+                {text: 'User Handling', url: '/admin-users'},
 
 
             ],
@@ -56,6 +56,16 @@ const Sidebar = () => {
                 {text: 'Product List', url: '/ProductLists'},
 
                 {text: 'User-List', url: '/admin-users'},
+
+
+            ],
+        },
+        {
+
+            title: 'Inquaries',
+            id: 'dashboard-collapse',
+            links: [
+                {text: 'All Inquaries', url: '/admin_inq'},
 
 
             ],

@@ -11,7 +11,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('http://localhost:3001/api/user/', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -51,7 +51,7 @@ const Layout = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-//
+                //
 
             </div>
 
