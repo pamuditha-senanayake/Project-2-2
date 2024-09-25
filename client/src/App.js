@@ -30,19 +30,19 @@ import Checkout from "./pages/sasanka/Checkout";
 import ProductList  from "./pages/sasanka/ProductList";
 import Ca from "./pages/sasanka/ca";
 import AllProduct from './pages/anuththara/All Product';
-
-
 import StatsPage from './pages/anuththara/StatsPage';
 //new Anuththara
 import Add_Product from './pages/anuththara/Add Product';
 import Product_List from './pages/anuththara/Product List';
 import UpdateProduct from './pages/anuththara/Update Product';
 import ProductDetailPage from './pages/anuththara/ProductDetailPage';
-import Addf from './pages/ishan/Addf';
-import Vservice from './pages/ishan/Vservice';
-import ScategoryAdd from "./pages/ishan/ScategoryAdd";
-import Vservice_tb from "./pages/ishan/Vservice_tb";
+//ishan
+import Addservice from './pages/ishan/ServiceAddForm';
+import Addcategory from "./pages/ishan/CategoryAddForm";
+import Adminservicview from "./pages/ishan/VeawServiceDetails";
 import Service from './pages/ishan/Service';
+
+import Vservice from './pages/ishan/Vservice';
 
 
 const AnimatedRoutes = () => {
@@ -97,10 +97,9 @@ const AnimatedRoutes = () => {
                         <Route path="/AllProducts" element={<AllProduct />} />
                         <Route path="/product/:id" element={<ProductDetailPage />} />
 
-                        <Route path="/af" element={<Addf/>}/>
-                        <Route path="/vs" element={<Vservice/>}/>
-                        <Route path="/cadd" element={<ScategoryAdd/>}/>
-                        <Route path="/vstb" element={<Vservice_tb/>}/>
+                        <Route path="/addservice" element={<Addservice/>}/>
+                        <Route path="/addcategory" element={<Addcategory/>}/>
+                        <Route path="/adminservicview" element={<Adminservicview/>}/>
                         <Route path="/services" element={<Service/>}/>
 
                     </Routes>
