@@ -94,7 +94,7 @@ function Navbar() {
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/userp">Profile</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/supporthome">Support</a>
+                                                   href="/inq">Support</a>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#"
                                                    onClick={(e) => {
                                                        e.preventDefault();
