@@ -304,8 +304,12 @@ const Home = () => {
                             we create a serene oasis for modern women seeking the ultimate in self-care.
                         </p>
                         <div className="mt-6 flex space-x-4 julius-sans-one-regular">
-                            <button className="mx-0 custom-button">Shop Now</button>
-                            <button className="custom-button2">Appointments</button>
+                            <Link to="/products">
+                                <button className="mx-0 custom-button">Shop Now</button>
+                            </Link>
+                            <Link to="/services">
+                                <button className="mx-0 custom-button2">Appointments</button>
+                            </Link>
                         </div>
                     </div>
                 </div>

@@ -90,7 +90,8 @@ function Navbar() {
                                     <div className="dropdown-menu" aria-labelledby="dropdown07">
                                         {cookieExists ? (
                                             <>
-                                                <a className="dropdown-item julius-sans-one-regular" href="#">Cart</a>
+                                                <a className="dropdown-item julius-sans-one-regular"
+                                                   href="/cart">Cart</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/userp">Profile</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
