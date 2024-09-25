@@ -20,6 +20,14 @@ const ResetPassword = () => {
 
     const handlePasswordReset = async (e) => {
         e.preventDefault();
+
+        // Validation for minimum length
+        if (newPassword.length < 7) {
+            setMessage('Password must be at least 7 characters long');
+            return;
+        }
+
+        // Check if passwords match
         if (newPassword !== confirmPassword) {
             setMessage('Passwords do not match');
             return;
@@ -58,6 +66,7 @@ const ResetPassword = () => {
             setMessage('An error occurred');
         }
     };
+
 
     return (
         <div className="flex flex-col h-screen w-full julius-sans-one-regular"
