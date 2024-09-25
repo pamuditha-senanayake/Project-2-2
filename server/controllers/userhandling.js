@@ -86,11 +86,10 @@ router.put('/update/:id', async (req, res) => {
                     email = $2, 
                     phone_number = $3, 
                     lastname = $4,
-                    address = $5,
-                    role = $6 
-                WHERE id = $7 
+                    address = $5
+                WHERE id = $6 
                 RETURNING *`;
-            const params = [firstname, email, phone_number, lastname, address, role, id];
+            const params = [firstname, email, phone_number, lastname, address, id];
 
             const result = await db.query(query, params);
 
