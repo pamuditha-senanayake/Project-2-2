@@ -1,11 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import Sidebar from '../com/admindash'; // Import your Sidebar component
+import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
-import homepic7 from "../../images/f.jpg";
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import su from "../../images/af.jpg";
+import { jsPDF } from "jspdf";
+import su from "../../images/bcimage.avif";
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -40,6 +40,7 @@ const Layout = () => {
         const [selectedService, setSelectedService] = useState(null);
         const [showEditModal, setShowEditModal] = useState(false);
         const [message, setMessage] = useState("");
+        const [showPopup, setShowPopup] = useState(false);
 
         useEffect(() => {
             const fetchServices = async () => {
@@ -49,6 +50,7 @@ const Layout = () => {
                 } catch (err) {
                     console.error("Error fetching services:", err);
                     setMessage("Failed to fetch services.");
+                    setShowPopup(true);
                 }
             };
 
@@ -65,9 +67,11 @@ const Layout = () => {
                 await axios.delete(`http://localhost:3001/service/services/${id}`);
                 setServices(services.filter(service => service.id !== id));
                 setMessage("Service deleted successfully!");
+                setShowPopup(true);
             } catch (err) {
                 console.error("Error deleting service:", err);
                 setMessage("Failed to delete service.");
+                setShowPopup(true);
             }
         };
 
@@ -79,10 +83,30 @@ const Layout = () => {
                 ));
                 setShowEditModal(false);
                 setMessage("Service updated successfully!");
+                setShowPopup(true);
             } catch (err) {
                 console.error("Error updating service:", err);
                 setMessage("Failed to update service.");
+                setShowPopup(true);
             }
+        };
+
+        // Report generation function
+        const generateReport = () => {
+            const doc = new jsPDF();
+            doc.text("Services Report", 20, 20);
+            doc.autoTable({
+                head: [['Service Name', 'Description', 'Price', 'Time Taken', 'Category']],
+                body: services.map(service => [
+                    service.name,
+                    service.description,
+                    `Rs.${service.price}`,
+                    formatDuration(service.duration),
+                    service.category_id
+                ]),
+                startY: 30,
+            });
+            doc.save('services_report.pdf'); // Save the PDF
         };
 
         // Duration options mapping
@@ -92,7 +116,7 @@ const Layout = () => {
             "45 minutes": { minutes: 45 },
             "1 hour": { minutes: 60 },
             "2 hours": { minutes: 120 },
-            "More than 2 hours": { minutes: 121 } // Adjust as needed
+            "5 hours": { minutes: 300 }
         };
 
         const handleChange = (e) => {
@@ -100,19 +124,20 @@ const Layout = () => {
 
             if (name === "duration") {
                 // Convert the selected duration string back to minutes
-                const minutes = durationOptions[value] ? durationOptions[value].minutes : value;
-                setSelectedService({ ...selectedService, [name]: { minutes } });
+                const minutes = durationOptions[value] ? durationOptions[value].minutes : 0; // Default to 0 if not found
+                setSelectedService({ ...selectedService, duration: minutes }); // Update duration directly as a number
             } else {
                 setSelectedService({ ...selectedService, [name]: value });
             }
         };
 
-        // Helper function to display duration in hours or minutes
         const formatDuration = (duration) => {
-            if (duration.hours) {
-                return `${duration.hours} hour${duration.hours > 1 ? 's' : ''}`;
-            } else if (duration.minutes) {
-                return `${duration.minutes} minute${duration.minutes > 1 ? 's' : ''}`;
+            if (duration >= 60) {
+                const hours = Math.floor(duration / 60);
+                const minutes = duration % 60;
+                return `${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''}` : ''}`;
+            } else if (duration > 0) {
+                return `${duration} minute${duration > 1 ? 's' : ''}`;
             } else {
                 return "N/A";
             }
@@ -120,22 +145,10 @@ const Layout = () => {
 
         return (
             <div className="flex h-screen">
-                <div className="w-[20%] h-full text-white"
-                     style={{
-                         backgroundImage: `url(${homepic7})`,
-                         backgroundSize: 'cover',
-                         backgroundPosition: 'center',
-                         backgroundRepeat: 'no-repeat',
-                     }}>
+                <div className="w-[20%] h-full text-white">
                     <Sidebar />
                 </div>
-                <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular"
-                     style={{
-                         backgroundImage: `url(${homepic7})`,
-                         backgroundSize: 'cover',
-                         backgroundPosition: 'center',
-                         backgroundRepeat: 'no-repeat',
-                     }}>
+                <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular">
                     <div className="flex h-screen">
                         <div className="w-full h-full container mx-auto mt-10 relative"
                              style={{
@@ -146,19 +159,26 @@ const Layout = () => {
                                  margin: '0',
                                  padding: '0',
                              }}>
-                            <h1 className="text-5xl font-bold mb-5">Services</h1>
-                            {message && <p className="mb-4 text-center">{message}</p>}
+                            <h1 className="lg:mx-3 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1><br/>
+
+                            {/* Report Generation Button */}
+                            <button
+                                onClick={generateReport} // report
+                                className="lg:mx-200 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-blue-700 mb-4"
+                            >
+                                Generate Report
+                            </button>
 
                             <div className="overflow-x-auto">
-                                <table className="min-w-full bg-white border border-gray-200 rounded-lg shadow-md">
+                                <table className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
                                     <thead className="bg-gray-100 border-b border-gray-200">
                                     <tr>
-                                        <th className="py-2 px-4 text-left text-gray-600">Name</th>
-                                        <th className="py-2 px-4 text-left text-gray-600">Description</th>
-                                        <th className="py-2 px-4 text-left text-gray-600">Price</th>
-                                        <th className="py-2 px-4 text-left text-gray-600">Time Taken</th>
-                                        <th className="py-2 px-4 text-left text-gray-600">Category</th>
-                                        <th className="py-2 px-4 text-left text-gray-600">Actions</th>
+                                        <th className="py-2 px-4 text-left font-sans text-gray-600"> Service Name</th>
+                                        <th className="py-2 px-4 text-left font-sans text-gray-600">Description</th>
+                                        <th className="py-2 px-4 text-left font-sans text-gray-600">Price</th>
+                                        <th className="py-2 px-4 text-left font-sans text-gray-600">Time Taken</th>
+                                        <th className="py-2 px-4 text-left font-sans text-gray-600">Category</th>
+                                        <th className="py-2 px-4 text-left font-sans text-gray-600">Actions</th>
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -166,22 +186,22 @@ const Layout = () => {
                                         <tr key={service.id} className="border-b border-gray-200">
                                             <td className="py-2 px-4">{service.name}</td>
                                             <td className="py-2 px-4">{service.description}</td>
-                                            <td className="py-2 px-4">${service.price}</td>
+                                            <td className="py-2 px-4">Rs.{service.price}</td>
                                             <td className="py-2 px-4">{formatDuration(service.duration)}</td>
                                             <td className="py-2 px-4">{service.category_id}</td>
                                             <td className="py-2 px-4 flex space-x-2">
                                                 <button
                                                     onClick={() => handleEditClick(service)}
-                                                    className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-200"
+                                                    className="bg-pink-500 text-white py-1 px-4 rounded hover:bg-pink-700"
                                                 >
-                                                    <FontAwesomeIcon icon={faEdit} />
+                                                    <FontAwesomeIcon icon={faEdit}/>
                                                 </button>
 
                                                 <button
                                                     onClick={() => handleDeleteClick(service.id)}
-                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-red-600"
+                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-pink-200"
                                                 >
-                                                    <FontAwesomeIcon icon={faTrash} />
+                                                    <FontAwesomeIcon icon={faTrash}/>
                                                 </button>
                                             </td>
                                         </tr>
@@ -191,8 +211,8 @@ const Layout = () => {
                             </div>
 
                             {showEditModal && selectedService && (
-                                <div className="fixed inset-0 flex items-center justify-center bg-gray-800 bg-opacity-50">
-                                    <div className="bg-white p-6 rounded shadow-lg">
+                                <div className="fixed inset-0 flex items-center justify-center font-sans bg-gray-800 bg-opacity-50">
+                                    <div className="bg-white h-1/2 w-1/2 p-6 rounded shadow-lg">
                                         <h2 className="text-xl font-bold mb-4">Edit Service</h2>
 
                                         <div>
@@ -202,73 +222,72 @@ const Layout = () => {
                                                 name="name"
                                                 value={selectedService.name}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             />
-                                        </div>
 
-                                        <div>
                                             <label className="block font-semibold">Description</label>
                                             <textarea
                                                 name="description"
                                                 value={selectedService.description}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
-                                            ></textarea>
-                                        </div>
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
+                                            />
 
-                                        <div>
                                             <label className="block font-semibold">Price</label>
                                             <input
                                                 type="number"
                                                 name="price"
                                                 value={selectedService.price}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             />
-                                        </div>
 
-                                        <div>
                                             <label className="block font-semibold">Time Taken</label>
                                             <select
                                                 name="duration"
-                                                value={selectedService.duration ? Object.keys(durationOptions).find(key => durationOptions[key].minutes === selectedService.duration.minutes) : ""}
+                                                value={Object.keys(durationOptions).find(key => durationOptions[key].minutes === selectedService.duration) || ''}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             >
-                                                <option value="" disabled>Select time taken</option>
+                                                <option value="">Select Duration</option>
                                                 {Object.keys(durationOptions).map(option => (
-                                                    <option key={option} value={option}>
-                                                        {option}
-                                                    </option>
+                                                    <option key={option} value={option}>{option}</option>
                                                 ))}
                                             </select>
-                                        </div>
 
-                                        <div>
-                                            <label className="block font-semibold">Category ID</label>
+                                            <label className="block font-semibold">Category</label>
                                             <input
                                                 type="text"
                                                 name="category_id"
                                                 value={selectedService.category_id}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             />
                                         </div>
 
-                                        <div className="flex justify-end">
-                                            <button
-                                                onClick={handleUpdateService}
-                                                className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 mr-2"
-                                            >
-                                                Update
-                                            </button>
-                                            <button
-                                                onClick={() => setShowEditModal(false)}
-                                                className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400"
-                                            >
-                                                Cancel
-                                            </button>
-                                        </div>
+                                        <button
+                                            onClick={handleUpdateService}
+                                            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700"
+                                        >
+                                            Update Service
+                                        </button>
+                                        <button
+                                            onClick={() => setShowEditModal(false)}
+                                            className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 ml-2"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {showPopup && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                    <div className="bg-white p-6 rounded shadow-lg">
+                                        <p>{message}</p>
+                                        <button onClick={() => setShowPopup(false)} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+                                            Close
+                                        </button>
                                     </div>
                                 </div>
                             )}
@@ -279,7 +298,11 @@ const Layout = () => {
         );
     };
 
-    return <ServicesPage />;
+    return (
+        <div>
+            <ServicesPage />
+        </div>
+    );
 };
 
 export default Layout;

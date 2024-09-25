@@ -108,6 +108,7 @@ router.put('/update/:id', async (req, res) => {
 });
 
 
+
 // In your Express router file (e.g., userRoutes.js)
 router.get("/profile", async (req, res) => {
     res.setHeader('Cache-Control', 'no-store'); // Disable caching
@@ -518,5 +519,20 @@ router.post('/inquiries/:id/respond', async (req, res) => {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+
+router.get('/orders', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const result = await db.query('SELECT * FROM orders');  // Adjust the query to your DB schema
+            res.json(result.rows);  // Return the rows directly as an array
+        } catch (err) {
+            console.error('Error reading orders:', err.message);
+            res.status(500).json({ error: 'Error reading orders' });
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
 
 export default router;

@@ -75,7 +75,7 @@ function Navbar() {
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Appointments
                                 </Link>
-                                <Link to="/products"
+                                <Link to="/ProductList"
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Products
                                 </Link>

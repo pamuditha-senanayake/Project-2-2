@@ -15,7 +15,7 @@ const SidebarItem = ({title, links}) => {
                             to={link.url}
                             onClick={link.onClick} // Handle click for Sign out
                             className="d-block py-2 px-4 text-dark hover:bg-secondary rounded transition-colors"
-                            style={{textDecoration: 'none'}} // Remove underline
+                            style={{textDecoration: 'none'}}
                         >
                             {link.text}
                         </Link>
@@ -53,7 +53,8 @@ const Sidebar = () => {
             id: 'dashboard-collapse',
             links: [
                 {text: 'Overview', url: '/products'},
-                {text: 'Product List', url: '/ProductLists'}
+                {text: 'Product List', url: '/ProductLists'},
+
 
 
             ],
@@ -71,13 +72,14 @@ const Sidebar = () => {
         {
             title: 'Service/Category',
             links: [
-                {text: 'Add New Service', url: '/af'},
-                {text: 'Add New Category', url: '/cadd'},
-                {text: 'Services', url: '/vstb'},
+                {text: 'Add New Service', url: '/addservice'},
+                {text: 'Add New Category', url: '/addcategory'},
+                {text: 'Services', url: '/adminservicview'},
 
 
             ],
         },
+
         {
             title: 'Appoinment',
             links: [
@@ -85,6 +87,16 @@ const Sidebar = () => {
                 {text: 'All Appointment', url: '/viewList'},
                 /*{text: 'Shipped', url: '#'},
                 {text: 'Returned', url: '#'},*/
+            ],
+        },
+        {
+
+            title: 'Orders',
+            id: 'dashboard-collapse',
+            links: [
+                {text: 'Shipping Details', url: '/adminOrderDetails'},
+
+
             ],
         },
         {
@@ -137,6 +149,7 @@ const Sidebar = () => {
                     <SidebarItem
                         key={index}
                         title={section.title}
+
                         links={section.links}
                     />
                 ))}

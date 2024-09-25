@@ -2,11 +2,39 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from '../pamuditha/nav';
 
+
+
 const ShoppingCart = () => {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const checkUser = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/user/customer', {
+                    credentials: 'include' // Include credentials with the request
+                });
+
+                if (response.status === 403 || response.status === 401) {
+                    navigate('/'); // Redirect if not authorized
+                    return;
+                }
+
+                const data = await response.json();
+                if (!data.isUser) {
+                    navigate('/'); // Redirect if the user is not an admin
+                }
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                navigate('/'); // Redirect in case of an error
+            }
+        };
+
+        checkUser();
+    }, [navigate]);
 
     useEffect(() => {
         // Fetch the user's cart
@@ -122,17 +150,30 @@ const ShoppingCart = () => {
                                 </thead>
                                 <tbody>
                                 {cart.map((item) => (
-                                    <tr key={item.cart_id} style={{ borderBottom: '1px solid #e2e8f0', transition: 'background-color 0.2s' }}>
-                                        <td style={{ padding: '16px', display: 'flex', alignItems: 'center' }}>
+                                    <tr key={item.cart_id} style={{
+                                        borderBottom: '1px solid #e2e8f0',
+                                        transition: 'background-color 0.2s'
+                                    }}>
+                                        <td style={{padding: '16px', display: 'flex', alignItems: 'center'}}>
                                             <img
-                                                src={`data:image/jpeg;base64,${item.image}`} // Ensure this is correct
-                                                alt={item.product_name}
-                                                style={{ width: '96px', height: '96px', objectFit: 'cover', borderRadius: '8px', marginRight: '16px' }}
+                                                src={item.product_image ? `http://localhost:3001/uploads/${item.product_image}` : 'default-image-url'}
+                                                alt={item.product_title}
+                                                style={{
+                                                    width: '96px',
+                                                    height: '96px',
+                                                    objectFit: 'cover',
+                                                    borderRadius: '8px',
+                                                    marginRight: '16px'
+                                                }}
                                             />
-                                            <span style={{ color: '#1a202c', fontWeight: '500' }}>{item.product_name}</span>
+                                            <span style={{
+                                                color: '#1a202c',
+                                                fontWeight: '500'
+                                            }}>{item.product_title}</span>
                                         </td>
-                                        <td style={{ padding: '16px' }}>
-                                            <div style={{ display: 'flex', alignItems: 'center', gap: '8px' }}>
+
+                                        <td style={{padding: '16px'}}>
+                                            <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                                                 <button
                                                     aria-label="Decrease quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity - 1)}
@@ -148,7 +189,8 @@ const ShoppingCart = () => {
                                                 >
                                                     -
                                                 </button>
-                                                <span style={{ fontSize: '18px', fontWeight: '600' }}>{item.quantity}</span>
+                                                <span
+                                                    style={{fontSize: '18px', fontWeight: '600'}}>{item.quantity}</span>
                                                 <button
                                                     aria-label="Increase quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity + 1)}
@@ -166,8 +208,11 @@ const ShoppingCart = () => {
                                                 </button>
                                             </div>
                                         </td>
-                                        <td style={{ padding: '16px', color: '#1a202c' }}>${(item.price * item.quantity).toFixed(2)}</td>
-                                        <td style={{ padding: '16px' }}>
+                                        <td style={{
+                                            padding: '16px',
+                                            color: '#1a202c'
+                                        }}>${(item.price * item.quantity).toFixed(2)}</td>
+                                        <td style={{padding: '16px'}}>
                                             <button
                                                 onClick={() => handleRemoveItem(item.cart_id)}
                                                 style={{
@@ -193,11 +238,17 @@ const ShoppingCart = () => {
                     {/* Cart Summary */}
                     <div
                         className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300 mt-4 md:mt-0"
-                        style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)', marginTop: '16px' }}
+                        style={{
+                            backgroundColor: '#fff',
+                            padding: '24px',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)',
+                            marginTop: '16px'
+                        }}
                     >
                         <h2
                             className="text-3xl font-semibold mb-6 text-gray-800"
-                            style={{ fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c' }}
+                            style={{fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c' }}
                         >
                             Cart Summary
                         </h2>
