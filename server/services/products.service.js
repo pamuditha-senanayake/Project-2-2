@@ -9,12 +9,13 @@ const getAllProducts = async () => {
 // Get product by ID
 const getProductById = async (id) => {
     const productId = parseInt(id, 10);
-    if (isNaN(productId)) {
+    if (isNaN(productId) || productId <= 0) {
         throw new Error('Invalid product ID');
     }
     const record = await db.query("SELECT * FROM products WHERE id = $1", [productId]);
     return record.rows[0];
 };
+
 
 // Delete product by ID
 const deleteProduct = async (id) => {
@@ -50,23 +51,37 @@ const updateProduct = async (id, productData) => {
     return result.rows[0];
 };
 
-// Get product statistics
-const getStats = async () => {
+// service.js (or your service file)
+
+const getProductStats = async () => {
     try {
-        const totalProductsResult = await db.query("SELECT COUNT(*) FROM products");
-        const totalValueResult = await db.query("SELECT COALESCE(SUM(price * quantity), 0) AS totalValue FROM products");
-        const outOfStockResult = await db.query("SELECT COUNT(*) FROM products WHERE quantity = 0");
+        // Query to get the total count of products that are in stock
+        const totalProductsQuery = await db.query(
+            "SELECT COUNT(*) AS total FROM products WHERE quantity > 0"
+        );
+
+        // Query to get the total value of in-stock products (price * quantity)
+        const totalValueQuery = await db.query(
+            "SELECT SUM(price * quantity) AS totalValue FROM products WHERE quantity > 0"
+        );
+
+        // Query to get the count of products that are out of stock
+        const outOfStockQuery = await db.query(
+            "SELECT COUNT(*) AS outOfStock FROM products WHERE quantity = 0"
+        );
 
         return {
-            totalProducts: parseInt(totalProductsResult.rows[0].count, 10),
-            totalValue: parseFloat(totalValueResult.rows[0].totalValue),
-            outOfStock: parseInt(outOfStockResult.rows[0].count, 10),
+            totalProducts: totalProductsQuery.rows[0].total || 0, // Ensure a default of 0 if no data
+            totalStoreValue: totalValueQuery.rows[0].totalvalue || 0, // Ensure 0 if sum is null
+            outOfStock: outOfStockQuery.rows[0].outofstock || 0 // Default to 0 if no out-of-stock items
         };
     } catch (error) {
-        console.error('Error in getStats:', error);
-        throw error;
+        throw new Error("Error fetching product stats: " + error.message);
     }
 };
+
+
+
 
 export default {
     getAllProducts,
@@ -74,5 +89,5 @@ export default {
     deleteProduct,
     addProduct,
     updateProduct,
-    getStats,
+    getProductStats,
 };

@@ -33,6 +33,7 @@ import Ca from "./pages/sasanka/ca";
 import AllProduct from './pages/anuththara/All Product';
 import InqHome from './pages/shamika/inq_home';
 import Admin_inq from './pages/shamika/admin_inq';
+import AdminOrderDetails from './pages/sasanka/adminOrderDetails';
 
 
 import StatsPage from './pages/anuththara/StatsPage';
@@ -41,11 +42,13 @@ import Add_Product from './pages/anuththara/Add Product';
 import Product_List from './pages/anuththara/Product List';
 import UpdateProduct from './pages/anuththara/Update Product';
 import ProductDetailPage from './pages/anuththara/ProductDetailPage';
-import Addf from './pages/ishan/Addf';
-import Vservice from './pages/ishan/Vservice';
-import ScategoryAdd from "./pages/ishan/ScategoryAdd";
-import Vservice_tb from "./pages/ishan/Vservice_tb";
+//ishan
+import Addservice from './pages/ishan/ServiceAddForm';
+import Addcategory from "./pages/ishan/CategoryAddForm";
+import Adminservicview from "./pages/ishan/VeawServiceDetails";
 import Service from './pages/ishan/Service';
+
+import Vservice from './pages/ishan/Vservice';
 
 
 const AnimatedRoutes = () => {
@@ -92,6 +95,9 @@ const AnimatedRoutes = () => {
                         <Route path="/ProductList" element={<ProductList/>}/>
                         <Route path="/Checkout" element={<Checkout/>}/>
                         <Route path="/ca" element={<Ca/>}/>
+                        <Route path="/adminOrderDetails" element={<AdminOrderDetails/>}/>
+
+
                         <Route path="/update-item/:id" element={<UpdateProduct/>}/>
                         <Route path="/products" element={<StatsPage/>}/>
                         <Route path="/Addproduct" element={<Add_Product/>}/>
@@ -99,10 +105,9 @@ const AnimatedRoutes = () => {
                         <Route path="/AllProducts" element={<AllProduct/>}/>
                         <Route path="/product/:id" element={<ProductDetailPage/>}/>
 
-                        <Route path="/af" element={<Addf/>}/>
-                        <Route path="/vs" element={<Vservice/>}/>
-                        <Route path="/cadd" element={<ScategoryAdd/>}/>
-                        <Route path="/vstb" element={<Vservice_tb/>}/>
+                        <Route path="/addservice" element={<Addservice/>}/>
+                        <Route path="/addcategory" element={<Addcategory/>}/>
+                        <Route path="/adminservicview" element={<Adminservicview/>}/>
                         <Route path="/services" element={<Service/>}/>
 
                         <Route path="/inq" element={<InqHome/>}/>

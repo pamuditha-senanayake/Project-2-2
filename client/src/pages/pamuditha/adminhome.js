@@ -47,16 +47,28 @@ const Layout = () => {
                  }}>
                 <Sidebar/>
             </div>
-            <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular"
+            <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular flex items-center justify-center"
                  style={{
                      backgroundImage: `url(${homepic7})`,
                      backgroundSize: 'cover',
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-
+                <div className="text-center text-black"
+                     style={{
+                         animation: 'fadeIn 2s ease-in-out',
+                         '@keyframes fadeIn': {
+                             '0%': {opacity: 0, transform: 'translateY(-20px)'},
+                             '100%': {opacity: 1, transform: 'translateY(0)'},
+                         },
+                     }}>
+                    <h1 className="text-3xl font-bold">Welcome to Salon Diamond</h1>
+                    <p className="mt-2 text-lg">Your beauty is our priority. Experience the best services tailored just
+                        for you.</p>
+                </div>
 
             </div>
+
 
         </div>
     );

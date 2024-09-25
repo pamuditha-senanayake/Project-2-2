@@ -80,16 +80,16 @@ router.put('/update/:id', async (req, res) => {
         console.log(firstname, email, phone_number, lastname, address, role);
 
         try {
-            // Corrected the parameter order in the query and the params array
             const query = `
-                UPDATE users
-                SET firstname    = $1,
-                    email        = $2,
-                    phone_number = $3,
-
-                    role         = $4
-                WHERE id = $5 RETURNING *`;
-            const params = [firstname, email, phone_number, role, id]; // Fixed the order here
+                UPDATE users 
+                SET firstname = $1, 
+                    email = $2, 
+                    phone_number = $3, 
+                    lastname = $4,
+                    address = $5
+                WHERE id = $6 
+                RETURNING *`;
+            const params = [firstname, email, phone_number, lastname, address, id];
 
             const result = await db.query(query, params);
 
@@ -99,13 +99,14 @@ router.put('/update/:id', async (req, res) => {
                 res.status(404).json({error: 'User not found'});
             }
         } catch (err) {
-            console.error('Error updating user:', err.message);
+            console.error('Error updating user:', err);
             res.status(500).json({error: 'Error updating user'});
         }
     } else {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+
 
 
 // In your Express router file (e.g., userRoutes.js)
@@ -518,6 +519,21 @@ router.post('/inquiries/:id/respond', async (req, res) => {
         res.status(401).json({error: 'Unauthorized'});
     }
 });
+
+router.get('/orders', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const result = await db.query('SELECT * FROM orders');  // Adjust the query to your DB schema
+            res.json(result.rows);  // Return the rows directly as an array
+        } catch (err) {
+            console.error('Error reading orders:', err.message);
+            res.status(500).json({ error: 'Error reading orders' });
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
 
 router.get('/myappointment/fetch', async (req, res) => {
     if (req.isAuthenticated()) {

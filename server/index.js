@@ -19,13 +19,14 @@ import appointmentConfirmedRoutes from './controllers/appointment.controller.js'
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+//ishan
+import addService from './controllers/AddService.js';
 import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 import testimonialRoutes from './controllers/testimonial.controller.js';
 
 import productsController from './controllers/productsController.js';
-import cartController from './controllers/cartController.js'; // Ensure this import is correct
-import checkoutRoutes from './controllers/checkoutController.js'
-
+import cartController from './controllers/cartController.js';
+import checkoutRoutes from './controllers/checkoutController.js';
 //Anuththara
 import productsRoutes from './controllers/products.controller.js';
 
@@ -71,19 +72,17 @@ app.use('/api/myappointment', myAllAppointmentsRoutes);
 
 
 app.use(ErrorHandler)
-
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
 app.use(express.static("public"));
 app.use(ErrorHandler);
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use("/api/employees", employeeRoutes);
 app.use("/", userManagementController);
 app.use('/api/crud', crudController);
 app.use('/api/user', UserH);
+app.use('/service', addService);
 
 
 // app.use("/api/ai", aiController); // Updated route for AiManagement
@@ -99,8 +98,7 @@ app.get("/", (req, res) => {
     res.redirect("http://localhost:3000/home");
 });
 
-// Error handling middleware should be last
-// First, make sure the DB connection is successful, then start the express server.
+
 db.query("SELECT 1")
     .then(() => {
         console.log('DB connection succeeded.');

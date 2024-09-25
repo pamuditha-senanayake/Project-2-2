@@ -222,7 +222,7 @@ function InquiriesPage() {
                                             {inquiry.responded && (
                                                 <div className="mt-2 bg-gray-100 p-2 rounded">
                                                     <h4 className="font-semibold">Response:</h4>
-                                                    <p>{inquiry.responseMessage}</p>
+                                                    <p>{inquiry.response_message}</p>
                                                 </div>
                                             )}
                                             {/* Render Edit button for not responded inquiries */}
