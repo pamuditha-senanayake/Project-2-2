@@ -108,6 +108,39 @@ router.put('/update/:id', async (req, res) => {
 });
 
 
+router.put('/update2/:id', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {id} = req.params;
+        const {firstname, email, phone_number, role} = req.body;
+        console.log(firstname, email, phone_number, role);
+
+        try {
+            const query = `
+                UPDATE users 
+                SET firstname = $1, 
+                    email = $2, 
+                    phone_number = $3, 
+                    role = $4
+                
+                WHERE id = $5 
+                RETURNING *`;
+            const params = [firstname, email, phone_number, role, id];
+
+            const result = await db.query(query, params);
+
+            if (result.rows.length) {
+                res.status(200).json({user: result.rows[0]});
+            } else {
+                res.status(404).json({error: 'User not found'});
+            }
+        } catch (err) {
+            console.error('Error updating user:', err);
+            res.status(500).json({error: 'Error updating user'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
 
 // In your Express router file (e.g., userRoutes.js)
 router.get("/profile", async (req, res) => {
