@@ -206,6 +206,30 @@ const getDoneAppointmentDetails = async () => {
     }
 };
 
+const userAppointments = async (userId) => {
+    const result = await db.query(
+        `SELECT a.id                                AS appointment_id,
+                a.status,
+                a.appointment_date,
+                a.total_time,
+                a.total_cost,
+                ARRAY_AGG(DISTINCT s.name)          AS service_names,
+                p.name                              AS professional_name,
+                ARRAY_AGG(DISTINCT ats.time_number) AS time_slots
+         FROM appointments a
+                  JOIN appointment_services aps ON a.id = aps.appointment_id
+                  JOIN services s ON aps.service_id = s.id
+                  JOIN appointment_time_slots ats ON a.id = ats.appointment_id
+                  JOIN professionals p ON a.professional_id = p.id
+         WHERE a.user_id = $1
+         GROUP BY a.id, p.name
+         ORDER BY a.appointment_date DESC`,  // Optional: to order by most recent appointment
+        [userId]
+    );
+
+    return result.rows; // Return all appointments for the user
+};
+
 
 export default {
     addAppointment,
@@ -219,5 +243,6 @@ export default {
     getAppointmentStatus,
     updateConfirmedAppointment,
     updateRejectedAppointment,
-    getDoneAppointmentDetails
+    getDoneAppointmentDetails,
+    userAppointments
 };

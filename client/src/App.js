@@ -17,6 +17,7 @@ import UpdateRecord from "./pages/com/updatec";
 import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
 import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
+import UserAppointmentView from "./pages/navodya/UserAppointmentView";
 import Adminhome from "./pages/pamuditha/adminhome";
 import Adminprofile from "./pages/pamuditha/admin_profile";
 import Adminreg from "./pages/pamuditha/admin-register";
@@ -79,6 +80,7 @@ const AnimatedRoutes = () => {
                         <Route path="/date&time" element={<SelectDateTime/>}/>
                         <Route path="/confirm/:appointmentId" element={<ConfirmAppointment/>}/>
                         <Route path="/view" element={<AdminAppointmentView/>}/>
+                        <Route path="/myappointment" element={<UserAppointmentView/>}/>
                         <Route path="/pay" element={<Home/>}/>
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
                         <Route path="/adminhome" element={<Adminhome/>}/>
