@@ -80,17 +80,17 @@ router.put('/update/:id', async (req, res) => {
         console.log(firstname, email, phone_number, lastname, address, role);
 
         try {
-            // Corrected the parameter order in the query and the params array
             const query = `
                 UPDATE users 
                 SET firstname = $1, 
                     email = $2, 
                     phone_number = $3, 
-                   
-                    role = $4 
-                WHERE id = $5 
+                    lastname = $4,
+                    address = $5,
+                    role = $6 
+                WHERE id = $7 
                 RETURNING *`;
-            const params = [firstname, email, phone_number, role, id]; // Fixed the order here
+            const params = [firstname, email, phone_number, lastname, address, role, id];
 
             const result = await db.query(query, params);
 
@@ -100,7 +100,7 @@ router.put('/update/:id', async (req, res) => {
                 res.status(404).json({error: 'User not found'});
             }
         } catch (err) {
-            console.error('Error updating user:', err.message);
+            console.error('Error updating user:', err);
             res.status(500).json({error: 'Error updating user'});
         }
     } else {
