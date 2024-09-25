@@ -118,6 +118,17 @@ const Layout = () => {
         setShowModal(true);
     };
 
+    const UserCountCard = ({users}) => {
+        const userCount = users.length; // Count total number of users
+
+        return (
+            <div className="bg-pink-300 p-4 rounded shadow-md">
+                <h2 className="text-lg font-semibold">Total Users</h2>
+                <p className="text-2xl font-bold">{userCount}</p>
+            </div>
+        );
+    };
+
     const handleUpdate = async (e) => {
         e.preventDefault();
         if (!editUser) return;
@@ -282,54 +293,62 @@ const Layout = () => {
                 <div className="p-6 bg-white rounded-lg shadow-md overflow-x-auto">
                     <h1 className="text-3xl">User Information</h1>
                     <br/>
+                    <div className="flex flex-row w-full">
+                        <div className="flex flex-col w-1/2  order-1">
+                            {/* Search Bar */}
+                            <input
+                                type="text"
+                                placeholder="Search users..."
+                                value={searchQuery}
+                                onChange={(e) => setSearchQuery(e.target.value)}
+                                className="mb-4 p-2 border border-gray-300 rounded"
+                            />
+                            <br/>
 
-                    {/* Search Bar */}
-                    <input
-                        type="text"
-                        placeholder="Search users..."
-                        value={searchQuery}
-                        onChange={(e) => setSearchQuery(e.target.value)}
-                        className="mb-4 p-2 border border-gray-300 rounded"
-                    />
-                    <br/>
+                            <select value={roleFilter} onChange={handleRoleChange}
+                                    className="mb-4 p-2 border border-gray-300 rounded">
+                                <option value="">All Roles</option>
+                                <option value="admin">Admin</option>
+                                <option value="customer">Customer</option>
+                                <option value="staff">Staff</option>
 
-                    <select value={roleFilter} onChange={handleRoleChange}
-                            className="mb-4 p-2 border border-gray-300 rounded">
-                        <option value="">All Roles</option>
-                        <option value="admin">Admin</option>
-                        <option value="customer">Customer</option>
-                        <option value="staff">Staff</option>
-
-                    </select>
+                            </select>
 
 
-                    <div className="flex mb-4">
-                        <input
-                            type="date"
-                            value={startDate}
-                            onChange={handleStartDateChange}
-                            className="mr-2 p-2 border border-gray-300 rounded"
-                        />
-                        <input
-                            type="date"
-                            value={endDate}
-                            onChange={handleEndDateChange}
-                            className="p-2 border border-gray-300 rounded"
-                        />
+                            <div className="flex mb-4">
+                                <input
+                                    type="date"
+                                    value={startDate}
+                                    onChange={handleStartDateChange}
+                                    className="mr-2 p-2 border border-gray-300 rounded"
+                                />
+                                <input
+                                    type="date"
+                                    value={endDate}
+                                    onChange={handleEndDateChange}
+                                    className="p-2 border border-gray-300 rounded"
+                                />
+                            </div>
+                            <button
+                                className="bg-pink-500 text-white py-2 px-4 rounded mt-4"
+                                onClick={resetFilters}>
+                                Reset Filters
+                            </button>
+
+                            {/* Report Generation Button */}
+                            <button
+                                onClick={generateReport}
+                                className="mb-4 bg-pink-700 text-white px-4 py-2 rounded hover:bg-green-700"
+                            >
+                                Generate Report
+                            </button>
+
+                        </div>
+                        <div className="flex order-2 w-1/2 justify-end items-center content-end">
+                            <UserCountCard users={users}/>
+                        </div>
                     </div>
-                    <button
-                        className="bg-pink-500 text-white py-2 px-4 rounded mt-4"
-                        onClick={resetFilters}>
-                        Reset Filters
-                    </button>
 
-                    {/* Report Generation Button */}
-                    <button
-                        onClick={generateReport}
-                        className="mb-4 bg-pink-700 text-white px-4 py-2 rounded hover:bg-green-700"
-                    >
-                        Generate Report
-                    </button>
 
                     <table className="min-w-full bg-gray-100 border border-gray-300 rounded-lg">
                         <thead>
