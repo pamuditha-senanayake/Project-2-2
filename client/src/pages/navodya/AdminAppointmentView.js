@@ -1,11 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash'; // Import your Sidebar component
 import {useNavigate} from 'react-router-dom';
-import axios from "axios";
+import axios from 'axios';
 import homepic7 from "../../images/f.jpg";
 
 const LayoutWithAppointments = () => {
     const [appointments, setAppointments] = useState([]);
+    const [filteredAppointments, setFilteredAppointments] = useState([]); // State to hold filtered appointments
+    const [filter, setFilter] = useState('All'); // State for filter (e.g., pending, all)
     const navigate = useNavigate();
 
     // Check if the user is an admin
@@ -42,6 +44,7 @@ const LayoutWithAppointments = () => {
                     process.env.REACT_APP_API_URL + "/api/appointmentdetails/all"
                 );
                 setAppointments(response.data);
+                setFilteredAppointments(response.data); // Initialize with all appointments
             } catch (err) {
                 console.error(err);
             }
@@ -82,6 +85,16 @@ const LayoutWithAppointments = () => {
         }
     };
 
+    // Filter appointments based on status
+    const filterAppointments = (status) => {
+        if (status === 'pending') {
+            setFilteredAppointments(appointments.filter(app => app.status === 'pending'));
+        } else {
+            setFilteredAppointments(appointments); // Show all appointments
+        }
+        setFilter(status); // Update filter state
+    };
+
     // Format date for display
     const formatDate = (dateString) => {
         const date = new Date(dateString);
@@ -111,7 +124,25 @@ const LayoutWithAppointments = () => {
                  }}>
                 <div className="p-8 bg-gray-100">
                     <h1 className="text-2xl font-bold mb-4">Appointments</h1>
-                    {appointments.map(app => (
+
+                    {/* Filter Buttons */}
+                    <div className="mb-4">
+                        <button
+                            className={`py-2 px-4 mr-2 ${filter === 'All' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+                            onClick={() => filterAppointments('All')}
+                        >
+                            All Appointments
+                        </button>
+                        <button
+                            className={`py-2 px-4 ${filter === 'pending' ? 'bg-blue-500 text-white' : 'bg-gray-300'}`}
+                            onClick={() => filterAppointments('pending')}
+                        >
+                            Pending Appointments
+                        </button>
+                    </div>
+
+                    {/* Appointment List */}
+                    {filteredAppointments.map(app => (
                         <div key={app.appointment_id} className="bg-white rounded-lg shadow-md p-6 mb-4">
                             <div className="flex justify-between items-center">
                                 <div className="text-lg font-medium">{app.firstname}</div>

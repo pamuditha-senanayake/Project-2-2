@@ -68,7 +68,7 @@ const ProductList = () => {
     };
 
     const filteredProducts = products.filter(product =>
-        product.name.toLowerCase().includes(searchTerm.toLowerCase())
+        product.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
 
     if (loading) return <p className="text-center mt-4 text-gray-600">Loading...</p>;
@@ -95,13 +95,12 @@ const ProductList = () => {
                 {filteredProducts.map((product) => (
                     <div key={product.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105">
                         <img
-                            src={`data:image/jpeg;base64,${product.img}`}
-                            alt={product.name}
-                            className="w-full h-48 object-cover"
-                            style={{ borderBottom: '1px solid #e2e8f0' }}
+                            src={product.image ? `http://localhost:3001/uploads/${product.image}` : 'default-image-url'}
+                            alt={product.title}
+                            className="w-full h-48 object-cover rounded-t-lg mb-4"
                         />
                         <div className="p-5">
-                            <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.name}</h3>
+                            <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.title}</h3>
                             <p className="text-pink-600 font-bold mb-3">${product.price}</p>
                             <p className="text-gray-500 mb-3"><strong>Category:</strong> {product.category}</p>
                             <p className="text-gray-600 mb-2">
@@ -109,7 +108,7 @@ const ProductList = () => {
                             </p>
                             <button
                                 onClick={() => handleAddToCart(product)}
-                                aria-label={`Add ${product.name} to cart`}
+                                aria-label={`Add ${product.title} to cart`}
                                 className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors duration-300"
                             >
                                 Add to Cart
@@ -122,7 +121,7 @@ const ProductList = () => {
             {/* Product Details Modal */}
             {selectedProduct && (
                 <Modal
-                    title={<div className="text-xl font-bold text-indigo-700">{selectedProduct.name}</div>}
+                    title={<div className="text-xl font-bold text-indigo-700">{selectedProduct.title}</div>}
                     visible={visible}
                     onOk={handleOk}
                     onCancel={handleCancel}
@@ -147,9 +146,10 @@ const ProductList = () => {
 
                     <div className="flex flex-col sm:flex-row items-center">
                         <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
+
                             <img
-                                src={`data:image/jpeg;base64,${selectedProduct.img}`}
-                                alt={selectedProduct.name}
+                                src={selectedProduct.image ? `http://localhost:3001/uploads/${selectedProduct.image}` : 'default-image-url'}
+                                alt={selectedProduct.title}
                                 className="w-32 h-32 object-cover rounded-lg shadow-md"
                             />
                         </div>

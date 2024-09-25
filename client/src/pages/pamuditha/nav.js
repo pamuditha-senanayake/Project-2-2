@@ -1,5 +1,5 @@
 import React from 'react';
-import {Link, useNavigate, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {useLogout} from './authUtils';
 import logo2 from "../../images/logow.png";
@@ -75,7 +75,7 @@ function Navbar() {
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Appointments
                                 </Link>
-                                <Link to="/products"
+                                <Link to="/ProductList"
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Products
                                 </Link>
@@ -94,6 +94,8 @@ function Navbar() {
                                                    href="/cart">Cart</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/userp">Profile</a>
+                                                <a className="dropdown-item julius-sans-one-regular"
+                                                   href="/myappointment">My Appointments</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/inq">Support</a>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#"

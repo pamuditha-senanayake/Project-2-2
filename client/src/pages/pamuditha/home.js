@@ -304,7 +304,7 @@ const Home = () => {
                             we create a serene oasis for modern women seeking the ultimate in self-care.
                         </p>
                         <div className="mt-6 flex space-x-4 julius-sans-one-regular">
-                            <Link to="/products">
+                            <Link to="/ProductList">
                                 <button className="mx-0 custom-button">Shop Now</button>
                             </Link>
                             <Link to="/services">
@@ -449,7 +449,7 @@ const Home = () => {
                         <a href="#" className="hover:text-gray-400">Facebook</a>
                         <a href="#" className="hover:text-gray-400">Instagram</a>
                         <a href="#" className="hover:text-gray-400">Twitter</a>
-                        <a href="/admin-users" className="hover:text-gray-400">Admin</a>
+                        <a href="/adminhome" className="hover:text-gray-400">Admin</a>
                     </div>
                     <p className="text-sm text-gray-400">© {new Date().getFullYear()} Salon Diamond. All rights
                         reserved.</p>
