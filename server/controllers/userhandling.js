@@ -30,6 +30,15 @@ router.get('/admin', (req, res) => {
     }
 });
 
+router.get('/customer', (req, res) => {
+    // Ensure the user is authenticated and role is admin
+    if (req.user && (req.user.role === 'customer' || req.user.role === 'admin')) {
+        res.json({isUser: true}); // Respond with true if the user is an admin
+    } else {
+        res.status(403).json({message: 'Access denied. Admins only.'}); // Return 403 if not authorized
+    }
+});
+
 router.get('/verify', (req, res) => {
     // Ensure the user is authenticated and role is admin
     if (req.user) {
@@ -375,6 +384,96 @@ router.put("/checkout", async (req, res) => {
 //         res.status(500).json({ error: 'Server error' });
 //     }
 // });
+
+
+//shamika
+// GET all inquiries
+router.get('/inquiries/view', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const uid = req.user.id;
+            const result = await db.query('SELECT * FROM inquiries WHERE uid = $1', [uid]);
+            res.json({inquiries: result.rows});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({error: 'Error reading inquiries'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+// POST a new inquiry
+router.post('/inquiries', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {category, message} = req.body;
+        try {
+            const query = 'INSERT INTO inquiries (uid, category, message) VALUES ($1, $2, $3) RETURNING *';
+            const params = [req.user.id, category, message];
+            const result = await db.query(query, params);
+            res.status(201).json(result.rows[0]);
+        } catch (err) {
+            console.error('Error creating inquiry:', err.message);
+            res.status(500).json({error: 'Error creating inquiry'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+// DELETE an inquiry by ID
+router.delete('/inquiries/delete/:id', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {id} = req.params;
+        try {
+            await db.query('DELETE FROM inquiries WHERE id = $1', [id]);
+            res.status(200).json({message: 'Inquiry deleted'});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({error: 'Error deleting inquiry'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+// GET a single inquiry by ID
+router.get('/inquiries/fetch/:id', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {id} = req.params;
+        try {
+            const result = await db.query('SELECT * FROM inquiries WHERE id = $1', [id]);
+            const inquiry = result.rows[0];
+            if (inquiry) {
+                res.json({inquiry});
+            } else {
+                res.status(404).json({error: 'Inquiry not found'});
+            }
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({error: 'Error fetching inquiry'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+// UPDATE an inquiry by ID
+router.put('/inquiries/update/:id', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {id} = req.params;
+        const {category, message} = req.body;
+        try {
+            await db.query('UPDATE inquiries SET category = $1, message = $2 WHERE id = $3', [category, message, id]);
+            res.status(200).json({message: 'Inquiry updated'});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({error: 'Error updating inquiry'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
 
 
 export default router;
