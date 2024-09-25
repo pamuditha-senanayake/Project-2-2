@@ -1,89 +1,184 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import NavigationBar from "./NavigationBar"; // Ensure this path is correct
+import React, { useEffect, useState } from 'react';
+import Sidebar from '../com/admindash';
+import { useNavigate } from 'react-router-dom';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import homepic7 from "../../images/f.jpg";
 
-const AdminOrderManagement = () => {
-    const [orders, setOrders] = useState([]);
-    const [error, setError] = useState("");
-    const navigate = useNavigate();
+// Custom hook for debouncing a value
+const useDebounce = (value, delay) => {
+    const [debouncedValue, setDebouncedValue] = useState(value);
 
     useEffect(() => {
-        const fetchOrders = async () => {
+        const handler = setTimeout(() => {
+            setDebouncedValue(value);
+        }, delay);
+
+        return () => {
+            clearTimeout(handler);
+        };
+    }, [value, delay]);
+
+    return debouncedValue;
+};
+
+const OrdersLayout = () => {
+    const [orders, setOrders] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
+    const navigate = useNavigate();
+    const debouncedSearchQuery = useDebounce(searchQuery, 300); // 300ms delay
+
+    useEffect(() => {
+        const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/order', {
-                    credentials: 'include',
+                const response = await fetch('http://localhost:3001/api/user/admin', {
+                    credentials: 'include'
                 });
-                if (!response.ok) throw new Error('Failed to load orders.');
+
+                if (response.status === 403 || response.status === 401) {
+                    navigate('/');
+                    return;
+                }
+
                 const data = await response.json();
-                setOrders(data);
+                if (!data.isAdmin) {
+                    navigate('/');
+                }
             } catch (error) {
-                setError("Failed to load orders. Please try again later.");
-                console.error("Error fetching orders:", error);
+                console.error('Error checking user role:', error);
+                navigate('/');
             }
         };
 
-        fetchOrders();
-    }, []);
+        const fetchOrders = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/user/orders', {
+                    credentials: 'include'
+                });
 
-    const handleStatusUpdate = async (orderId, newStatus) => {
-        try {
-            const response = await fetch(`http://localhost:3001/api/user/orders/${orderId}/status`, {
-                method: 'PUT',
-                headers: {
-                    'Content-Type': 'application/json',
-                },
-                body: JSON.stringify({ status: newStatus }),
-                credentials: 'include',
-            });
-            if (!response.ok) throw new Error('Failed to update status.');
-            const updatedOrder = await response.json();
-            setOrders(orders.map(order => order.id === orderId ? updatedOrder : order));
-        } catch (error) {
-            setError("Failed to update order status.");
-            console.error("Error updating order status:", error);
-        }
+                if (!response.ok) {
+                    throw new Error(`HTTP error! Status: ${response.status}`);
+                }
+
+                const data = await response.json();
+                console.log('Fetched orders:', data);
+
+                if (Array.isArray(data)) {
+                    setOrders(data);
+                } else {
+                    console.error('Fetched data is not an array:', data);
+                }
+            } catch (error) {
+                console.error('Error fetching orders:', error);
+            }
+        };
+
+        checkAdmin();
+        fetchOrders();
+    }, [navigate]);
+
+    const formatDate = (dateString) => {
+        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const date = new Date(dateString);
+        return date.toLocaleDateString(undefined, options); // Format date
+    };
+
+    const filteredOrders = Array.isArray(orders) ? orders.filter(
+        (order) =>
+            (order.user_id && order.user_id.toString().includes(debouncedSearchQuery)) ||
+            (order.total_cost && order.total_cost.toString().includes(debouncedSearchQuery)) ||
+            (order.shipping_details && JSON.stringify(order.shipping_details).toLowerCase().includes(debouncedSearchQuery.toLowerCase()))
+    ) : [];
+
+    const generateReport = () => {
+        const doc = new jsPDF();
+        doc.setFontSize(18);
+        doc.text('Orders Report', 14, 22);
+
+        const columns = ['Order ID', 'User ID', 'Total Cost', 'Shipping Details', 'Order Date'];
+        const data = filteredOrders.map(order => [
+            order.id,
+            order.user_id,
+            order.total_cost,
+            typeof order.shipping_details === 'object'
+                ? `${order.shipping_details.name}, ${order.shipping_details.address}, ${order.shipping_details.city}`
+                : order.shipping_details,
+            formatDate(order.created_at) // Assuming order.date contains the date string
+        ]);
+
+        doc.autoTable({
+            startY: 30,
+            head: [columns],
+            body: data,
+            theme: 'grid',
+            margin: { horizontal: 14 },
+            styles: { fontSize: 10 },
+        });
+
+        doc.setFontSize(10);
+        doc.text('Generated by Salon Diamond - Admin', 14, doc.internal.pageSize.height - 10);
+        doc.save('orders_report.pdf');
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-8">
-            <NavigationBar activeTab={2} />
-            <div className="flex flex-col justify-center items-center min-h-screen">
-                <div className="max-w-6xl w-full mx-auto bg-white p-12 rounded-lg shadow-lg">
-                    <h2 className="text-2xl font-bold mb-6">Admin Order Management</h2>
-                    {error && <p className="text-red-500 mb-4">{error}</p>}
-                    <table className="table-auto w-full text-left">
+        <div className="flex h-screen">
+            <div className="w-[20%] h-full text-white"
+                 style={{
+                     backgroundImage: `url(${homepic7})`,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center',
+                     backgroundRepeat: 'no-repeat',
+                 }}>
+                <Sidebar />
+            </div>
+            <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular overflow-auto"
+                 style={{
+                     backgroundImage: `url(${homepic7})`,
+                     backgroundSize: 'cover',
+                     backgroundPosition: 'center',
+                     backgroundRepeat: 'no-repeat',
+                 }}>
+                <div className="p-6 bg-white rounded-lg shadow-md overflow-x-auto">
+                    <h1 className="text-3xl">Order Information</h1>
+                    <br />
+
+                    <input
+                        type="text"
+                        placeholder="Search orders..."
+                        value={searchQuery}
+                        onChange={(e) => setSearchQuery(e.target.value)}
+                        className="mb-4 p-2 border border-gray-300 rounded"
+                    />
+
+                    <button
+                        onClick={generateReport}
+                        className="mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                    >
+                        Generate Report
+                    </button>
+
+                    <table className="min-w-full bg-gray-100 border border-gray-300 rounded-lg">
                         <thead>
-                        <tr>
-                            <th className="px-4 py-2">Order ID</th>
-                            <th className="px-4 py-2">User ID</th>
-                            <th className="px-4 py-2">Shipping Address</th>
-                            <th className="px-4 py-2">Total Cost</th>
-                            <th className="px-4 py-2">Status</th>
-                            <th className="px-4 py-2">Actions</th>
+                        <tr className="bg-gray-200 text-gray-600 border-b border-gray-300">
+                            <th className="py-2 px-4 text-left">Order ID</th>
+                            <th className="py-2 px-4 text-left">User ID</th>
+                            <th className="py-2 px-4 text-left">Total Cost</th>
+                            <th className="py-2 px-4 text-left">Shipping Details</th>
+                            <th className="py-2 px-4 text-left">Order Date</th>
                         </tr>
                         </thead>
                         <tbody>
-                        {orders.map(order => (
-                            <tr key={order.id}>
-                                <td className="border px-4 py-2">{order.id}</td>
-                                <td className="border px-4 py-2">{order.user_id}</td>
-                                <td className="border px-4 py-2">{order.shipping_details.address}</td>
-                                <td className="border px-4 py-2">${order.total_cost.toFixed(2)}</td>
-                                <td className="border px-4 py-2">{order.status}</td>
-                                <td className="border px-4 py-2">
-                                    <button
-                                        onClick={() => handleStatusUpdate(order.id, 'Shipped')}
-                                        className="bg-green-500 text-white px-4 py-2 rounded"
-                                    >
-                                        Mark as Shipped
-                                    </button>
-                                    <button
-                                        onClick={() => handleStatusUpdate(order.id, 'Delivered')}
-                                        className="bg-blue-500 text-white px-4 py-2 rounded ml-2"
-                                    >
-                                        Mark as Delivered
-                                    </button>
+                        {filteredOrders.map((order) => (
+                            <tr key={order.id} className="border-b border-gray-300">
+                                <td className="py-2 px-4 text-gray-700">{order.id}</td>
+                                <td className="py-2 px-4 text-gray-700">{order.user_id}</td>
+                                <td className="py-2 px-4 text-gray-700">{order.total_cost}</td>
+                                <td className="py-2 px-4 text-gray-700">
+                                    {typeof order.shipping_details === 'object'
+                                        ? `${order.shipping_details.name}, ${order.shipping_details.address}, ${order.shipping_details.city}`
+                                        : order.shipping_details}
                                 </td>
+                                <td className="py-2 px-4 text-gray-700">{formatDate(order.created_at)}</td>
                             </tr>
                         ))}
                         </tbody>
@@ -94,4 +189,4 @@ const AdminOrderManagement = () => {
     );
 };
 
-export default AdminOrderManagement;
+export default OrdersLayout;
