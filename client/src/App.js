@@ -32,6 +32,7 @@ import Ca from "./pages/sasanka/ca";
 import AllProduct from './pages/anuththara/All Product';
 import InqHome from './pages/shamika/inq_home';
 import Admin_inq from './pages/shamika/admin_inq';
+import AdminOrderDetails from './pages/sasanka/adminOrderDetails';
 
 
 import StatsPage from './pages/anuththara/StatsPage';
@@ -92,6 +93,7 @@ const AnimatedRoutes = () => {
                         <Route path="/ProductList" element={<ProductList/>}/>
                         <Route path="/Checkout" element={<Checkout/>}/>
                         <Route path="/ca" element={<Ca/>}/>
+                        <Route path="/adminOrderDetails" element={<AdminOrderDetails/>}/>
 
 
                         <Route path="/update-item/:id" element={<UpdateProduct/>}/>

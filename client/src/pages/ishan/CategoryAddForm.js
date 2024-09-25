@@ -101,7 +101,7 @@ const Layout = () => {
                                     padding: "20px",
                                 }}>
 
-                                <h1 className="lg:mx-32 text-4xl lg:text-7xl font-bold text-black mb-8 font-sans">
+                                <h1 className="lg:mx-32 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">
                                     Add New Category
                                 </h1>
                                 <br/>

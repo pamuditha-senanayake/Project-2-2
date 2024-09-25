@@ -4,6 +4,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { jsPDF } from "jspdf";
 import su from "../../images/bcimage.avif";
 
 const Layout = () => {
@@ -39,7 +40,7 @@ const Layout = () => {
         const [selectedService, setSelectedService] = useState(null);
         const [showEditModal, setShowEditModal] = useState(false);
         const [message, setMessage] = useState("");
-        const [showPopup, setShowPopup] = useState(false); // Popup state
+        const [showPopup, setShowPopup] = useState(false);
 
         useEffect(() => {
             const fetchServices = async () => {
@@ -90,6 +91,24 @@ const Layout = () => {
             }
         };
 
+        // Report generation function
+        const generateReport = () => {
+            const doc = new jsPDF();
+            doc.text("Services Report", 20, 20);
+            doc.autoTable({
+                head: [['Service Name', 'Description', 'Price', 'Time Taken', 'Category']],
+                body: services.map(service => [
+                    service.name,
+                    service.description,
+                    `Rs.${service.price}`,
+                    formatDuration(service.duration),
+                    service.category_id
+                ]),
+                startY: 30,
+            });
+            doc.save('services_report.pdf'); // Save the PDF
+        };
+
         // Duration options mapping
         const durationOptions = {
             "15 minutes": { minutes: 15 },
@@ -97,7 +116,7 @@ const Layout = () => {
             "45 minutes": { minutes: 45 },
             "1 hour": { minutes: 60 },
             "2 hours": { minutes: 120 },
-            "5 hours": {minutes: 300}
+            "5 hours": { minutes: 300 }
         };
 
         const handleChange = (e) => {
@@ -118,13 +137,11 @@ const Layout = () => {
                 const minutes = duration % 60;
                 return `${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''}` : ''}`;
             } else if (duration > 0) {
-                return `${duration} minute${duration > 60 ? 's' : ''}`;
+                return `${duration} minute${duration > 1 ? 's' : ''}`;
             } else {
                 return "N/A";
             }
         };
-
-
 
         return (
             <div className="flex h-screen">
@@ -142,7 +159,15 @@ const Layout = () => {
                                  margin: '0',
                                  padding: '0',
                              }}>
-                            <h1 className="lg:mx-2 text-4xl lg:text-7xl font-bold text-black mb-8 font-sans">Services</h1><br/>
+                            <h1 className="lg:mx-3 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1><br/>
+
+                            {/* Report Generation Button */}
+                            <button
+                                onClick={generateReport} // report
+                                className="lg:mx-200 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-blue-700 mb-4"
+                            >
+                                Generate Report
+                            </button>
 
                             <div className="overflow-x-auto">
                                 <table className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
@@ -167,14 +192,14 @@ const Layout = () => {
                                             <td className="py-2 px-4 flex space-x-2">
                                                 <button
                                                     onClick={() => handleEditClick(service)}
-                                                    className="bg-red-500 text-white py-1 px-4 rounded hover:bg-red-200"
+                                                    className="bg-pink-500 text-white py-1 px-4 rounded hover:bg-pink-700"
                                                 >
                                                     <FontAwesomeIcon icon={faEdit}/>
                                                 </button>
 
                                                 <button
                                                     onClick={() => handleDeleteClick(service.id)}
-                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-red-600"
+                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-pink-200"
                                                 >
                                                     <FontAwesomeIcon icon={faTrash}/>
                                                 </button>
@@ -197,54 +222,71 @@ const Layout = () => {
                                                 name="name"
                                                 value={selectedService.name}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             />
-                                        </div>
 
-                                        <div>
                                             <label className="block font-semibold">Description</label>
                                             <textarea
                                                 name="description"
                                                 value={selectedService.description}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
-                                            ></textarea>
-                                        </div>
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
+                                            />
 
-                                        <div>
                                             <label className="block font-semibold">Price</label>
                                             <input
                                                 type="number"
                                                 name="price"
                                                 value={selectedService.price}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             />
-                                        </div>
 
-                                        <div>
                                             <label className="block font-semibold">Time Taken</label>
                                             <select
                                                 name="duration"
-                                                value={Object.keys(durationOptions).find(
-                                                    key => durationOptions[key].minutes === selectedService.duration
-                                                )}
+                                                value={Object.keys(durationOptions).find(key => durationOptions[key].minutes === selectedService.duration) || ''}
                                                 onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
                                             >
+                                                <option value="">Select Duration</option>
                                                 {Object.keys(durationOptions).map(option => (
-                                                    <option key={option} value={option}>
-                                                        {option}
-                                                    </option>
+                                                    <option key={option} value={option}>{option}</option>
                                                 ))}
                                             </select>
-                                        </div><br/>
+
+                                            <label className="block font-semibold">Category</label>
+                                            <input
+                                                type="text"
+                                                name="category_id"
+                                                value={selectedService.category_id}
+                                                onChange={handleChange}
+                                                className="border border-gray-300 rounded w-full p-2 mb-4"
+                                            />
+                                        </div>
 
                                         <button
                                             onClick={handleUpdateService}
-                                            className="bg-black text-white py-2 px-4 rounded hover:bg-gray-600"
+                                            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700"
                                         >
-                                            Update
+                                            Update Service
+                                        </button>
+                                        <button
+                                            onClick={() => setShowEditModal(false)}
+                                            className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 ml-2"
+                                        >
+                                            Cancel
+                                        </button>
+                                    </div>
+                                </div>
+                            )}
+
+                            {showPopup && (
+                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
+                                    <div className="bg-white p-6 rounded shadow-lg">
+                                        <p>{message}</p>
+                                        <button onClick={() => setShowPopup(false)} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
+                                            Close
                                         </button>
                                     </div>
                                 </div>
@@ -256,7 +298,11 @@ const Layout = () => {
         );
     };
 
-    return <ServicesPage />;
+    return (
+        <div>
+            <ServicesPage />
+        </div>
+    );
 };
 
 export default Layout;

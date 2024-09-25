@@ -95,7 +95,7 @@ const Layout = () => {
                          backgroundRepeat: 'no-repeat',
                      }}>
                     <br/>
-                    <h1 className="lg:mx-32 text-8xl  font-bold text-black mb-8 font-sans">Add Service</h1>
+                    <h1 className="lg:mx-32 text-5xl  font-bold text-black mb-8 julius-sans-one-regular">Add Service</h1>
 
                     <div className="flex h-screen">
                         <div className="w-full h-full">

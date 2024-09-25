@@ -2,11 +2,39 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from '../pamuditha/nav';
 
+
+
 const ShoppingCart = () => {
     const [cart, setCart] = useState([]);
     const [error, setError] = useState(null);
     const [loading, setLoading] = useState(true);
     const navigate = useNavigate();
+
+
+    useEffect(() => {
+        const checkUser = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/user/customer', {
+                    credentials: 'include' // Include credentials with the request
+                });
+
+                if (response.status === 403 || response.status === 401) {
+                    navigate('/'); // Redirect if not authorized
+                    return;
+                }
+
+                const data = await response.json();
+                if (!data.isUser) {
+                    navigate('/'); // Redirect if the user is not an admin
+                }
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                navigate('/'); // Redirect in case of an error
+            }
+        };
+
+        checkUser();
+    }, [navigate]);
 
     useEffect(() => {
         // Fetch the user's cart
@@ -128,7 +156,7 @@ const ShoppingCart = () => {
                                     }}>
                                         <td style={{padding: '16px', display: 'flex', alignItems: 'center'}}>
                                             <img
-                                                src={item.image ? `http://localhost:3001/uploads/${item.image}` : 'default-image-url'}
+                                                src={item.product_image ? `http://localhost:3001/uploads/${item.product_image}` : 'default-image-url'}
                                                 alt={item.product_title}
                                                 style={{
                                                     width: '96px',

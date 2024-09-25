@@ -1,5 +1,6 @@
 import db from '../db.js'; // Adjust import according to your project structure
 
+
 const addOrUpdateItem = async (userId, itemId, quantity) => {
     try {
         const result = await db.query(
@@ -27,6 +28,7 @@ const getCartItems = async (userId) => {
                 ci.user_id,
                 p.id AS product_id,
                 p.title AS product_title,
+                p.image AS product_image,
                 p.price,
                 ci.quantity
 

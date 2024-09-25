@@ -44,7 +44,7 @@ const AllProductsPage = () => {
                 <Sidebar />
             </div>
             <div className="w-[80%] p-8 overflow-y-auto relative">
-                <h2 className="text-4xl font-bold mb-8 text-gray-800 text-center font-serif">Inventory Overview</h2>
+                <h2 className="text-4xl font-bold mb-8 text-gray-800 text-center julius-sans-one-regular">Inventory Overview</h2>
 
                 {/* Alert Icon Button */}
                 <div className="absolute top-6 right-10">
