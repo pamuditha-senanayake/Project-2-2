@@ -5,6 +5,9 @@ import homepic7 from "../../images/f.jpg";
 
 
 const Layout = () => {
+    const [inquiries, setInquiries] = useState([]);
+    const [selectedInquiry, setSelectedInquiry] = useState(null);
+    const [responseMessage, setResponseMessage] = useState('');
 
     const navigate = useNavigate();
 
@@ -51,7 +54,7 @@ const Layout = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-                //
+
 
             </div>
 

@@ -403,6 +403,20 @@ router.get('/inquiries/view', async (req, res) => {
     }
 });
 
+router.get('/inquiries/viewall', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+
+            const result = await db.query('SELECT * FROM inquiries');
+            res.json({inquiries: result.rows});
+        } catch (err) {
+            console.log(err);
+            res.status(500).json({error: 'Error reading inquiries'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
 // POST a new inquiry
 router.post('/inquiries', async (req, res) => {
     if (req.isAuthenticated()) {
@@ -426,7 +440,7 @@ router.delete('/inquiries/delete/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
         try {
-            await db.query('DELETE FROM inquiries WHERE id = $1', [id]);
+            await db.query('DELETE FROM inquiries WHERE uid = $1', [id]);
             res.status(200).json({message: 'Inquiry deleted'});
         } catch (err) {
             console.log(err);
@@ -442,7 +456,7 @@ router.get('/inquiries/fetch/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
         try {
-            const result = await db.query('SELECT * FROM inquiries WHERE id = $1', [id]);
+            const result = await db.query('SELECT * FROM inquiries WHERE uid = $1', [id]);
             const inquiry = result.rows[0];
             if (inquiry) {
                 res.json({inquiry});
@@ -475,5 +489,35 @@ router.put('/inquiries/update/:id', async (req, res) => {
     }
 });
 
+// POST to respond to an inquiry by ID
+router.post('/inquiries/:id/respond', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const {id} = req.params;
+        const {message} = req.body;
+
+        try {
+            // Check if the inquiry exists
+            const inquiryResult = await db.query('SELECT * FROM inquiries WHERE id = $1', [id]);
+            const inquiry = inquiryResult.rows[0];
+
+            if (!inquiry) {
+                return res.status(404).json({error: 'Inquiry not found'});
+            }
+
+            // Update the inquiry with the response message and set responded to true
+            await db.query(
+                'UPDATE inquiries SET responded = true, response_message = $1, updated_at = CURRENT_TIMESTAMP WHERE id = $2',
+                [message, id]
+            );
+
+            res.status(200).json({message: 'Response sent successfully'});
+        } catch (err) {
+            console.error('Error responding to inquiry:', err.message);
+            res.status(500).json({error: 'Error responding to inquiry'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
 
 export default router;

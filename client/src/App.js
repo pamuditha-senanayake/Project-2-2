@@ -31,6 +31,7 @@ import ProductList from "./pages/sasanka/ProductList";
 import Ca from "./pages/sasanka/ca";
 import AllProduct from './pages/anuththara/All Product';
 import InqHome from './pages/shamika/inq_home';
+import Admin_inq from './pages/shamika/admin_inq';
 
 
 import StatsPage from './pages/anuththara/StatsPage';
@@ -105,6 +106,7 @@ const AnimatedRoutes = () => {
                         <Route path="/services" element={<Service/>}/>
 
                         <Route path="/inq" element={<InqHome/>}/>
+                        <Route path="/admin_inq" element={<Admin_inq/>}/>
 
                     </Routes>
                 </div>
