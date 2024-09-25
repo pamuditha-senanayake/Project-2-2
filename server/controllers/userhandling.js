@@ -338,5 +338,33 @@ router.put("/checkout", async (req, res) => {
 //     }
 // });
 
+//Get all user shipping details
+// router.get('/orders', async (req, res) => {
+//     if (req.isAuthenticated()) {
+//         try {
+//             const result = await db.query('SELECT * FROM orders');  // Adjust the query to your DB schema
+//             res.json({users: result.rows});
+//         } catch (err) {
+//             console.error('Error reading users:', err.message);
+//             res.status(500).json({error: 'Error reading users'});
+//         }
+//     } else {
+//         res.status(401).json({error: 'Unauthorized'});
+//     }
+// });
+router.get('/orders', async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const result = await db.query('SELECT * FROM orders');  // Adjust the query to your DB schema
+            res.json(result.rows);  // Return the rows directly as an array
+        } catch (err) {
+            console.error('Error reading orders:', err.message);
+            res.status(500).json({ error: 'Error reading orders' });
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' });
+    }
+});
+
 
 export default router;
