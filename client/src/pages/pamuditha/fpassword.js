@@ -1,5 +1,6 @@
 import React, {useState} from "react";
 import {useNavigate} from "react-router-dom";
+import backgroundImage from "../../images/5.jpg";
 
 const ForgotPassword = () => {
     const [email, setEmail] = useState("");
@@ -32,7 +33,14 @@ const ForgotPassword = () => {
     };
 
     return (
-        <div className="flex items-center justify-center h-screen bg-gray-100">
+        <div className="flex items-center justify-center h-screen bg-gray-100"
+             style={{
+                 backgroundImage: `url(${backgroundImage})`,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+             }}
+
+        >
             <div className="bg-white p-8 rounded-lg shadow-md max-w-sm w-full">
                 <h2 className="text-2xl font-bold text-center mb-6 julius-sans-one-regular">Forgot Password</h2>
                 {message && <p className="text-center text-green-500 mb-4">{message}</p>}

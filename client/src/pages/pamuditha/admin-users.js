@@ -134,7 +134,7 @@ const Layout = () => {
         if (!editUser) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/api/user/update/${editUser.id}`, {
+            const response = await fetch(`http://localhost:3001/api/user/update2/${editUser.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

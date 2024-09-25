@@ -1,5 +1,6 @@
 import React, {useState} from 'react';
 import {useParams, useNavigate} from 'react-router-dom';
+import backgroundImage from "../../images/5.jpg";
 
 const ResetPassword = () => {
     const {token} = useParams(); // Capture the reset token from the URL
@@ -44,7 +45,13 @@ const ResetPassword = () => {
     };
 
     return (
-        <div className="flex justify-center items-center h-screen bg-gray-100">
+        <div className="flex justify-center items-center h-screen bg-gray-100 julius-sans-one-regular"
+             style={{
+                 backgroundImage: `url(${backgroundImage})`,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+             }}
+        >
             <div className="bg-white p-8 shadow-lg rounded-lg w-full max-w-md">
                 <h1 className="text-2xl font-bold mb-6">Reset Your Password</h1>
                 {errorMessage && <p className="text-red-500 mb-4">{errorMessage}</p>}
@@ -79,7 +86,7 @@ const ResetPassword = () => {
                     </div>
                     <button
                         type="submit"
-                        className="w-full bg-blue-500 text-white py-2 rounded hover:bg-blue-600"
+                        className="w-full bg-pink-500 text-white py-2 rounded hover:bg-pink-600"
                     >
                         Reset Password
                     </button>
