@@ -4,8 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
-import { jsPDF } from "jspdf";
 import su from "../../images/bcimage.avif";
+import { jsPDF } from "jspdf";
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -18,17 +18,17 @@ const Layout = () => {
                 });
 
                 if (response.status === 403 || response.status === 401) {
-                    navigate('/'); // Redirect if not authorized
+                    navigate('/');
                     return;
                 }
 
                 const data = await response.json();
                 if (!data.isAdmin) {
-                    navigate('/'); // Redirect if the user is not an admin
+                    navigate('/');
                 }
             } catch (error) {
                 console.error('Error checking user role:', error);
-                navigate('/'); // Redirect in case of an error
+                navigate('/');
             }
         };
 
@@ -91,7 +91,8 @@ const Layout = () => {
             }
         };
 
-        // Report generation function
+        //Report generation
+
         const generateReport = () => {
             const doc = new jsPDF();
             doc.text("Services Report", 20, 20);
@@ -106,17 +107,17 @@ const Layout = () => {
                 ]),
                 startY: 30,
             });
-            doc.save('services_report.pdf'); // Save the PDF
+            doc.save('services_report.pdf');
         };
 
-        // Duration options mapping
+        //Time taken maping
         const durationOptions = {
             "15 minutes": { minutes: 15 },
             "30 minutes": { minutes: 30 },
             "45 minutes": { minutes: 45 },
             "1 hour": { minutes: 60 },
             "2 hours": { minutes: 120 },
-            "5 hours": { minutes: 300 }
+            "5 hours": {minutes: 300}
         };
 
         const handleChange = (e) => {
@@ -137,11 +138,13 @@ const Layout = () => {
                 const minutes = duration % 60;
                 return `${hours} hour${hours > 1 ? 's' : ''} ${minutes > 0 ? `${minutes} minute${minutes > 1 ? 's' : ''}` : ''}`;
             } else if (duration > 0) {
-                return `${duration} minute${duration > 1 ? 's' : ''}`;
+                return `${duration} minute${duration > 60 ? 's' : ''}`;
             } else {
                 return "N/A";
             }
         };
+
+
 
         return (
             <div className="flex h-screen">
@@ -159,18 +162,20 @@ const Layout = () => {
                                  margin: '0',
                                  padding: '0',
                              }}>
-                            <h1 className="lg:mx-3 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1><br/>
+                            <h1 className="lg:mx-3 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1>
+                            <br/>
 
-                            {/* Report Generation Button */}
                             <button
-                                onClick={generateReport} // report
-                                className="lg:mx-200 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-blue-700 mb-4"
+                                onClick={generateReport}
+                                className="lg:-scroll-mx-96 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-blue-700 mb-4"
                             >
                                 Generate Report
                             </button>
 
+
                             <div className="overflow-x-auto">
-                                <table className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
+                                <table
+                                    className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
                                     <thead className="bg-gray-100 border-b border-gray-200">
                                     <tr>
                                         <th className="py-2 px-4 text-left font-sans text-gray-600"> Service Name</th>
@@ -179,6 +184,7 @@ const Layout = () => {
                                         <th className="py-2 px-4 text-left font-sans text-gray-600">Time Taken</th>
                                         <th className="py-2 px-4 text-left font-sans text-gray-600">Category</th>
                                         <th className="py-2 px-4 text-left font-sans text-gray-600">Actions</th>
+
                                     </tr>
                                     </thead>
                                     <tbody>
@@ -211,7 +217,8 @@ const Layout = () => {
                             </div>
 
                             {showEditModal && selectedService && (
-                                <div className="fixed inset-0 flex items-center justify-center font-sans bg-gray-800 bg-opacity-50">
+                                <div
+                                    className="fixed inset-0 flex items-center justify-center font-sans bg-gray-800 bg-opacity-50">
                                     <div className="bg-white h-1/2 w-1/2 p-6 rounded shadow-lg">
                                         <h2 className="text-xl font-bold mb-4">Edit Service</h2>
 
@@ -222,72 +229,65 @@ const Layout = () => {
                                                 name="name"
                                                 value={selectedService.name}
                                                 onChange={handleChange}
-                                                className="border border-gray-300 rounded w-full p-2 mb-4"
+                                                className="w-full px-3 py-2 border rounded mb-2"
                                             />
+                                        </div>
 
+                                        <div>
                                             <label className="block font-semibold">Description</label>
                                             <textarea
                                                 name="description"
                                                 value={selectedService.description}
                                                 onChange={handleChange}
-                                                className="border border-gray-300 rounded w-full p-2 mb-4"
-                                            />
+                                                className="w-full px-3 py-2 border rounded mb-2"
+                                            ></textarea>
+                                        </div>
 
+                                        <div>
                                             <label className="block font-semibold">Price</label>
                                             <input
                                                 type="number"
                                                 name="price"
                                                 value={selectedService.price}
                                                 onChange={handleChange}
-                                                className="border border-gray-300 rounded w-full p-2 mb-4"
-                                            />
-
-                                            <label className="block font-semibold">Time Taken</label>
-                                            <select
-                                                name="duration"
-                                                value={Object.keys(durationOptions).find(key => durationOptions[key].minutes === selectedService.duration) || ''}
-                                                onChange={handleChange}
-                                                className="border border-gray-300 rounded w-full p-2 mb-4"
-                                            >
-                                                <option value="">Select Duration</option>
-                                                {Object.keys(durationOptions).map(option => (
-                                                    <option key={option} value={option}>{option}</option>
-                                                ))}
-                                            </select>
-
-                                            <label className="block font-semibold">Category</label>
-                                            <input
-                                                type="text"
-                                                name="category_id"
-                                                value={selectedService.category_id}
-                                                onChange={handleChange}
-                                                className="border border-gray-300 rounded w-full p-2 mb-4"
+                                                className="w-full px-3 py-2 border rounded mb-2"
                                             />
                                         </div>
 
-                                        <button
-                                            onClick={handleUpdateService}
-                                            className="bg-green-500 text-white py-2 px-4 rounded hover:bg-green-700"
-                                        >
-                                            Update Service
-                                        </button>
-                                        <button
-                                            onClick={() => setShowEditModal(false)}
-                                            className="bg-gray-500 text-white py-2 px-4 rounded hover:bg-gray-700 ml-2"
-                                        >
-                                            Cancel
-                                        </button>
-                                    </div>
-                                </div>
-                            )}
+                                        <div>
+                                            <label className="block font-semibold">Time Taken</label>
+                                            <select
+                                                name="duration"
+                                                value={Object.keys(durationOptions).find(
+                                                    key => durationOptions[key].minutes === selectedService.duration
+                                                )}
+                                                onChange={handleChange}
+                                                className="w-full px-3 py-2 border rounded mb-2"
+                                            >
+                                                {Object.keys(durationOptions).map(option => (
+                                                    <option key={option} value={option}>
+                                                        {option}
+                                                    </option>
+                                                ))}
+                                            </select>
+                                        </div>
+                                        <br/>
 
-                            {showPopup && (
-                                <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-                                    <div className="bg-white p-6 rounded shadow-lg">
-                                        <p>{message}</p>
-                                        <button onClick={() => setShowPopup(false)} className="mt-4 bg-blue-500 text-white py-2 px-4 rounded">
-                                            Close
-                                        </button>
+
+                                        <div className="flex justify-end space-x-4 mt-4">
+                                            <button
+                                                onClick={() => setShowEditModal(false)} // Close the modal when Cancel is clicked
+                                                className="bg-gray-300 text-black py-2 px-4 rounded hover:bg-gray-400"
+                                            >
+                                                Cancel
+                                            </button>
+                                            <button
+                                                onClick={handleUpdateService}
+                                                className="bg-black text-white py-2 px-4 rounded hover:bg-gray-600"
+                                            >
+                                                Update
+                                            </button>
+                                        </div>
                                     </div>
                                 </div>
                             )}
@@ -298,11 +298,7 @@ const Layout = () => {
         );
     };
 
-    return (
-        <div>
-            <ServicesPage />
-        </div>
-    );
+    return <ServicesPage/>;
 };
 
 export default Layout;
