@@ -168,6 +168,7 @@ const AddItem = () => {
                             </div>
                         </div>
 
+
                         {/* Right Section */}
                         <div className="space-y-6">
                             {/* Description Input */}

@@ -178,7 +178,7 @@ const ShoppingCart = () => {
                                                     aria-label="Decrease quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity - 1)}
                                                     style={{
-                                                        backgroundColor: '#4299e1',
+                                                        backgroundColor: '#edb9e8',
                                                         color: '#fff',
                                                         fontWeight: '700',
                                                         padding: '8px 16px',
@@ -195,13 +195,14 @@ const ShoppingCart = () => {
                                                     aria-label="Increase quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity + 1)}
                                                     style={{
-                                                        backgroundColor: '#4299e1',
+                                                        backgroundColor: '#edb9e8',
                                                         color: '#fff',
                                                         fontWeight: '700',
                                                         padding: '8px 16px',
                                                         borderRadius: '8px',
                                                         boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
                                                         cursor: 'pointer',
+
                                                     }}
                                                 >
                                                     +
@@ -211,12 +212,12 @@ const ShoppingCart = () => {
                                         <td style={{
                                             padding: '16px',
                                             color: '#1a202c'
-                                        }}>${(item.price * item.quantity).toFixed(2)}</td>
+                                        }}>Rs.{(item.price * item.quantity).toFixed(2)}</td>
                                         <td style={{padding: '16px'}}>
                                             <button
                                                 onClick={() => handleRemoveItem(item.cart_id)}
                                                 style={{
-                                                    backgroundColor: '#f56565',
+                                                    backgroundColor: '#ad4982',
                                                     color: '#fff',
                                                     fontWeight: '700',
                                                     padding: '8px 16px',
@@ -254,7 +255,7 @@ const ShoppingCart = () => {
                         </h2>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: '500', color: '#1a202c' }}>
                             <p>Total Cost</p>
-                            <p>${totalCost.toFixed(2)}</p>
+                            <p>Rs.{totalCost.toFixed(2)}</p>
                         </div>
                         <button
                             onClick={handleCheckout}

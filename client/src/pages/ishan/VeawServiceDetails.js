@@ -167,7 +167,7 @@ const Layout = () => {
 
                             <button
                                 onClick={generateReport}
-                                className="lg:-scroll-mx-96 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-blue-700 mb-4"
+                                className="lg:-scroll-mx-96 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-pink-700 mb-4"
                             >
                                 Generate Report
                             </button>
@@ -193,7 +193,7 @@ const Layout = () => {
                                             <td className="py-2 px-4">{service.name}</td>
                                             <td className="py-2 px-4">{service.description}</td>
                                             <td className="py-2 px-4">Rs.{service.price}</td>
-                                            <td className="py-2 px-4">{formatDuration(service.duration)}</td>
+                                            {/*<td className="py-2 px-4">{formatDuration(service.duration)}</td>*/}
                                             <td className="py-2 px-4">{service.category_id}</td>
                                             <td className="py-2 px-4 flex space-x-2">
                                                 <button
@@ -254,23 +254,23 @@ const Layout = () => {
                                             />
                                         </div>
 
-                                        <div>
-                                            <label className="block font-semibold">Time Taken</label>
-                                            <select
-                                                name="duration"
-                                                value={Object.keys(durationOptions).find(
-                                                    key => durationOptions[key].minutes === selectedService.duration
-                                                )}
-                                                onChange={handleChange}
-                                                className="w-full px-3 py-2 border rounded mb-2"
-                                            >
-                                                {Object.keys(durationOptions).map(option => (
-                                                    <option key={option} value={option}>
-                                                        {option}
-                                                    </option>
-                                                ))}
-                                            </select>
-                                        </div>
+                                        {/*<div>*/}
+                                        {/*    <label className="block font-semibold">Time Taken</label>*/}
+                                        {/*    <select*/}
+                                        {/*        name="duration"*/}
+                                        {/*        value={Object.keys(durationOptions).find(*/}
+                                        {/*            key => durationOptions[key].minutes === selectedService.duration*/}
+                                        {/*        )}*/}
+                                        {/*        onChange={handleChange}*/}
+                                        {/*        className="w-full px-3 py-2 border rounded mb-2"*/}
+                                        {/*    >*/}
+                                        {/*        {Object.keys(durationOptions).map(option => (*/}
+                                        {/*            <option key={option} value={option}>*/}
+                                        {/*                {option}*/}
+                                        {/*            </option>*/}
+                                        {/*        ))}*/}
+                                        {/*    </select>*/}
+                                        {/*</div>*/}
                                         <br/>
 
 
