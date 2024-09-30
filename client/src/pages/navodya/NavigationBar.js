@@ -63,6 +63,17 @@ const NavigationBar = ({activeTab}) => {
                                 Confirm
                             </Link>
 
+                            <Link
+                                to="/addpayment"
+                                className={`rounded-md px-3 py-2 text-sm font-medium ${
+                                    activeTab === 5
+                                        ? "bg-gray-900 text-white"
+                                        : "text-gray-300 hover:bg-gray-700 hover:text-white"
+                                }`}
+                            >
+                                Payment
+                            </Link>
+
                             {/* Add more links as needed */}
                         </div>
                     </div>

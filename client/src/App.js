@@ -47,8 +47,10 @@ import Addservice from './pages/ishan/ServiceAddForm';
 import Addcategory from "./pages/ishan/CategoryAddForm";
 import Adminservicview from "./pages/ishan/VeawServiceDetails";
 import Service from './pages/ishan/Service';
-
-import Vservice from './pages/ishan/Vservice';
+import AddPayment from "./pages/dasun/AddPayment";
+import UpdateCard from "./pages/dasun/UpdateCard";
+import DeleteCard from "./pages/dasun/DeleteCard";
+import Wallet from "./pages/dasun/Wallet";
 
 
 const AnimatedRoutes = () => {
@@ -112,6 +114,12 @@ const AnimatedRoutes = () => {
 
                         <Route path="/inq" element={<InqHome/>}/>
                         <Route path="/admin_inq" element={<Admin_inq/>}/>
+
+                        <Route path="/addpayment/:appointmentId" element={<AddPayment/>}/>
+                        <Route path="/upcard" element={<UpdateCard/>}/>
+                        <Route path="/deletecard" element={<DeleteCard/>}/>
+                        <Route path="/wallet/:userId" element={<Wallet/>}/>
+
 
                     </Routes>
                 </div>

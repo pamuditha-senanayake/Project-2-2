@@ -49,15 +49,16 @@ const ConfirmAppointment = () => {
 
     const handlePay = async () => {
         try {
-            navigate("/pay", {
+            navigate(`/addpayment/${appointmentId}`, {
                 state: {
-                    appointmentId
+                    appointmentId: appointmentId // Explicitly pass the appointmentId in state
                 }
             });
         } catch (error) {
             console.error('Error during payment process or navigation:', error);
         }
     };
+
 
     const handleDelete = async (appointmentId) => {
         console.log("Attempting to delete appointment with ID:", appointmentId);
