@@ -45,7 +45,6 @@ const Layout = () => {
         const [categories, setCategories] = useState([]);
         const [message, setMessage] = useState("");
 
-
         useEffect(() => {
             const fetchCategories = async () => {
                 try {
@@ -63,11 +62,17 @@ const Layout = () => {
             setFormData({ ...formData, [id]: value });
         };
 
+
         const handleSubmit = async (e) => {
             e.preventDefault();
             try {
-                await axios.post("http://localhost:3001/service/services", formData);
-                setMessage("Service added successfully!");
+                const response = await axios.post("http://localhost:3001/service/services", formData);
+                if (response.data && response.data.duration) {
+                    // Ensure the response contains the duration
+                    setMessage("Service added successfully!");
+                } else {
+                    setMessage("Failed to retrieve the duration. Please check the service details.");
+                }
                 navigate('/adminservicview');
                 setFormData({
                     name: "",
@@ -99,18 +104,17 @@ const Layout = () => {
 
                     <div className="flex h-screen">
                         <div className="w-full h-full">
-
-                            <div  style={{
-                                    backgroundImage: `url(${su})`,
-                                    backgroundSize: "cover",
-                                    backgroundPosition: "center",
-                                    backgroundRepeat: "no-repeat",
-                                    minHeight: "10vh",
-                                    padding: "20px",
-                                    display: "flex",
-                                    justifyContent: "center",
-                                    alignItems: "center",
-                                }}
+                            <div style={{
+                                backgroundImage: `url(${su})`,
+                                backgroundSize: "cover",
+                                backgroundPosition: "center",
+                                backgroundRepeat: "no-repeat",
+                                minHeight: "10vh",
+                                padding: "20px",
+                                display: "flex",
+                                justifyContent: "center",
+                                alignItems: "center",
+                            }}
                             >
                                 <div
                                     style={{
@@ -173,10 +177,10 @@ const Layout = () => {
                                                 Price
                                             </label>
                                             <div className="flex">
-                                                        <span
-                                                            className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
-                                                            Rs.
-                                                        </span>
+                                                <span
+                                                    className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
+                                                    Rs.
+                                                </span>
                                                 <input
                                                     type="number"
                                                     id="price"
@@ -198,17 +202,22 @@ const Layout = () => {
                                                 id="duration"
                                                 className="shadow-sm bg-gray-50 border h-10 border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                                 value={formData.duration}
-                                                onChange={handleChange}
+                                                onChange={handleChange} // Directly using handleChange without modification
                                                 required
                                             >
                                                 <option value="" disabled>Select time taken</option>
-                                                <option value="15 minutes">15 minutes</option>
-                                                <option value="30 minutes">30 minutes</option>
-                                                <option value="45 minutes">45 minutes</option>
-                                                <option value="1 hour">1 hour</option>
-                                                <option value="2 hours">2 hours</option>
-                                                <option value="5 hours">More than 2 hours</option>
+                                                <option value={15 * 60}>15 minutes</option>
+                                                <option value={30 * 60}>30 minutes</option>
+                                                <option value={45 * 60}>45 minutes</option>
+                                                <option value={60 * 60}>1 hour</option>
+                                                <option value={120 * 60}>2 hours</option>
+                                                <option value={180 * 60}>3 hours</option>
+                                                <option value={240 * 60}>4 hours</option>
+                                                <option value={300 * 60}>More than 5 hours</option>
+
                                             </select>
+
+
                                         </div>
                                         <div className="mb-6">
                                             <label htmlFor="description"
@@ -240,7 +249,7 @@ const Layout = () => {
         );
     };
 
-    return <AddServicePage/>;
+    return <AddServicePage />;
 };
 
 export default Layout;
