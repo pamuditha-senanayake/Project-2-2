@@ -3,15 +3,14 @@ import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons'; // Added faFilePdf
 import su from "../../images/bcimage.avif";
-import { jsPDF } from "jspdf";
-import 'jspdf-autotable'; // Ensure you have this import for autoTable
 import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable'; // Import the plugin
 
 const Layout = () => {
     const navigate = useNavigate();
-
     const [categories, setCategories] = useState([]);
 
     useEffect(() => {
@@ -30,8 +29,6 @@ const Layout = () => {
         const category = categories.find(cat => cat.id === categoryId);
         return category ? category.name : 'Unknown Category';
     };
-
-
 
     useEffect(() => {
         const checkAdmin = async () => {
@@ -138,24 +135,6 @@ const Layout = () => {
             }
         };
 
-        // Report generation
-        const generateReport = () => {
-            const doc = new jsPDF();
-            doc.text("Services Report", 20, 20);
-            doc.autoTable({
-                head: [['Service Name', 'Description', 'Price', 'Time Taken', 'Category']],
-                body: services.map(service => [
-                    service.name,
-                    service.description,
-                    `Rs.${service.price}`,
-                    formatDuration(service.duration),
-                    getCategoryName(service.category_id)
-                ]),
-                startY: 30,
-            });
-            doc.save('services_report.pdf');
-        };
-
         // Time taken mapping as an array for easier manipulation
         const durationOptions = [
             { label: "15 minutes", interval: '15 minutes' },
@@ -182,12 +161,16 @@ const Layout = () => {
         };
 
         const formatDuration = (duration) => {
-            if (typeof duration !== 'string') {
-                return "Invalid duration";
+            if (typeof duration === 'object') {
+                if (duration.hours) {
+                    return `${duration.hours} hour${duration.hours > 1 ? 's' : ''}`;
+                } else if (duration.minutes) {
+                    return `${duration.minutes} minute${duration.minutes > 1 ? 's' : ''}`;
+                }
+            } else if (typeof duration === 'string') {
+                return duration;
             }
-
-            // Simple parser to convert interval string to a readable format
-            return duration;
+            return "No duration available";
         };
 
         // Memoize category map for efficient lookup
@@ -215,6 +198,51 @@ const Layout = () => {
             );
         });
 
+        // PDF Generation Function
+        const generatePDF = () => {
+            const doc = new jsPDF();
+
+            // Title
+            doc.setFontSize(18);
+            doc.text("Services Report", 14, 22);
+
+            // Subtitle
+            doc.setFontSize(11);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+            // Define table columns and rows
+            const tableColumn = ["Service Name", "Description", "Price (Rs.)", "Time Taken", "Category"];
+            const tableRows = [];
+
+            filteredServices.forEach(service => {
+                const serviceData = [
+                    service.name,
+                    service.description,
+                    service.price.toString(),
+                    formatDuration(service.duration),
+                    getCategoryName(service.category_id)
+                ];
+                tableRows.push(serviceData);
+            });
+
+            // Add table
+            doc.autoTable({
+                startY: 35,
+                head: [tableColumn],
+                body: tableRows,
+                styles: { font: "helvetica", fontSize: 10 },
+                headStyles: { fillColor: [22, 160, 133] },
+                alternateRowStyles: { fillColor: [238, 238, 238] },
+                margin: { left: 14, right: 14 },
+                tableLineColor: [44, 62, 80],
+                tableLineWidth: 0.1
+            });
+
+            // Save PDF
+            doc.save("services_report.pdf");
+        };
+
         return (
             <div className="flex h-screen">
                 <div className="w-[20%] h-full text-white">
@@ -231,37 +259,30 @@ const Layout = () => {
                                  margin: '0',
                                  padding: '0',
                              }}>
-                            <h1 className="lg:mx-3 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1>
+                            <h1 className="lg:mx-3 text-4xl lg:text-6xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1>
                             <br/>
 
-
-
-                            <button
-                                onClick={generateReport}
-                                className="lg:scroll-mx-96 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-pink-700 mb-4"
-                                style={{
-                                    float: 'right',
-                                    marginRight: '20px',
-                                    cursor: 'pointer',
-                                }}
-                            >
-                                Generate Report
-                            </button>
-
-                            {/* Search Input */}
-                            <div className="lg:mx-5 mb-4">
+                            {/* Search and Generate PDF Buttons */}
+                            <div className="lg:mx-5 mb-4 flex justify-between items-center">
                                 <input
                                     type="text"
                                     value={searchTerm}
                                     onChange={handleSearchChange}
-                                    placeholder="Search services..."
+                                    placeholder="Search ......"
                                     className="w-50 px-4 py-2 border rounded"
                                 />
+                                <button
+                                    onClick={generatePDF}
+                                    className="flex items-center bg-black text-white px-4 py-2 rounded hover:bg-pink-700"
+                                >
+                                    <FontAwesomeIcon icon={faFilePdf} className="mr-2" />
+                                    Generate Report
+                                </button>
                             </div>
 
                             <div className="overflow-x-auto">
                                 <table
-                                    className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
+                                    className=" min-w-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
                                     <thead className="bg-gray-100 border-b border-gray-200">
                                     <tr>
                                         <th className="py-2 px-4 text-left font-sans text-gray-600">Service Name</th>
@@ -321,7 +342,7 @@ const Layout = () => {
                                             <input
                                                 type="text"
                                                 value={selectedService.id}
-                                                className="w-full px-4 py-2 border rounded"
+                                                className="w-full px-4 py-2 "
                                                 readOnly
                                             />
                                         </div>
@@ -353,7 +374,7 @@ const Layout = () => {
                                             <select
                                                 name="duration"
                                                 value={
-                                                    durationOptions.find(option => option.interval === selectedService.duration)
+                                                    durationOptions.find(option => option.interval === selectedService.duration)?.label || ""
                                                 }
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-2 border rounded"
@@ -415,7 +436,7 @@ const Layout = () => {
         );
     };
 
-    return <ServicesPage/>;
+    return <ServicesPage />;
 };
 
 export default Layout;

@@ -34,6 +34,7 @@ import AllProduct from './pages/anuththara/All Product';
 import InqHome from './pages/shamika/inq_home';
 import Admin_inq from './pages/shamika/admin_inq';
 import AdminOrderDetails from './pages/sasanka/adminOrderDetails';
+import Allcategory from "./pages/ishan/Allcategory";
 
 
 import StatsPage from './pages/anuththara/StatsPage';
@@ -109,6 +110,7 @@ const AnimatedRoutes = () => {
                         <Route path="/addcategory" element={<Addcategory/>}/>
                         <Route path="/adminservicview" element={<Adminservicview/>}/>
                         <Route path="/services" element={<Service/>}/>
+                        <Route path="/allcategory" element={<Allcategory/>}/>
 
                         <Route path="/inq" element={<InqHome/>}/>
                         <Route path="/admin_inq" element={<Admin_inq/>}/>

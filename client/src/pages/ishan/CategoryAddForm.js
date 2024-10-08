@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import af from "../../images/bcimage.avif";
-import Swal from 'sweetalert2'; // Import SweetAlert2
+import Swal from 'sweetalert2';
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -120,7 +120,7 @@ const Layout = () => {
                                     minHeight: "100vh",
                                     padding: "20px",
                                 }}>
-                                <h1 className="lg:mx-32 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">
+                                <h1 className="lg:mx-30 text-4xl lg:text-6xl font-bold text-black mb-8 julius-sans-one-regular">
                                     Add New Category
                                 </h1>
                                 <br />
