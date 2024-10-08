@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useMemo } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
@@ -7,6 +7,7 @@ import { faEdit, faTrash } from '@fortawesome/free-solid-svg-icons';
 import su from "../../images/bcimage.avif";
 import { jsPDF } from "jspdf";
 import 'jspdf-autotable'; // Ensure you have this import for autoTable
+import Swal from 'sweetalert2';
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -29,6 +30,8 @@ const Layout = () => {
         const category = categories.find(cat => cat.id === categoryId);
         return category ? category.name : 'Unknown Category';
     };
+
+
 
     useEffect(() => {
         const checkAdmin = async () => {
@@ -61,6 +64,7 @@ const Layout = () => {
         const [showEditModal, setShowEditModal] = useState(false);
         const [message, setMessage] = useState("");
         const [showPopup, setShowPopup] = useState(false);
+        const [searchTerm, setSearchTerm] = useState("");
 
         useEffect(() => {
             const fetchServices = async () => {
@@ -83,15 +87,37 @@ const Layout = () => {
         };
 
         const handleDeleteClick = async (id) => {
-            try {
-                await axios.delete(`http://localhost:3001/service/services/${id}`);
-                setServices(services.filter(service => service.id !== id));
-                setMessage("Service deleted successfully!");
-                setShowPopup(true);
-            } catch (err) {
-                console.error("Error deleting service:", err);
-                setMessage("Failed to delete service.");
-                setShowPopup(true);
+            // Show confirmation popup
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
+            });
+
+            if (result.isConfirmed) {
+                try {
+                    await axios.delete(`http://localhost:3001/service/services/${id}`);
+                    // Update the state to remove the deleted service
+                    setServices(services.filter(service => service.id !== id));
+                    // Show success popup
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Your service has been deleted.',
+                        icon: 'success'
+                    });
+                } catch (err) {
+                    console.error("Error deleting service:", err);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete service.',
+                        icon: 'error'
+                    });
+                }
             }
         };
 
@@ -123,7 +149,7 @@ const Layout = () => {
                     service.description,
                     `Rs.${service.price}`,
                     formatDuration(service.duration),
-                    service.category_id
+                    getCategoryName(service.category_id)
                 ]),
                 startY: 30,
             });
@@ -164,6 +190,31 @@ const Layout = () => {
             return duration;
         };
 
+        // Memoize category map for efficient lookup
+        const categoryMap = useMemo(() => {
+            const map = {};
+            categories.forEach(cat => {
+                map[cat.id] = cat.name;
+            });
+            return map;
+        }, [categories]);
+
+        // Handle search input change
+        const handleSearchChange = (e) => {
+            setSearchTerm(e.target.value);
+        };
+
+        // Filter services based on search term
+        const filteredServices = services.filter(service => {
+            const term = searchTerm.toLowerCase();
+            const categoryName = getCategoryName(service.category_id).toLowerCase();
+            return (
+                service.name.toLowerCase().includes(term) ||
+                service.description.toLowerCase().includes(term) ||
+                categoryName.includes(term)
+            );
+        });
+
         return (
             <div className="flex h-screen">
                 <div className="w-[20%] h-full text-white">
@@ -171,7 +222,7 @@ const Layout = () => {
                 </div>
                 <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular">
                     <div className="flex h-screen">
-                        <div className="w-full h-full container mx-auto mt-10 relative"
+                        <div className="w-full bg-pink-500 p-4 "
                              style={{
                                  backgroundImage: `url(${su})`,
                                  backgroundSize: 'cover',
@@ -183,15 +234,34 @@ const Layout = () => {
                             <h1 className="lg:mx-3 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1>
                             <br/>
 
+
+
                             <button
                                 onClick={generateReport}
-                                className="lg:-scroll-mx-96 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-pink-700 mb-4"
+                                className="lg:scroll-mx-96 bg-black font-bold font-sans text-white py-2 px-4 rounded hover:bg-pink-700 mb-4"
+                                style={{
+                                    float: 'right',
+                                    marginRight: '20px',
+                                    cursor: 'pointer',
+                                }}
                             >
                                 Generate Report
                             </button>
 
+                            {/* Search Input */}
+                            <div className="lg:mx-5 mb-4">
+                                <input
+                                    type="text"
+                                    value={searchTerm}
+                                    onChange={handleSearchChange}
+                                    placeholder="Search services..."
+                                    className="w-50 px-4 py-2 border rounded"
+                                />
+                            </div>
+
                             <div className="overflow-x-auto">
-                                <table className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
+                                <table
+                                    className="lg:mx-5 max-h-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
                                     <thead className="bg-gray-100 border-b border-gray-200">
                                     <tr>
                                         <th className="py-2 px-4 text-left font-sans text-gray-600">Service Name</th>
@@ -203,7 +273,7 @@ const Layout = () => {
                                     </tr>
                                     </thead>
                                     <tbody>
-                                    {services.map(service => (
+                                    {filteredServices.map(service => (
                                         <tr key={service.id} className="border-b border-gray-200">
                                             <td className="py-2 px-4">{service.name}</td>
                                             <td className="py-2 px-4">{service.description}</td>
@@ -228,7 +298,7 @@ const Layout = () => {
 
                                                 <button
                                                     onClick={() => handleDeleteClick(service.id)}
-                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-pink-200"
+                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-pink-700"
                                                 >
                                                     <FontAwesomeIcon icon={faTrash}/>
                                                 </button>
@@ -242,7 +312,8 @@ const Layout = () => {
                             {showEditModal && selectedService && (
                                 <div
                                     className="fixed inset-0 flex items-center justify-center font-sans bg-gray-800 bg-opacity-50">
-                                    <div className="bg-white h-auto w-11/12 md:w-3/4 lg:w-1/2 p-6 rounded shadow-lg overflow-y-auto max-h-screen">
+                                    <div
+                                        className="bg-white h-auto w-11/12 md:w-3/4 lg:w-1/2 p-6 rounded shadow-lg overflow-y-auto max-h-screen">
                                         <h2 className="text-xl font-bold mb-4">Edit Service</h2>
 
                                         <div className="mb-4">
@@ -282,8 +353,7 @@ const Layout = () => {
                                             <select
                                                 name="duration"
                                                 value={
-                                                    durationOptions.find(option => option.interval === selectedService.duration)?.label ||
-                                                    "Select duration"
+                                                    durationOptions.find(option => option.interval === selectedService.duration)
                                                 }
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-2 border rounded"
@@ -327,16 +397,17 @@ const Layout = () => {
 
                             {showPopup && (
                                 <div
-                                    className={`fixed top-4 right-4 ${message.includes('successfully') ? 'bg-green-500' : 'bg-red-500'} text-white py-2 px-4 rounded shadow-lg flex items-center`}>
-                                    <span>{message}</span>
+                                    className={`popup-container ${message.includes('successfully') ? 'success' : 'error'}`}>
+                                    <span className="popup-message">{message}</span>
                                     <button
                                         onClick={() => setShowPopup(false)}
-                                        className="ml-4 text-white font-bold"
+                                        className="popup-button"
                                     >
                                         &times;
                                     </button>
                                 </div>
                             )}
+
                         </div>
                     </div>
                 </div>
@@ -344,7 +415,7 @@ const Layout = () => {
         );
     };
 
-    return <ServicesPage />;
+    return <ServicesPage/>;
 };
 
 export default Layout;

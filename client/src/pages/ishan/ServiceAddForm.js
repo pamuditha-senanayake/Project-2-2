@@ -3,9 +3,9 @@ import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import su from "../../images/bcimage.avif";
+import Swal from "sweetalert2"; // Import SweetAlert2
 
 const Layout = () => {
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -62,7 +62,6 @@ const Layout = () => {
             setFormData({ ...formData, [id]: value });
         };
 
-
         const handleSubmit = async (e) => {
             e.preventDefault();
             try {
@@ -70,10 +69,21 @@ const Layout = () => {
                 if (response.data && response.data.duration) {
                     // Ensure the response contains the duration
                     setMessage("Service added successfully!");
+                    // Show SweetAlert2 success message
+                    Swal.fire({
+                        title: "Success!",
+                        text: "Service added successfully!",
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            // Navigate after the user clicks "OK"
+                            navigate('/adminservicview');
+                        }
+                    });
                 } else {
                     setMessage("Failed to retrieve the duration. Please check the service details.");
                 }
-                navigate('/adminservicview');
                 setFormData({
                     name: "",
                     price: "",
@@ -92,7 +102,7 @@ const Layout = () => {
                 <div className="w-[20%] h-full text-white">
                     <Sidebar />
                 </div>
-                <div className="w-[80%] h-full bg-pink-500  julius-sans-one-regular"
+                <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular"
                      style={{
                          backgroundImage: `url(${su})`,
                          backgroundSize: 'cover',
@@ -100,7 +110,7 @@ const Layout = () => {
                          backgroundRepeat: 'no-repeat',
                      }}>
                     <br/>
-                    <h1 className="lg:mx-32 text-5xl  font-bold text-black mb-8 julius-sans-one-regular">Add Service</h1>
+                    <h1 className="lg:mx-32 text-7xl font-bold text-black mb-8 julius-sans-one-regular">Add Service</h1>
 
                     <div className="flex h-screen">
                         <div className="w-full h-full">
@@ -136,7 +146,7 @@ const Layout = () => {
                                     <form className="w-full" onSubmit={handleSubmit}>
                                         <div className="mb-6">
                                             <label htmlFor="name"
-                                                   className="block mb-2 text-2xl font-bold text-gray-900">
+                                                   className="block mb-2 text-2xl font-bold start-px text-gray-900">
                                                 Service Name
                                             </label>
                                             <input
@@ -214,10 +224,7 @@ const Layout = () => {
                                                 <option value={180 * 60}>3 hours</option>
                                                 <option value={240 * 60}>4 hours</option>
                                                 <option value={300 * 60}>More than 5 hours</option>
-
                                             </select>
-
-
                                         </div>
                                         <div className="mb-6">
                                             <label htmlFor="description"
@@ -235,7 +242,7 @@ const Layout = () => {
                                         </div>
                                         <button
                                             type="submit"
-                                            className="text-white bg-black hover:bg-blue-600 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
+                                            className="text-white bg-black hover:bg-pink-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
                                         >
                                             Add Service
                                         </button>

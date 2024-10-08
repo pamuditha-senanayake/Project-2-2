@@ -2,9 +2,9 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import af from "../../images/bcimage.avif";
+import Swal from 'sweetalert2'; // Import SweetAlert2
 
 const Layout = () => {
-
     const navigate = useNavigate();
 
     useEffect(() => {
@@ -35,21 +35,14 @@ const Layout = () => {
     const CategoryForm = () => {
         const [categoryId, setCategoryId] = useState('');
         const [categoryName, setCategoryName] = useState('');
-        const [message, setMessage] = useState(null);
-        const [error, setError] = useState(null);
 
         useEffect(() => {
             const generatedId = `C${Math.floor(100000 + Math.random() * 900000)}`;
             setCategoryId(generatedId);
         }, []);
 
-        //palle tiyen button ek ebuwama wenn one de(back end ekt geniynwa)
-
         const handleSubmit = async (e) => {
             e.preventDefault();
-
-            setMessage(null);
-            setError(null);
 
             try {
                 const response = await fetch("http://localhost:3001/service/categories", {
@@ -63,23 +56,50 @@ const Layout = () => {
                 const result = await response.json();
 
                 if (response.ok) {
-                    setMessage(`Category '${result.name}' added successfully!`);
+                    // Show success popup
+                    Swal.fire({
+                        title: "Category Added!",
+                        text: `Category '${result.name}' added successfully!`,
+                        icon: "success",
+                        confirmButtonText: "OK"
+                    }).then(() => {
+                        window.location.reload(); // Refresh the page after clicking OK
+                    });
+
                     setCategoryName('');
-
-
-
-
-
-
-
-
                 } else {
-                    setError(result.error || "Failed to add category");
+                    // Show error popup if category already exists
+                    if (result.error === "Category already exists") {
+                        Swal.fire({
+                            title: "Error!",
+                            text: "This category is already added.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload(); // Refresh the page after clicking OK
+                        });
+                    } else {
+                        // Handle other errors
+                        Swal.fire({
+                            title: "Error!",
+                            text: result.error || "Failed to add category.",
+                            icon: "error",
+                            confirmButtonText: "OK"
+                        }).then(() => {
+                            window.location.reload(); // Refresh the page after clicking OK
+                        });
+                    }
                 }
-
             } catch (err) {
                 console.error(err.message);
-                setError("An error occurred. Please try again.");
+                Swal.fire({
+                    title: "Error!",
+                    text: "An error occurred. Please try again.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                }).then(() => {
+                    window.location.reload(); // Refresh the page after clicking OK
+                });
             }
         };
 
@@ -100,13 +120,12 @@ const Layout = () => {
                                     minHeight: "100vh",
                                     padding: "20px",
                                 }}>
-
                                 <h1 className="lg:mx-32 text-4xl lg:text-7xl font-bold text-black mb-8 julius-sans-one-regular">
                                     Add New Category
                                 </h1>
-                                <br/>
-                                <br/>
-                                <br/>
+                                <br />
+                                <br />
+                                <br />
                                 <div
                                     style={{
                                         background: 'rgba(255, 255, 255, 0.32)',
@@ -120,7 +139,7 @@ const Layout = () => {
                                         height: 'auto',
                                         padding: '20px',
                                         margin: '0 auto',
-                                    }}><br/>
+                                    }}><br />
 
                                     <form onSubmit={handleSubmit}>
                                         <div className="mb-6">
@@ -128,7 +147,7 @@ const Layout = () => {
                                                    className="block mb-2 text-2xl font-bold text-gray-900 dark:text-black">
                                                 Category Name
                                             </label>
-                                            <br/>
+                                            <br />
                                             <input
                                                 type="text"
                                                 id="name"
@@ -142,7 +161,7 @@ const Layout = () => {
                                         <div className="flex justify-end">
                                             <button
                                                 type="submit"
-                                                className="text-white font-bold bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300  rounded-lg text-sm px-5 py-2.5 text-center dark:bg-black dark:hover:bg-blue-700 dark:focus:ring-blue-800">
+                                                className="text-white font-bold bg-pink-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-black dark:hover:bg-pink-900 dark:focus:ring-blue-800">
                                                 Add
                                             </button>
                                         </div>
@@ -152,17 +171,6 @@ const Layout = () => {
                         </div>
                     </div>
                 </div>
-
-                {message && (
-                    <div className="fixed top-5 right-5 bg-green-500 text-white p-4 rounded-lg shadow-lg">
-                        {message}
-                    </div>
-                )}
-                {error && (
-                    <div className="fixed top-5 right-5 bg-red-500 text-white p-4 rounded-lg shadow-lg">
-                        {error}
-                    </div>
-                )}
             </div>
         );
     };
