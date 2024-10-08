@@ -273,9 +273,9 @@ const Layout = () => {
                                 />
                                 <button
                                     onClick={generatePDF}
-                                    className="flex items-center bg-black text-white px-4 py-2 rounded hover:bg-pink-700"
+                                    className="flex items-center bg-black text-white font-bold px-4 py-2 rounded hover:bg-pink-700"
                                 >
-                                    <FontAwesomeIcon icon={faFilePdf} className="mr-2" />
+                                    <FontAwesomeIcon icon={faFilePdf} className="mr-2 " />
                                     Generate Report
                                 </button>
                             </div>

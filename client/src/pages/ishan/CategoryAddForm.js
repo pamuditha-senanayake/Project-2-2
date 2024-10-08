@@ -144,7 +144,7 @@ const Layout = () => {
                                     <form onSubmit={handleSubmit}>
                                         <div className="mb-6">
                                             <label htmlFor="name"
-                                                   className="block mb-2 text-2xl font-bold text-gray-900 dark:text-black">
+                                                   className="block mb-2 text-2xl font-bold text-gray-700 dark:text-black">
                                                 Category Name
                                             </label>
                                             <br />
