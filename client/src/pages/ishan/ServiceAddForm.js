@@ -202,12 +202,30 @@ const Layout = () => {
                                                             <input
                                                                 type="number"
                                                                 id="price"
-                                                                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg block w-full p-2.5"
+                                                                className="shadow-sm bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-r-lg block w-full p-2.5 no-spinner"
                                                                 placeholder="Price"
                                                                 value={formData.price}
                                                                 onChange={handleChange}
                                                                 required
+                                                                // Disable the spinner arrows
+                                                                onWheel={(e) => e.target.blur()} // Prevent scrolling input
+                                                                inputMode="numeric"
                                                             />
+
+                                                            <style jsx>{`
+                                                                /* Disable arrows in Firefox */
+                                                                input[type='number'] {
+                                                                    -moz-appearance: textfield;
+                                                                }
+
+                                                                /* Disable arrows in Chrome, Safari, Edge, Opera */
+                                                                input[type='number']::-webkit-outer-spin-button,
+                                                                input[type='number']::-webkit-inner-spin-button {
+                                                                    -webkit-appearance: none;
+                                                                    margin: 0;
+                                                                }
+                                                            `}</style>
+
                                                         </div>
                                                     </div>
 

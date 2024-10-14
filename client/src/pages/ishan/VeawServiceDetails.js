@@ -144,7 +144,7 @@ const Layout = () => {
             { label: "2 hours", interval: '2 hours' },
             { label: "3 hours", interval: '3 hours' },
             { label: "4 hours", interval: '4 hours' },
-            { label: "More than 5 hours", interval: '5 hours' }
+
         ];
 
         const handleChange = (e) => {
@@ -342,7 +342,7 @@ const Layout = () => {
                                             <input
                                                 type="text"
                                                 value={selectedService.id}
-                                                className="w-full px-4 py-2 "
+                                                className="w-full px-2 py-2 "
                                                 readOnly
                                             />
                                         </div>
@@ -354,28 +354,55 @@ const Layout = () => {
                                                 name="name"
                                                 value={selectedService.name}
                                                 onChange={handleChange}
-                                                className="w-full px-4 py-2 border rounded"
+                                                className="w-full px-2 py-2 border rounded"
                                             />
                                         </div>
 
                                         <div className="mb-4">
                                             <label className="block font-semibold">Price:</label>
-                                            <input
-                                                type="number"
-                                                name="price"
-                                                value={selectedService.price}
-                                                onChange={handleChange}
-                                                className="w-full px-4 py-2 border rounded"
-                                            />
+                                            <div className="flex">
+        <span
+            className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
+            Rs.
+        </span>
+                                                <input
+                                                    type="number"
+                                                    name="price"
+                                                    value={selectedService.price}
+                                                    onChange={handleChange}
+                                                    className="w-full px-2 py-2 border rounded-r-md no-spinner"
+                                                    // Disable the spinner arrows
+                                                    onWheel={(e) => e.target.blur()} // Prevent scrolling input
+                                                    inputMode="numeric"
+                                                />
+                                            </div>
                                         </div>
+
+                                        <style jsx>{`
+                                            /* Disable arrows in Firefox */
+                                            input[type='number'] {
+                                                -moz-appearance: textfield;
+                                            }
+
+                                            /* Disable arrows in Chrome, Safari, Edge, Opera */
+                                            input[type='number']::-webkit-outer-spin-button,
+                                            input[type='number']::-webkit-inner-spin-button {
+                                                -webkit-appearance: none;
+                                                margin: 0;
+                                            }
+                                        `}</style>
+
 
                                         <div className="mb-4">
                                             <label className="block font-semibold">Time Taken:</label>
                                             <select
                                                 name="duration"
                                                 value={
-                                                    durationOptions.find(option => option.interval === selectedService.duration)?.label || ""
-                                                }
+                                                    selectedService.duration.hours
+                                                        ? `${selectedService.duration.hours} hour${selectedService.duration.hours > 1 ? 's' : ''}`
+                                                        : selectedService.duration.minutes
+                                                            ? `${selectedService.duration.minutes} minute${selectedService.duration.minutes > 1 ? 's' : ''}`
+                                                            : ""                                                }
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-2 border rounded"
                                             >
@@ -388,13 +415,14 @@ const Layout = () => {
                                             </select>
                                         </div>
 
+
                                         <div className="mb-4">
                                             <label className="block font-semibold">Description:</label>
                                             <textarea
                                                 name="description"
                                                 value={selectedService.description}
                                                 onChange={handleChange}
-                                                className="w-full px-4 py-2 border rounded"
+                                                className="w-full px-2 py-2 border rounded"
                                             />
                                         </div>
 
@@ -436,7 +464,7 @@ const Layout = () => {
         );
     };
 
-    return <ServicesPage />;
+    return <ServicesPage/>;
 };
 
 export default Layout;
