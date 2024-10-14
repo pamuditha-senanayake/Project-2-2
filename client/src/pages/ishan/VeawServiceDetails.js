@@ -3,7 +3,7 @@ import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons'; // Added faFilePdf
+import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import su from "../../images/bcimage.avif";
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
