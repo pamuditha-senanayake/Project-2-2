@@ -1,101 +1,179 @@
-import React, {useEffect, useState} from 'react';
+import React, {useState} from 'react';
+import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import NavigationBar from "../navodya/NavigationBar";
 
-const AppointmentDetails = ({appointmentId}) => {
+const AddPayment = ({userId}) => {
     const navigate = useNavigate();
-    const [appointment, setAppointment] = useState(null);
-    const [error, setError] = useState(null);
+    const [cardData, setCardData] = useState({
+        cardType: 'Master', // Set a default value
+        cardHolderName: '',
+        cardNo: '',
+        expiryDate: '',
+        cvcNo: ''
+    });
+    const [errors, setErrors] = useState({
+        cardNo: '',
+        cvcNo: ''
+    });
+    const [showSuccess, setShowSuccess] = useState(false); // State to show success notification
 
-    useEffect(() => {
-        const getAppointmentDetails = async () => {
-            try {
-                // Construct the API endpoint with the passed appointmentId
-                const response = await fetch(
-                    `${process.env.REACT_APP_API_URL}/api/user/appointment/${appointmentId}/fetch`,
-                    {
-                        credentials: 'include' // Include credentials for authentication
-                    }
-                );
+    const validateCardNo = (cardNo) => {
+        const cardNoRegex = /^[0-9]{16}$/;
+        return cardNoRegex.test(cardNo) ? '' : 'Card number must be 16 digits';
+    };
 
-                if (response.status === 403 || response.status === 401) {
-                    navigate('/'); // Redirect if not authorized
-                    return;
-                }
+    const validateCVC = (cvc) => {
+        const cvcRegex = /^[0-9]{3}$/;
+        return cvcRegex.test(cvc) ? '' : 'CVC must be 3 digits';
+    };
 
-                const data = await response.json();
-                if (data.error) {
-                    console.error(data.error); // Log error if there is one
-                    setError(data.error); // Set error state
-                    return;
-                }
+    const handleChange = (e) => {
+        const {name, value} = e.target;
+        setCardData({...cardData, [name]: value});
 
-                setAppointment(data); // Set the single appointment details if fetched successfully
-            } catch (error) {
-                console.error('Error fetching appointment details:', error);
-                setError('Error fetching appointment details.'); // Set error state
-                navigate('/'); // Redirect in case of an error
-            }
-        };
-
-        if (appointmentId) {
-            getAppointmentDetails(); // Fetch only if appointmentId is present
+        if (name === 'cardNo') {
+            setErrors({...errors, cardNo: validateCardNo(value)});
+        } else if (name === 'cvcNo') {
+            setErrors({...errors, cvcNo: validateCVC(value)});
         }
-    }, [navigate, appointmentId]);
+    };
+
+    const handleViewWallet = () => {
+        navigate(`/wallet?userId=${userId}`); // Pass userId as a query parameter
+    };
+
+    const handleSubmit = async (e) => {
+        e.preventDefault();
+        if (errors.cardNo || errors.cvcNo) {
+            return;
+        }
+        try {
+            const response = await axios.post('http://localhost:3001/routeCard/add', cardData);
+            console.log('Card added successfully:', response.data);
+            setShowSuccess(true); // Show success modal after successful submission
+        } catch (error) {
+            console.error('Error adding card:', error);
+        }
+    };
+
+    const handleCloseModal = () => {
+        setShowSuccess(false);
+        navigate('/'); // Redirect to the homepage (Update the URL to the actual homepage route)
+    };
+
+    const isFormValid = !errors.cardNo && !errors.cvcNo && cardData.cardNo && cardData.cvcNo;
 
     return (
         <div className="max-w-md mx-auto p-6 bg-gray-50 rounded-lg shadow-lg">
             <NavigationBar activeTab={5}/>
-            <h2 className="text-center text-2xl font-semibold text-gray-700 mb-6">Appointment Details</h2>
-            {error && <p className="text-red-600">{error}</p>}
-            {appointment ? (
-                <div>
-                    <h3 className="text-lg font-semibold">Service(s):</h3>
-                    {appointment.serviceNames.length > 0 ? (
-                        appointment.serviceNames.map((service, index) => (
-                            <div key={index} className="mb-2">
-                                <h4 className="text-md">{service}</h4>
-                            </div>
-                        ))
-                    ) : (
-                        <p>No services selected.</p>
-                    )}
-                    <hr className="my-4"/>
-                    <div className="text-lg">
-                        <p className="text-lg font-semibold">
-                            Stylist Name: <span
-                            className="font-normal">{appointment.professionalName || "Select Your Stylist"}</span>
-                        </p>
-                        <p className="text-lg font-semibold">
-                            Selected Date: <span
-                            className="font-normal">{appointment.date ? new Date(appointment.date).toLocaleDateString() : "Select A Date"}</span>
-                        </p>
-                        <p className="text-lg font-semibold">
-                            Selected Time: <span
-                            className="font-normal">{appointment.timeSlots.length > 0 ? appointment.timeSlots.join(", ") : "Select A Time Slot"}</span>
-                        </p>
-                    </div>
-                    <hr className="my-4"/>
-                    <div className="flex justify-between">
-                        <p>Total Cost</p>
-                        <p>LKR {appointment.totalCost || "0.00"}</p>
-                    </div>
-                    <div className="flex justify-between">
-                        <p>Total Time</p>
-                        <p>{appointment.totalTime.hours || appointment.totalTime.minutes ? `${appointment.totalTime.hours || 0} Hour(s) ${appointment.totalTime.minutes || 0} Min(s)` : "0 Hour(s) 0 Min(s)"}</p>
-                    </div>
-                    <button
-                        onClick={() => navigate('/payment')}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"
+            <h2 className="text-center text-2xl font-semibold text-gray-700 mb-6">Add Payment Method</h2>
+            <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
+                <div className="flex flex-col">
+                    <label htmlFor="cardType" className="mb-2 text-sm font-semibold text-gray-600">Card Type:</label>
+                    <select
+                        id="cardType"
+                        name="cardType"
+                        value={cardData.cardType}
+                        onChange={handleChange}
+                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required
                     >
-                        Pay Now
-                    </button>
+                        <option value="Master">Master</option>
+                        <option value="Visa">Visa</option>
+                        <option value="Amex">Amex</option>
+                    </select>
                 </div>
-            ) : (
-                <p className="text-center text-lg text-gray-600">Loading appointment details...</p>
+
+                <div className="flex flex-col">
+                    <label htmlFor="cardHolderName" className="mb-2 text-sm font-semibold text-gray-600">Cardholder's
+                        Name:</label>
+                    <input
+                        type="text"
+                        id="cardHolderName"
+                        name="cardHolderName"
+                        value={cardData.cardHolderName}
+                        onChange={handleChange}
+                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <label htmlFor="cardNo" className="mb-2 text-sm font-semibold text-gray-600">Card Number:</label>
+                    <input
+                        type="text"
+                        id="cardNo"
+                        name="cardNo"
+                        value={cardData.cardNo}
+                        onChange={handleChange}
+                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+                    {errors.cardNo && <p className="text-sm text-red-600 mt-2">{errors.cardNo}</p>}
+                </div>
+
+                <div className="flex flex-col">
+                    <label htmlFor="expiryDate" className="mb-2 text-sm font-semibold text-gray-600">Expiry
+                        Date:</label>
+                    <input
+                        type="date"
+                        id="expiryDate"
+                        name="expiryDate"
+                        value={cardData.expiryDate}
+                        onChange={handleChange}
+                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+                </div>
+
+                <div className="flex flex-col">
+                    <label htmlFor="cvcNo" className="mb-2 text-sm font-semibold text-gray-600">CVC Number:</label>
+                    <input
+                        type="text"
+                        id="cvcNo"
+                        name="cvcNo"
+                        value={cardData.cvcNo}
+                        onChange={handleChange}
+                        className="p-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400"
+                        required
+                    />
+                    {errors.cvcNo && <p className="text-sm text-red-600 mt-2">{errors.cvcNo}</p>}
+                </div>
+
+                <button
+                    type="submit"
+                    className={`p-3 bg-green-500 text-white rounded-lg transition duration-300 ${!isFormValid ? 'cursor-not-allowed bg-gray-300' : 'hover:bg-green-600'}`}
+                    disabled={!isFormValid}
+                >
+                    Save and Pay
+                </button>
+            </form>
+
+            <button
+                onClick={handleViewWallet}
+                className="mt-4 p-3 bg-blue-500 text-white rounded-lg transition duration-300 hover:bg-blue-600"
+            >
+                View Wallet
+            </button>
+
+            {/* Success Notification Modal */}
+            {showSuccess && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center">
+                    <div className="bg-white p-6 rounded-lg text-center">
+                        <h3 className="text-2xl font-semibold mb-4">Payment Successful</h3>
+                        <p>Your payment has been processed successfully.</p>
+                        <button
+                            onClick={handleCloseModal}
+                            className="mt-4 p-3 bg-green-500 text-white rounded-lg transition duration-300 hover:bg-green-600"
+                        >
+                            OK
+                        </button>
+                    </div>
+                </div>
             )}
         </div>
     );
 };
 
-export default AppointmentDetails;
+export default AddPayment;
