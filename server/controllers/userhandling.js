@@ -613,26 +613,47 @@ router.get('/myappointment/fetch', async (req, res) => {
 
 
 //dasun
-router.post('/add', async (req, res) => {
-    const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
-
-    if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-        return res.status(400).json({message: 'All fields are required'});
-    }
+// Route to save card details in the `public.cards` table
+router.post('/addCard/fetch', async (req, res) => {
+    console.log('Request received at /addCard/fetch');
 
     try {
-        const query = `
-            INSERT INTO Cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo)
-            VALUES ($1, $2, $3, $4, $5) RETURNING *;
-        `;
-        const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo];
+        // Destructure card details and user_id from the request body
+        const {user_id, cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
 
-        const result = await db.query(query, values);
-        res.status(201).json(result.rows[0]);
+        // Validate that all required fields are present
+        if (!user_id || !cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+            return res.status(400).json({message: 'All fields are required'});
+        }
+
+        // SQL query to insert a new card record into the "cards" table
+        const insertCardQuery = `
+            INSERT INTO public.cards (user_id, cardType, cardHolderName, cardNo, expiryDate, cvcNo)
+            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+        `;
+
+        // Parameterized values to be used in the query
+        const values = [user_id, cardType, cardHolderName, cardNo, expiryDate, cvcNo];
+
+        // Execute the SQL query using the values
+        const result = await db.query(insertCardQuery, values);
+
+        // Check if the query returned any rows (i.e., a card was added successfully)
+        if (result.rows.length > 0) {
+            console.log('Card added successfully:', result.rows[0]);
+            // Return the newly created card record as a response
+            return res.status(201).json(result.rows[0]);
+        } else {
+            console.log('Failed to add card');
+            return res.status(500).json({message: 'Failed to add card'});
+        }
     } catch (error) {
-        res.status(400).json({message: error.message});
+        // Handle any errors that occur during the database operation
+        console.error('Database error:', error);
+        return res.status(500).json({message: 'Internal server error'});
     }
 });
+
 
 // Get all cards
 router.get('/get', async (req, res) => {
