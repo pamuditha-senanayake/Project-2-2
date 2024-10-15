@@ -4,14 +4,16 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import su from "../../images/bcimage.avif";
+import af from "../../images/bcimage.avif";
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable'; // Import the plugin
 
+
 const Layout = () => {
     const navigate = useNavigate();
     const [categories, setCategories] = useState([]);
+
 
     useEffect(() => {
         const fetchCategories = async () => {
@@ -213,6 +215,10 @@ const Layout = () => {
             doc.setTextColor(100);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
 
+            doc.setFontSize(12);
+            doc.setTextColor(12, 10, 9);
+            doc.text(`Total services: ${filteredServices.length}`, 14, 40);
+
             // Define table columns and rows
             const tableColumn = ["Service Name", "Description", "Price (Rs.)", "Time Taken", "Category"];
             const tableRows = [];
@@ -245,21 +251,25 @@ const Layout = () => {
             doc.save("services_report.pdf");
         };
 
+
+
         return (
             <div className="flex h-screen">
                 <div className="w-[20%] h-full text-white">
                     <Sidebar />
                 </div>
-                <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular">
+                <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular overflow-auto">
                     <div className="flex h-screen">
-                        <div className="w-full bg-pink-500 p-4 "
+                        <div className="w-full h-full p-4"
                              style={{
-                                 backgroundImage: `url(${su})`,
-                                 backgroundSize: 'cover',
-                                 backgroundPosition: 'center',
-                                 backgroundRepeat: 'no-repeat',
-                                 margin: '0',
-                                 padding: '0',
+                                 backgroundImage: `url(${af})`,
+                                 backgroundSize: "cover",
+                                 backgroundPosition: "center",
+                                 backgroundRepeat: "no-repeat",
+                                 minHeight: "100vh",
+                                 padding: "20px",
+                                 bottom: 0,
+
                              }}>
                             <h1 className="lg:mx-3 text-4xl lg:text-6xl font-bold text-black mb-8 julius-sans-one-regular">Services</h1>
                             <br/>
@@ -277,10 +287,18 @@ const Layout = () => {
                                     onClick={generatePDF}
                                     className="flex items-center bg-black text-white font-bold px-4 py-2 rounded hover:bg-pink-700"
                                 >
-                                    <FontAwesomeIcon icon={faFilePdf} className="mr-2 " />
+                                    <FontAwesomeIcon icon={faFilePdf} className="mr-2 "/>
                                     Generate Report
                                 </button>
                             </div>
+
+                            {/*<h2 className="text-lg text-black mb-4 font-semibold border-b-2 border-gray-300 pb-2">*/}
+                            {/*    Total services: {filteredServices.length}*/}
+                            {/*</h2>*/}
+
+                            <h2 className="text-lg text-black mb-4 font-semibold border-b-2 border-gray-300 pb-2">
+                                Total services: {services.length}
+                            </h2>
 
                             <div className="overflow-x-auto">
                                 <table
@@ -404,7 +422,7 @@ const Layout = () => {
                                                         ? `${selectedService.duration.hours} hour${selectedService.duration.hours > 1 ? 's' : ''}`
                                                         : selectedService.duration.minutes
                                                             ? `${selectedService.duration.minutes} minute${selectedService.duration.minutes > 1 ? 's' : ''}`
-                                                            : ""                                                }
+                                                            : ""}
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-2 border rounded"
                                             >

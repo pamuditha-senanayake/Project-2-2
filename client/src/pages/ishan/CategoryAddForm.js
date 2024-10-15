@@ -183,12 +183,12 @@ const Layout = () => {
 
     return (
         <div className="flex h-screen">
-            {/* Sidebar */}
+
             <div className="w-[20%] h-full text-white">
                 <Sidebar />
             </div>
 
-            {/* Main Content */}
+
             <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular overflow-auto">
                 <div
                     style={{
@@ -215,7 +215,7 @@ const Layout = () => {
                     />
 
                     <h2 className="text-lg text-black mb-4 font-semibold border-b-2 border-gray-300 pb-2">
-                        Total Categories: {filteredCategories.length}
+                        Total Categories: {categories.length}
                     </h2>
 
 
