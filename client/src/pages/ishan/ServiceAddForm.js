@@ -136,8 +136,8 @@ const Layout = () => {
                                         >
                                             <div
                                                 style={{
-                                                    background: "rgba(255, 255, 255, 0.32)",
-                                                    borderRadius: "40px",
+                                                    background: "rgba(255, 255, 255, 0.6)",
+                                                    borderRadius: "10px",
                                                     boxShadow: "0 2px 20px rgba(0, 0, 0, 0.1)",
                                                     backdropFilter: "blur(7.2px)",
                                                     WebkitBackdropFilter: "blur(7.2px)",
