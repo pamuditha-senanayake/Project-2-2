@@ -198,6 +198,8 @@ const Layout = () => {
             );
         });
 
+
+
         // PDF Generation Function
         const generatePDF = () => {
             const doc = new jsPDF();

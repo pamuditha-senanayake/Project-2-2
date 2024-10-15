@@ -161,7 +161,7 @@ const Layout = () => {
             console.error(error);
 
             // Determine error message
-            let errorMsg = "This category is always added.";
+            let errorMsg = "This category is already added.";
             if (error.response && error.response.data && error.response.data.error === "Category already exists") {
                 errorMsg = "This category is already added.";
             }
@@ -200,12 +200,12 @@ const Layout = () => {
                         padding: "20px",
                     }}
                 >
-                    {/* Page Title */}
+
                     <h1 className="lg:mx-30 text-4xl lg:text-6xl font-bold text-black mb-8 julius-sans-one-regular">
                         Manage Categories
                     </h1>
 
-                    {/* Search Input */}
+
                     <input
                         type="text"
                         placeholder="Search categories..."
@@ -214,7 +214,11 @@ const Layout = () => {
                         className="border border-gray-300 px-4 py-2 mb-4 rounded w-full max-w-md"
                     />
 
-                    {/* Add Category Form */}
+                    <h2 className="text-lg text-black mb-4 font-semibold border-b-2 border-gray-300 pb-2">
+                        Total Categories: {filteredCategories.length}
+                    </h2>
+
+
                     <div
                         style={{
                             background: 'rgba(255, 255, 255, 0.32)',
@@ -258,8 +262,6 @@ const Layout = () => {
                     </div>
 
 
-
-                    {/* Categories Table */}
                     <table className="min-w-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
                         <thead className="bg-gray-100 border-b border-gray-200">
                         <tr>
@@ -278,7 +280,7 @@ const Layout = () => {
                                         onClick={() => handleDeleteClick(category.id)}
                                         className="bg-black text-white py-1 px-4 rounded hover:bg-pink-700"
                                     >
-                                        <FontAwesomeIcon icon={faTrash} />
+                                        <FontAwesomeIcon icon={faTrash}/>
                                     </button>
                                 </td>
                             </tr>
@@ -296,7 +298,6 @@ const Layout = () => {
             </div>
         </div>
     );
-
 };
 
 export default Layout;

@@ -249,7 +249,6 @@ const Layout = () => {
                                                             <option value={120 * 60}>2 hours</option>
                                                             <option value={180 * 60}>3 hours</option>
                                                             <option value={240 * 60}>4 hours</option>
-                                                            <option value={300 * 60}>More than 5 hours</option>
                                                         </select>
                                                     </div>
                                                     <div className="mb-6">
