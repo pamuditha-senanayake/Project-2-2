@@ -161,7 +161,7 @@ const Layout = () => {
             console.error(error);
 
             // Determine error message
-            let errorMsg = "Failed to add category.";
+            let errorMsg = "This category is always added.";
             if (error.response && error.response.data && error.response.data.error === "Category already exists") {
                 errorMsg = "This category is already added.";
             }
