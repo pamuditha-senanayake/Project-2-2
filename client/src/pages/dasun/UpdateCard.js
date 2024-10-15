@@ -13,7 +13,7 @@ const UpdateCard = ({cardId, onClose, onUpdate}) => {
     useEffect(() => {
         const fetchCardData = async () => {
             try {
-                const response = await axios.get(`http://localhost:5000/routeCard/${cardId}`);
+                const response = await axios.get(` http://localhost:3001/api/user/updatte/${cardId}`);
                 setCardData(response.data);
             } catch (error) {
                 console.error('Error fetching card data:', error);
@@ -30,7 +30,7 @@ const UpdateCard = ({cardId, onClose, onUpdate}) => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:5000/routeCard/update/${cardId}`, cardData);
+            await axios.put(`http://localhost:3001/api/user/updatte/${cardId}`, cardData);
             onUpdate();
             onClose();
         } catch (error) {

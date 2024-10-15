@@ -53,6 +53,8 @@ import DeleteCard from "./pages/dasun/DeleteCard";
 import Wallet from "./pages/dasun/Wallet";
 
 
+
+
 const AnimatedRoutes = () => {
     const location = useLocation();
 
@@ -115,10 +117,11 @@ const AnimatedRoutes = () => {
                         <Route path="/inq" element={<InqHome/>}/>
                         <Route path="/admin_inq" element={<Admin_inq/>}/>
 
-                        <Route path="/addpayment/:appointmentId" element={<AddPayment/>}/>
+                        <Route path="/addpayment" element={<AddPayment/>}/>
                         <Route path="/upcard" element={<UpdateCard/>}/>
                         <Route path="/deletecard" element={<DeleteCard/>}/>
                         <Route path="/wallet/:userId" element={<Wallet/>}/>
+                        <Route path="/deletecd" element={<DeleteCard/>}/>
 
 
                     </Routes>

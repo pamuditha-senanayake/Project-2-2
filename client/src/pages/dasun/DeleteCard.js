@@ -1,12 +1,16 @@
 import React from 'react';
 import axios from 'axios';
 
-const DeleteCard = ({cardId, onClose, onDelete}) => {
+const DeleteCard = ({ cardId, onClose, onDelete }) => {
     const handleDelete = async () => {
+        if (!cardId) {
+            console.error('No card ID provided for deletion');
+            return;
+        }
         try {
-            await axios.delete(`http://localhost:5000/routeCard/delete/${cardId}`);
-            onDelete();
-            onClose();
+            await axios.delete(`http://localhost:3001/api/user/deletec/${cardId}`);
+            onDelete(); // Call the parent function to refresh cards
+            onClose(); // Close the modal
         } catch (error) {
             console.error('Error deleting card:', error);
         }

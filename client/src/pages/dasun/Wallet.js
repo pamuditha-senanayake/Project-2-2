@@ -1,4 +1,4 @@
-import React, {useEffect, useState} from 'react';
+import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import UpdateCard from './UpdateCard';
 import DeleteCard from './DeleteCard';
@@ -26,11 +26,21 @@ const Wallet = () => {
 
     const fetchCards = async () => {
         try {
-            const response = await axios.get('http://localhost:5000/routeCard/get');
+            const response = await axios.get('http://localhost:3001/api/user/get/100'); // Endpoint for fetching all cards
             setCards(response.data);
             setFilteredCards(response.data);
         } catch (error) {
             console.error('Error fetching cards:', error);
+        }
+    };
+
+    const fetchCardById = async (cardId) => {
+        try {
+            const response = await axios.get(`http://localhost:3001/api/user/gett/${cardId}`); // Fetch specific card
+            setSelectedCard(response.data);
+            setIsUpdateModalOpen(true); // Open update modal
+        } catch (error) {
+            console.error('Error fetching card:', error);
         }
     };
 
@@ -39,12 +49,11 @@ const Wallet = () => {
     }, []);
 
     const handleUpdate = (cardId) => {
-        setSelectedCard(cardId);
-        setIsUpdateModalOpen(true);
+        fetchCardById(cardId); // Fetch card details before updating
     };
 
     const handleDelete = (cardId) => {
-        setSelectedCard(cardId);
+        setSelectedCard(cardId); // Ensure this ID is valid
         setIsDeleteModalOpen(true);
     };
 
@@ -127,7 +136,7 @@ const Wallet = () => {
                                             Update
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(card._id)}
+                                            onClick={() => handleDelete(card._id)} // This should correctly pass card._id
                                             className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
                                         >
                                             Delete

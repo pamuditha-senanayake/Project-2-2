@@ -40,7 +40,7 @@ const AddPayment = ({userId}) => {
     };
 
     const handleViewWallet = () => {
-        navigate(`/wallet?userId=${userId}`); // Pass userId as a query parameter
+        navigate(`/wallet/:userId${userId}`); // Pass userId as a query parameter
     };
 
     const handleSubmit = async (e) => {
@@ -49,7 +49,7 @@ const AddPayment = ({userId}) => {
             return;
         }
         try {
-            const response = await axios.post('http://localhost:3001/routeCard/add', cardData);
+            const response = await axios.post('http://localhost:3001/api/user/adddd', cardData);
             console.log('Card added successfully:', response.data);
             setShowSuccess(true); // Show success modal after successful submission
         } catch (error) {
@@ -59,7 +59,7 @@ const AddPayment = ({userId}) => {
 
     const handleCloseModal = () => {
         setShowSuccess(false);
-        navigate('/'); // Redirect to the homepage (Update the URL to the actual homepage route)
+        navigate('/home'); // Redirect to the homepage (Update the URL to the actual homepage route)
     };
 
     const isFormValid = !errors.cardNo && !errors.cvcNo && cardData.cardNo && cardData.cvcNo;

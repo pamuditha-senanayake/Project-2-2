@@ -614,49 +614,38 @@ router.get('/myappointment/fetch', async (req, res) => {
 
 //dasun
 // Route to save card details in the `public.cards` table
-router.post('/addCard/fetch', async (req, res) => {
-    console.log('Request received at /addCard/fetch');
+router.post('/adddd', async (req, res) => {
+    const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
+
+    if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
 
     try {
-        // Destructure card details and user_id from the request body
-        const {user_id, cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
-
-        // Validate that all required fields are present
-        if (!user_id || !cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-            return res.status(400).json({message: 'All fields are required'});
+        // Check if the card number already exists
+        const existingCard = await db.query('SELECT * FROM Cards WHERE cardNo = $1', [cardNo]);
+        if (existingCard.rows.length > 0) {
+            return res.status(409).json({ message: 'Card number already exists' });
         }
 
-        // SQL query to insert a new card record into the "cards" table
-        const insertCardQuery = `
-            INSERT INTO public.cards (user_id, cardType, cardHolderName, cardNo, expiryDate, cvcNo)
-            VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+        const query = `
+            INSERT INTO Cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo)
+            VALUES ($1, $2, $3, $4, $5)
+            RETURNING *;
         `;
+        const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo];
 
-        // Parameterized values to be used in the query
-        const values = [user_id, cardType, cardHolderName, cardNo, expiryDate, cvcNo];
-
-        // Execute the SQL query using the values
-        const result = await db.query(insertCardQuery, values);
-
-        // Check if the query returned any rows (i.e., a card was added successfully)
-        if (result.rows.length > 0) {
-            console.log('Card added successfully:', result.rows[0]);
-            // Return the newly created card record as a response
-            return res.status(201).json(result.rows[0]);
-        } else {
-            console.log('Failed to add card');
-            return res.status(500).json({message: 'Failed to add card'});
-        }
+        const result = await db.query(query, values);
+        res.status(201).json(result.rows[0]);
     } catch (error) {
-        // Handle any errors that occur during the database operation
-        console.error('Database error:', error);
-        return res.status(500).json({message: 'Internal server error'});
+        res.status(400).json({ message: error.message });
     }
 });
 
 
+
 // Get all cards
-router.get('/get', async (req, res) => {
+router.get('/get/100', async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM Cards');
         res.json(result.rows);
@@ -666,7 +655,7 @@ router.get('/get', async (req, res) => {
 });
 
 // Get a specific card by ID
-router.get('/get/:id', async (req, res) => {
+router.get('/gett/:id', async (req, res) => {
     try {
         const result = await db.query('SELECT * FROM Cards WHERE id = $1', [req.params.id]);
         if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
@@ -677,7 +666,7 @@ router.get('/get/:id', async (req, res) => {
 });
 
 // Update a card
-router.put('/update/:id', async (req, res) => {
+router.put('/updatte/:id', async (req, res) => {
     const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
 
     if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
@@ -706,15 +695,37 @@ router.put('/update/:id', async (req, res) => {
 });
 
 // Delete a card
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/deletec/:id', async (req, res) => {
+    const cardId = req.params.id;
+    console.log(`Attempting to delete card with ID: ${cardId}`); // Debug log
+
     try {
-        const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [req.params.id]);
-        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
-        res.json({message: 'Card deleted successfully'});
+        // First, check for any associated usage records
+        console.log(`Checking for usage records associated with card ID: ${cardId}`); // Debug log
+        const usageCheck = await db.query('SELECT * FROM CardUsage WHERE cardId = $1', [cardId]);
+
+        if (usageCheck.rows.length > 0) {
+            console.log(`Cannot delete card ID ${cardId}: it has existing usage records`); // Debug log
+            return res.status(400).json({ message: 'Cannot delete card with existing usage records' });
+        }
+
+        // Proceed to delete the card if no usage records exist
+        console.log(`Deleting card ID: ${cardId}`); // Debug log
+        const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [cardId]);
+        if (result.rows.length === 0) {
+            console.log(`Card ID ${cardId} not found for deletion`); // Debug log
+            return res.status(404).json({ message: 'Card not found' });
+        }
+
+        console.log(`Card ID ${cardId} deleted successfully`); // Debug log
+        res.json({ message: 'Card deleted successfully' });
     } catch (error) {
-        res.status(500).json({message: error.message});
+        console.error(`Error deleting card ID ${cardId}: ${error.message}`); // Error log
+        res.status(500).json({ message: error.message });
     }
 });
+
+
 
 // Increment usage count for a card
 router.post('/increment/:cardId', async (req, res) => {
