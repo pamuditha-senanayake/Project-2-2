@@ -1,14 +1,13 @@
 import React, {useEffect, useState} from 'react';
 import Navigation from './nav';
 import {useNavigate} from 'react-router-dom';
-import homepic4 from "../../images/f.jpg";
-import Swal from 'sweetalert2';
+import homepic4 from "../../images/f.jpg"; // Adjust the path if necessary
+import homepic3 from "../../images/a.jpg";
+import Swal from 'sweetalert2'; // Import SweetAlert
 
 const UserProfile = () => {
     const [userData, setUserData] = useState(null);
     const [isEditing, setIsEditing] = useState(false);
-    const [profilePic, setProfilePic] = useState(null);
-
     const [formData, setFormData] = useState({
         firstname: '',
         lastname: '',
@@ -16,9 +15,6 @@ const UserProfile = () => {
         address: '',
         email: '',
     });
-
-    const [activeButton, setActiveButton] = useState('profile');
-    const navigate = useNavigate();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -28,14 +24,13 @@ const UserProfile = () => {
                     headers: {
                         'Content-Type': 'application/json',
                     },
-                    credentials: 'include',
+                    credentials: 'include', // Include cookies for session
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    console.log('Fetched user data:', data);
+                    console.log('Fetched user data:', data); // Log the fetched data
                     setUserData(data);
-                    setProfilePic(data.pic ? `src/images/${data.pic}` : null); // Set profilePic only if data.pic exists
                     setFormData({
                         firstname: data.firstname || '',
                         lastname: data.lastname || '',
@@ -54,7 +49,6 @@ const UserProfile = () => {
         fetchUserData();
     }, []);
 
-
     const handleInputChange = (e) => {
         const {id, value} = e.target;
         setFormData(prevData => ({
@@ -62,45 +56,6 @@ const UserProfile = () => {
             [id]: value,
         }));
     };
-
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProfilePic(reader.result);
-                uploadImage(file);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const uploadImage = async (file) => {
-        const formData = new FormData();
-        formData.append('pic', file);
-
-        try {
-            const response = await fetch(`http://localhost:3001/api/user/update/pic`, {
-                method: 'PUT',
-                body: formData,
-                credentials: 'include',
-            });
-
-            if (response.ok) {
-                const updatedUser = await response.json();
-                setUserData(updatedUser.user);
-                setProfilePic(`src/images/${updatedUser.user.pic}`);
-            } else {
-                const errorMessage = await response.json();
-                console.error('Failed to upload image, status:', response.status, 'Message:', errorMessage.message);
-                alert(`Error: ${errorMessage.message || 'Failed to upload image.'}`);
-            }
-        } catch (error) {
-            console.error('Error uploading image:', error);
-            alert('An error occurred while uploading the image.');
-        }
-    };
-
 
     const handleUpdate = async () => {
         try {
@@ -160,7 +115,7 @@ const UserProfile = () => {
                             text: "Your profile has been deleted.",
                             icon: "success"
                         }).then(() => {
-                            navigate('/');
+                            navigate('/'); // Redirect to home page after deletion
                         });
                     } else {
                         console.error('Failed to delete user, status:', response.status);
@@ -178,17 +133,16 @@ const UserProfile = () => {
         });
     };
 
+
+    const navigate = useNavigate();
     const handleReset = () => {
-        navigate('/reset');
+        navigate('/reset'); // Redirect to /reset
     };
 
     if (!userData) {
         return <div>Loading...</div>;
     }
 
-    const handleButtonClick = (buttonName) => {
-        setActiveButton(buttonName);
-    };
 
     return (
         <div className="flex flex-col h-screen w-full julius-sans-one-regular"
@@ -201,109 +155,27 @@ const UserProfile = () => {
         >
             <Navigation/>
 
-            <div className="flex items-center justify-center w-full h-full mt-[20px] overflow-hidden mb-2">
-                <div
-                    className="flex flex-row w-[90%] h-[90%] space-x-2 border-2 rounded-2xl py-3 px-3 mt-[100px] bg-white overflow-hidden">
-                    {/* Left Side */}
-                    <div className="flex flex-col w-[20%] h-full rounded-2xl border-2">
-                        <p className="p-4 text-3xl">Menu</p>
-
-                        <div className="flex flex-col space-y-4 p-4">
-                            <button
-                                className={`${
-                                    activeButton === 'profile' ? 'bg-pink-200' : ''
-                                } text-gray-800 p-2 rounded-full hover:bg-pink-200 focus:outline-none`}
-                                onClick={() => handleButtonClick('profile')}
-                            >
-                                Profile
-                            </button>
-                            <button
-                                className={`${
-                                    activeButton === 'appointments' ? 'bg-pink-200' : ''
-                                } text-gray-800 p-2 rounded-full hover:bg-pink-200 focus:outline-none`}
-                                onClick={() => handleButtonClick('appointments')}
-                            >
-                                Appointments
-                            </button>
-                            <button
-                                className={`${
-                                    activeButton === 'payment' ? 'bg-pink-200' : ''
-                                } text-gray-800 p-2 rounded-full hover:bg-pink-200 focus:outline-none`}
-                                onClick={() => handleButtonClick('payment')}
-                            >
-                                Payment
-                            </button>
-
-                            {/* Delete Button */}
-                            <button
-                                className="text-red-600 font-normal py-2 px-4 rounded-full hover:bg-pink-200 focus:outline-none"
-                                onClick={handleDelete}
-                            >
-                                Delete
-                            </button>
-                        </div>
-                    </div>
-
-                    {/* Right Side */}
+            <div className="flex items-center justify-center w-full h-screen mt-[20px]">
+                <div className="flex flex-row w-[70%] h-[80%] space-x-2 border-2 rounded-2xl py-3 px-3">
                     <div className="flex flex-col w-full h-full">
-                        {/* Top Side */}
-                        <div>
-                            <h2 className="text-3xl mt-2">Profile </h2>
-                        </div>
-
-
-                        <div className="flex order-1 w-full h-[200px] border-2 rounded-2xl mb-2">
-                            {/*<p className="p-4">Top Section</p>*/}
-                            <div className="w-full flex-row h-full flex items-center justify-center">
-                                <div className="mr-[100px]">
-                                    <img
-                                        src={profilePic ? profilePic : 'default-profile-pic-url'} // Use ternary operator
-                                        alt="Profile"
-                                        className="w-24 h-24 rounded-full border-2 border-gray-300"
-                                    />
+                        <div className="flex order-1 w-full h-[20%] bg-blue-950 rounded-2xl mb-2">
+                            <div className="w-full h-full rounded-lg shadow-lg flex flex-wrap">
+                                <div className="w-full md:w-1/2 flex items-center justify-center">
+                                    <img src={homepic3} alt="Uploaded Photo"
+                                         className="rounded-full w-24 h-24 object-cover shadow-lg"/>
                                 </div>
-
-                                <div className="flex flex-col">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="mt-2"
-                                    />
-                                    <button
-                                        className="mt-2 bg-pink-400 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                                        onClick={() => document.querySelector('input[type="file"]').click()}
-                                    >
-                                        Edit Photo
-                                    </button>
-                                    {/*<div className="flex justify-end mt-4">*/}
-                                    {/*    <button*/}
-                                    {/*        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"*/}
-                                    {/*        onClick={handleUpdate}*/}
-                                    {/*    >*/}
-                                    {/*        Save Changes*/}
-                                    {/*    </button>*/}
-                                    {/*</div>*/}
-                                </div>
-
-
                             </div>
                         </div>
 
-                        {/* Bottom Side */}
-                        <div className="flex flex-col order-2 w-full h-full rounded-2xl overflow-y-auto">
-                            {/* Example content to test scrolling */}
-                            <div className="h-[1200px] border-2 p-4 mt-2">
-                                <div>
-                                    <h2 className="mb-3 text-2xl">Personal Information </h2>
-                                </div>
-                                <div className="flex flex-wrap -mx-4">
+                        <div className="flex order-2 w-full h-[80%] bg-pink-700 rounded-2xl">
+                            <div className="max-w-4xl mx-auto p-8 rounded-lg text-white">
 
+                                <div className="flex flex-wrap -mx-4">
 
                                     <div className="w-full md:w-1/2 px-4 mb-6">
 
                                         <div>
-                                            <label htmlFor="firstname" className="block  mb-2">First
+                                            <label htmlFor="firstname" className="block font-bold mb-2">First
                                                 Name</label>
                                             <input type="text" id="firstname"
                                                    className="text-black w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -312,7 +184,7 @@ const UserProfile = () => {
                                                    readOnly={!isEditing}/>
                                         </div>
                                         <div className="mt-4">
-                                            <label htmlFor="lastname" className="block mb-2">Last Name</label>
+                                            <label htmlFor="lastname" className="block font-bold mb-2">Last Name</label>
                                             <input type="text" id="lastname"
                                                    className="text-black w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                                                    value={formData.lastname}
@@ -320,7 +192,7 @@ const UserProfile = () => {
                                                    readOnly={!isEditing}/>
                                         </div>
                                         <div className="mt-4">
-                                            <label htmlFor="phone_number" className="block  mb-2">Phone
+                                            <label htmlFor="phone_number" className="block font-bold mb-2">Phone
                                                 Number</label>
                                             <input type="tel" id="phone_number"
                                                    className="text-black w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
@@ -332,7 +204,7 @@ const UserProfile = () => {
 
                                     <div className="w-full md:w-1/2 px-4 mb-6">
                                         <div>
-                                            <label htmlFor="address" className="block  mb-2">Address</label>
+                                            <label htmlFor="address" className="block font-bold mb-2">Address</label>
                                             <input type="text" id="address"
                                                    className="text-black px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                                                    value={formData.address}
@@ -340,7 +212,7 @@ const UserProfile = () => {
                                                    readOnly={!isEditing}/>
                                         </div>
                                         <div className="mt-4">
-                                            <label htmlFor="email" className="block mb-2">Email</label>
+                                            <label htmlFor="email" className="block font-bold mb-2">Email</label>
                                             <input type="email" id="email"
                                                    className="text-black w-full px-4 py-2 border rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-600"
                                                    value={formData.email}
@@ -351,19 +223,19 @@ const UserProfile = () => {
                                             {isEditing ? (
                                                 <>
                                                     <button
-                                                        className="text-black w-full bg-pink-400 hover:bg-plue-700 py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out"
+                                                        className="text-black w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out"
                                                         onClick={handleUpdate}>
                                                         Save
                                                     </button>
                                                     <button
-                                                        className="text-black w-full bg-pink-600 hover:bg-pink-700  py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out mt-2"
+                                                        className="text-black w-full bg-gray-600 hover:bg-gray-700 font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out mt-2"
                                                         onClick={() => setIsEditing(false)}>
                                                         Cancel
                                                     </button>
                                                 </>
                                             ) : (
                                                 <button
-                                                    className="text-black w-full bg-pink-200 hover:bg-pink-300 py-2 px-4 rounded-lg  transition duration-300 ease-in-out"
+                                                    className="text-black w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out"
                                                     onClick={() => setIsEditing(true)}>
                                                     Edit
                                                 </button>
@@ -372,19 +244,26 @@ const UserProfile = () => {
                                     </div>
                                 </div>
                             </div>
-                            <div className="h-[1200px] border-2 p-4 mt-2">
-                                <div>
-                                    <h2 className="mb-3 text-2xl">Security </h2>
-                                    <p>Password: enabled</p>
-
-                                    <button
-                                        className="text-black bg-pink-300 julius-sans-one-regular hover:bg-pink-400 py-2 px-4 rounded-lg  hover:shadow-xl transition duration-300 ease-in-out mt-auto"
-                                        onClick={handleReset}>
-                                        Password Reset
-                                    </button>
-                                </div>
-                            </div>
                         </div>
+                    </div>
+                    <div className="w-[30%] h-full rounded-4xl justify-between bg-pink-300 px-2 pt-3">
+                        <h1 className="julius-sans-one-regular text-4xl mt-[60px]">Settings</h1>
+                        <br/><br/>
+                        <h1 className="julius-sans-one-regular text-2xl">Do you want to delete the profile?</h1>
+                        <button
+                            className="bg-pink-600 julius-sans-one-regular hover:bg-pink-400 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out mt-auto"
+                            onClick={handleDelete}>
+                            Delete
+                        </button>
+                        <br/><br/>
+                        <br/><br/>
+
+                        <h1 className="julius-sans-one-regular text-2xl">Reset the password</h1>
+                        <button
+                            className="bg-pink-600 julius-sans-one-regular hover:bg-pink-400 text-white font-bold py-2 px-4 rounded-full shadow-lg hover:shadow-xl transition duration-300 ease-in-out mt-auto"
+                            onClick={handleReset}>
+                            Reset
+                        </button>
                     </div>
                 </div>
             </div>
