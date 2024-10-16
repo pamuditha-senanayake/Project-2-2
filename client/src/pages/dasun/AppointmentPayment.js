@@ -1,11 +1,10 @@
 import React, {useEffect, useState} from "react";
-import NavigationBar from "./NavigationBar";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import NavigationBar from "../navodya/NavigationBar";
+import {useNavigate, useParams} from "react-router-dom";
 
-const ConfirmAppointment = () => {
+const AppointmentPayment = () => {
     const navigate = useNavigate();
     const {appointmentId} = useParams();
-    const location = useLocation(); // Use the useLocation hook
 
     const timeslots = [
         "8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM",
@@ -13,12 +12,6 @@ const ConfirmAppointment = () => {
         "2.00 PM - 3.00 PM", "3.00 PM - 4.00 PM", "4.00 PM - 5.00 PM",
         "5.00 PM - 6.00 PM"
     ];
-    const [selectedDate, setSelectedDate] = useState(null);
-    const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
-    const {selectedServices, selectedProfessional} = location.state || {
-        selectedServices: [],
-        selectedProfessional: null
-    };
 
     const [appointmentStatus, setAppointmentStatus] = useState();
     const [appointmentDate, setAppointmentDate] = useState();
@@ -26,8 +19,9 @@ const ConfirmAppointment = () => {
     const [serviceNames, setServiceNames] = useState([]);
     const [timeSlots, setTimeSlots] = useState([]);
     const [totalCost, setTotalCost] = useState();
-    const [totalTime, setTotalTime] = useState({hours: 0, minutes: 0}); // Default value
+    const [totalTime, setTotalTime] = useState({hours: 0, minutes: 0});
 
+    const [slip, setSlip] = useState(null); // Add state to store the uploaded slip
     const [errorMsg, setErrorMsg] = useState(null);
 
     useEffect(() => {
@@ -35,18 +29,15 @@ const ConfirmAppointment = () => {
             fetch(`http://localhost:3001/api/user/status/${appointmentId}`, {credentials: 'include'})
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log('Fetched appointment status data:', data); // Debug log
-
-                    // Set the fetched data to the appropriate state variables
                     setAppointmentStatus(data.status);
                     setAppointmentDate(data.appointment_date);
                     setAppointmentProfessionalName(data.professional_name);
-                    setServiceNames(data.service_names || []); // Ensure it's an array
-                    setTimeSlots(data.time_slots || []); // Ensure it's an array
+                    setServiceNames(data.service_names || []);
+                    setTimeSlots(data.time_slots || []);
                     setTotalCost(data.total_cost);
-                    setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
+                    setTotalTime(data.total_time || {hours: 0, minutes: 0});
                 })
-                .catch((error) => console.error('Fetch error:', error)); // Debug log
+                .catch((error) => console.error('Fetch error:', error));
         };
 
         if (appointmentId) {
@@ -54,32 +45,48 @@ const ConfirmAppointment = () => {
         }
     }, [appointmentId]);
 
-    const handlePay = async () => {
-        if (appointmentStatus === 'confirmed') {
-            try {
-                navigate(`/appointmentpayment/` + appointmentId, {
-                    state: {
-                        selectedServices,
-                        selectedProfessional,
-                        selectedTimeSlots,
-                        selectedDate
-                    }
-                });
-            } catch (error) {
-                console.error('Error during payment process or navigation:', error);
+    const handlePay = () => {
+        navigate(`/addpayment/${appointmentId}`, {
+            state: {appointmentId}
+        });
+    };
+
+    const handleSlipUpload = (event) => {
+        const file = event.target.files[0];
+        if (file) {
+            setSlip(file);
+        }
+    };
+
+    const handleUpload = async (appointmentId) => {
+        if (!slip) {
+            setErrorMsg("Please upload a payment slip.");
+            return;
+        }
+
+        const formData = new FormData();
+        formData.append("slip", slip);
+
+        try {
+            const response = await fetch(`http://localhost:3001/api/user/upload-slip/${appointmentId}`, {
+                method: "POST",
+                body: formData,
+                credentials: 'include',
+            });
+
+            if (!response.ok) {
+                throw new Error("Failed to upload the payment slip.");
             }
-        } else {
-            setErrorMsg("Payment can only be made for confirmed appointments.");
+
+            alert("Slip uploaded successfully!");
+        } catch (error) {
+            console.error("Error uploading slip:", error);
+            setErrorMsg("An error occurred while uploading the payment slip. Please try again.");
         }
     };
 
     const handleDelete = async (appointmentId) => {
-        console.log("Attempting to delete appointment with ID:", appointmentId);
-
-        // Ensure the appointment status is "pending"
         if (appointmentStatus === "pending") {
-            console.log("Appointment status is pending, proceeding with deletion.");
-
             try {
                 const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
                     method: 'DELETE',
@@ -91,16 +98,13 @@ const ConfirmAppointment = () => {
                 }
 
                 const data = await response.json();
-                console.log("Appointment deletion successful:", data);
-
                 alert("Appointment deleted successfully.");
-                navigate('/appointments'); // Assuming you have a route to show the appointments list
+                navigate('/appointments');
             } catch (error) {
                 console.error('Delete error:', error.message);
                 setErrorMsg("An error occurred while trying to delete the appointment. Please try again later.");
             }
         } else {
-            console.warn("Cannot delete appointment. Status is not pending.");
             setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };
@@ -134,10 +138,9 @@ const ConfirmAppointment = () => {
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
-            <NavigationBar activeTab={4}/>
+            <NavigationBar activeTab={5}/>
 
             <div className="flex flex-col md:flex-row w-full mt-[150px]">
-                {/* Left side - Status */}
                 <div className="w-full md:w-2/3 bg-gray-100 p-8">
                     <h2 className="text-2xl font-bold mb-6">Appointment Status</h2>
 
@@ -154,17 +157,32 @@ const ConfirmAppointment = () => {
                                 <p>{errorMsg}</p>
                             </div>
                         )}
+
+                        <div className="mb-4">
+                            <label className="block text-gray-700 font-bold mb-2" htmlFor="slip">
+                                Upload Payment Slip
+                            </label>
+                            <input
+                                type="file"
+                                id="slip"
+                                accept="image/*"
+                                onChange={handleSlipUpload}
+                                className="block w-full text-gray-900 bg-gray-100 border border-gray-300 rounded-lg cursor-pointer"
+                            />
+                        </div>
+
                         <button
-                            onClick={() => handleDelete(appointmentId)}
-                            className="w-full bg-gray-300 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-gray-700"
+                            onClick={() => handleUpload(appointmentId)}
+                            className="w-full bg-blue-500 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white"
                         >
-                            Cancel
+                            Upload Slip
                         </button>
-                        <p className="text-center text-sm mt-2">• Only cancel before confirm or reject </p>
+
+                        <p className="text-center text-sm mt-2">• Make sure to upload the payment slip before
+                            confirmation</p>
                     </div>
                 </div>
 
-                {/* Right side - Appointment Summary */}
                 <div className="w-full md:w-1/3 bg-gray-200 p-8">
                     <h2 className="text-2xl font-bold mb-6">Salon Diamond</h2>
                     {serviceNames.length > 0 ? (
@@ -187,12 +205,8 @@ const ConfirmAppointment = () => {
                             className="font-normal">{appointmentDate ? new Date(appointmentDate).toLocaleDateString() : "Select A Date"}</span>
                         </p>
                         <p className="text-lg font-semibold">
-                            Selected Time:
-                            <span className="font-normal">
-                                {timeSlots.length > 0
-                                    ? timeSlots.map(index => timeslots[index]).join(", ")
-                                    : "Select A Time Slot"}
-                            </span>
+                            Selected Time: <span
+                            className="font-normal">{timeSlots.length > 0 ? timeSlots.map(index => timeslots[index]).join(", ") : "Select A Time Slot"}</span>
                         </p>
                     </div>
                     <hr className="my-4"/>
@@ -204,13 +218,18 @@ const ConfirmAppointment = () => {
                         <p>Total Time</p>
                         <p>{totalTime.hours || totalTime.minutes ? `${totalTime.hours || 0} Hour(s) ${totalTime.minutes || 0} Min(s)` : "0 Hour(s) 0 Min(s)"}</p>
                     </div>
-                    <hr className="my-4"/>
                     <button
                         onClick={handlePay}
-                        className={`w-full h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg ${appointmentStatus === 'confirmed' ? 'bg-[#00796b] text-white' : 'bg-gray-300 text-gray-700 cursor-not-allowed'}`}
-                        disabled={appointmentStatus !== 'confirmed'}
+                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white"
                     >
                         Pay Now
+                    </button>
+
+                    <button
+                        onClick={() => handleDelete(appointmentId)}
+                        className="w-full mt-4 bg-red-500 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white"
+                    >
+                        Delete Appointment
                     </button>
                 </div>
             </div>
@@ -218,4 +237,4 @@ const ConfirmAppointment = () => {
     );
 };
 
-export default ConfirmAppointment;
+export default AppointmentPayment;
