@@ -3,6 +3,9 @@ import db from '../db.js';
 import service from "../services/appointment.service.js"; // Replace with your actual DB connection module
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -29,6 +32,65 @@ router.get('/admin', (req, res) => {
         res.status(403).json({message: 'Access denied. Admins only.'}); // Return 403 if not authorized
     }
 });
+
+const storage = multer.diskStorage({
+    destination: (req, file, cb) => {
+        cb(null, 'uploads/'); // Change to your desired upload folder
+    },
+    filename: (req, file, cb) => {
+        cb(null, `${Date.now()}${path.extname(file.originalname)}`); // Append date to filename
+    }
+});
+
+// Initialize upload
+const upload = multer({storage});
+
+router.put('/api/user/update/pic', upload.single('pic'), async (req, res) => {
+    if (req.isAuthenticated()) {
+        try {
+            const userId = req.user.id; // Get user ID from the authenticated request
+            console.log('Authenticated User ID:', userId); // Debug log for user ID
+
+            if (req.file && req.file.buffer) {
+                console.log('Received file:', req.file); // Debug log for received file
+                const fileName = `${userId}.png`; // Create a filename with user ID
+                console.log('File will be saved as:', fileName); // Debug log for filename
+
+                // Write the file to the specified directory
+                fs.writeFileSync(`src/images/${fileName}`, req.file.buffer);
+                console.log('File saved successfully to src/images/'); // Confirmation log
+
+                // Update the user's profile picture in the database
+                const query = 'UPDATE users SET pic = $1 WHERE id = $2';
+                const values = [fileName, userId];
+                console.log('Executing query:', query, 'with values:', values); // Debug log for query execution
+
+                const result = await db.query(query, values);
+
+                if (result.rowCount === 0) {
+                    console.log('No user found with the provided ID.'); // Log if user not found
+                    return res.status(404).json({message: 'User not found'});
+                }
+
+                // Fetch updated user data
+                const updatedUser = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
+                console.log('Updated user data:', updatedUser.rows[0]); // Debug log for updated user data
+
+                return res.status(200).json({user: updatedUser.rows[0]});
+            } else {
+                console.log('No image file provided in the request.'); // Log if no file is provided
+                return res.status(400).json({message: 'Image file not provided'});
+            }
+        } catch (error) {
+            console.error('Error updating user picture:', error); // Log the error
+            return res.status(500).json({message: 'Server error'});
+        }
+    } else {
+        console.log('Unauthorized access attempt.'); // Log for unauthorized access
+        return res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
 
 router.get('/customer', (req, res) => {
     // Ensure the user is authenticated and role is admin
@@ -560,10 +622,10 @@ router.get('/orders', async (req, res) => {
             res.json(result.rows);  // Return the rows directly as an array
         } catch (err) {
             console.error('Error reading orders:', err.message);
-            res.status(500).json({ error: 'Error reading orders' });
+            res.status(500).json({error: 'Error reading orders'});
         }
     } else {
-        res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({error: 'Unauthorized'});
     }
 });
 
