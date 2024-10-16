@@ -49,29 +49,29 @@ router.get('/verify', (req, res) => {
 });
 
 
-// UPDATE a user by ID
-// router.put('/update/:id', async (req, res) => {
-//     if (req.isAuthenticated()) {
-//         const {id} = req.params;
-//         const {firstname, email, phone_number, lastname, address, role} = req.body; // Use firstName here
-//         try {
-//             const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6, role=$7 WHERE id = $4 RETURNING *';
-//             const params = [firstname, email, phone_number, id, lastname, address, role]; // Pass firstName here
-//             const result = await db.query(query, params);
-//             // console.log(result);
-//             if (result.rows.length) {
-//                 res.status(200).json({user: result.rows[0]});
-//             } else {
-//                 res.status(404).json({error: 'User not found'});
-//             }
-//         } catch (err) {
-//             console.error('Error updating user:', err.message);
-//             res.status(500).json({error: 'Error updating user'});
-//         }
-//     } else {
-//         res.status(401).json({error: 'Unauthorized'});
-//     }
-// });
+        // // UPDATE a user by ID
+        // router.put('/update/:id', async (req, res) => {
+        //     if (req.isAuthenticated()) {
+        //         const {id} = req.params;
+        //         const {firstname, email, phone_number, lastname, address, role} = req.body; // Use firstName here
+        //         try {
+        //             const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6, role=$7 WHERE id = $4 RETURNING *';
+        //             const params = [firstname, email, phone_number, id, lastname, address, role]; // Pass firstName here
+        //             const result = await db.query(query, params);
+        //             // console.log(result);
+        //             if (result.rows.length) {
+        //                 res.status(200).json({user: result.rows[0]});
+        //             } else {
+        //                 res.status(404).json({error: 'User not found'});
+        //             }
+        //         } catch (err) {
+        //             console.error('Error updating user:', err.message);
+        //             res.status(500).json({error: 'Error updating user'});
+        //         }
+        //     } else {
+        //         res.status(401).json({error: 'Unauthorized'});
+        //     }
+        // });
 
 router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
@@ -660,7 +660,7 @@ router.get('/get/100', async (req, res) => {
 
 // Get a specific card by ID
 // Get all cards by user ID
-router.get('/gett/:userId', async (req, res) => {
+router.get('/gett/:Id', async (req, res) => {
     // Check if the user is authenticated
     if (req.isAuthenticated()) {
         const { userId } = req.params; // Destructure userId from request parameters
