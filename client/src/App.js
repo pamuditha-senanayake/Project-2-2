@@ -25,6 +25,7 @@ import TestimonialPage from './pages/amalie/TestimonialPage';
 import AdminTestimonials from './pages/amalie/AdminTestimonials';
 import Fpass from "./pages/pamuditha/fpassword";
 import Rpass from "./pages/pamuditha/resetpass";
+import UChart from "./pages/pamuditha/chart";
 import Upass from "./pages/pamuditha/userPassReset";
 import Cart from "./pages/sasanka/Cart";
 import Checkout from "./pages/sasanka/Checkout";
@@ -86,6 +87,7 @@ const AnimatedRoutes = () => {
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
                         <Route path="/adminhome" element={<Adminhome/>}/>
                         <Route path="/adminprofile" element={<Adminprofile/>}/>
+                        <Route path="/chart" element={<UChart/>}/>
                         <Route path="/adminreg" element={<Adminreg/>}/>
                         <Route path="/testimonials" element={<TestimonialPage/>}/>
                         <Route path="/admin-testimonials" element={<AdminTestimonials/>}/>
