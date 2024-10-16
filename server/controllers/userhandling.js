@@ -3,6 +3,7 @@ import db from '../db.js';
 import service from "../services/appointment.service.js"; // Replace with your actual DB connection module
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
+import multer from "multer";
 
 const router = express.Router();
 
@@ -615,33 +616,31 @@ router.get('/myappointment/fetch', async (req, res) => {
 //dasun
 // Route to save card details in the `public.cards` table
 router.post('/adddd', async (req, res) => {
-    const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
+    const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
 
     if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-        return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({message: 'All fields are required'});
     }
 
     try {
         // Check if the card number already exists
         const existingCard = await db.query('SELECT * FROM Cards WHERE cardNo = $1', [cardNo]);
         if (existingCard.rows.length > 0) {
-            return res.status(409).json({ message: 'Card number already exists' });
+            return res.status(409).json({message: 'Card number already exists'});
         }
 
         const query = `
             INSERT INTO Cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING *;
+            VALUES ($1, $2, $3, $4, $5) RETURNING *;
         `;
         const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo];
 
         const result = await db.query(query, values);
         res.status(201).json(result.rows[0]);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({message: error.message});
     }
 });
-
 
 
 // Get all cards
@@ -706,7 +705,7 @@ router.delete('/deletec/:id', async (req, res) => {
 
         if (usageCheck.rows.length > 0) {
             console.log(`Cannot delete card ID ${cardId}: it has existing usage records`); // Debug log
-            return res.status(400).json({ message: 'Cannot delete card with existing usage records' });
+            return res.status(400).json({message: 'Cannot delete card with existing usage records'});
         }
 
         // Proceed to delete the card if no usage records exist
@@ -714,17 +713,16 @@ router.delete('/deletec/:id', async (req, res) => {
         const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [cardId]);
         if (result.rows.length === 0) {
             console.log(`Card ID ${cardId} not found for deletion`); // Debug log
-            return res.status(404).json({ message: 'Card not found' });
+            return res.status(404).json({message: 'Card not found'});
         }
 
         console.log(`Card ID ${cardId} deleted successfully`); // Debug log
-        res.json({ message: 'Card deleted successfully' });
+        res.json({message: 'Card deleted successfully'});
     } catch (error) {
         console.error(`Error deleting card ID ${cardId}: ${error.message}`); // Error log
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 });
-
 
 
 // Increment usage count for a card
@@ -761,5 +759,37 @@ router.get('/report', async (req, res) => {
     }
 });
 
+
+//Dasun Appointment Payment
+
+const storage = multer.memoryStorage(); // Store file in memory
+const upload = multer({storage});
+
+router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, res) => {
+    const appointmentId = req.params.appointmentId;
+    const paymentSlip = req.file; // Access the uploaded file
+
+    if (!paymentSlip) {
+        return res.status(400).json({message: 'No file uploaded.'});
+    }
+
+    try {
+        // Convert the file buffer to bytea format for PostgreSQL
+        const paymentSlipBuffer = paymentSlip.buffer;
+
+        // Update the appointment with the payment slip in the database
+        const query = `
+            UPDATE public.appointments
+            SET payment_slip = $1
+            WHERE id = $2
+        `;
+        await db.query(query, [paymentSlipBuffer, appointmentId]);
+
+        res.status(200).json({message: 'Slip uploaded successfully!'});
+    } catch (error) {
+        console.error('Error uploading slip:', error);
+        res.status(500).json({message: 'An error occurred while uploading the payment slip.'});
+    }
+});
 
 export default router;

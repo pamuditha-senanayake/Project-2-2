@@ -89,6 +89,7 @@ app.use('/service', addService);
 app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
+
 //Anuththara
 app.use('/api/products', productsRoutes)
 app.use('/uploads', express.static('uploads'));

@@ -47,12 +47,15 @@ import Addservice from './pages/ishan/ServiceAddForm';
 import Addcategory from "./pages/ishan/CategoryAddForm";
 import Adminservicview from "./pages/ishan/VeawServiceDetails";
 import Service from './pages/ishan/Service';
+
+
 import AddPayment from "./pages/dasun/AddPayment";
 import UpdateCard from "./pages/dasun/UpdateCard";
 import DeleteCard from "./pages/dasun/DeleteCard";
 import Wallet from "./pages/dasun/Wallet";
 
 
+import AppointmentPayment from "./pages/dasun/AppointmentPayment";
 
 
 const AnimatedRoutes = () => {
@@ -122,6 +125,8 @@ const AnimatedRoutes = () => {
                         <Route path="/deletecard" element={<DeleteCard/>}/>
                         <Route path="/wallet/:userId" element={<Wallet/>}/>
                         <Route path="/deletecd" element={<DeleteCard/>}/>
+
+                        <Route path="/appointmentpayment/:appointmentId" element={<AppointmentPayment/>}/>
 
 
                     </Routes>
