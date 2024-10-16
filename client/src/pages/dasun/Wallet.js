@@ -4,6 +4,7 @@ import UpdateCard from './UpdateCard';
 import DeleteCard from './DeleteCard';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import { useNavigate, useParams } from "react-router-dom";
 
 const Wallet = () => {
     const [cards, setCards] = useState([]);
@@ -13,7 +14,10 @@ const Wallet = () => {
     const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
     const [searchTerm, setSearchTerm] = useState('');
     const [paymentSuccess, setPaymentSuccess] = useState(null);
+    const navigate = useNavigate();
+    const { userId } = useParams(); // Get userId from URL params
 
+    // Function to group cards by their type
     const groupCardsByType = (cards) => {
         return cards.reduce((acc, card) => {
             if (!acc[card.cardType]) {
@@ -24,47 +28,88 @@ const Wallet = () => {
         }, {});
     };
 
+    // Fetch all cards from the server
     const fetchCards = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/user/get/100'); // Endpoint for fetching all cards
-            setCards(response.data);
-            setFilteredCards(response.data);
+            const response = await fetch(`http://localhost:3001/api/user/get/${userId}`, {
+                method: 'GET',
+                credentials: 'include', // Include credentials for authentication
+            });
+
+            // Check for unauthorized access
+            if (response.status === 403 || response.status === 401) {
+                console.error('Unauthorized access. Redirecting...'); // Log unauthorized access
+                navigate('/'); // Redirect if not authorized
+                return;
+            }
+
+            const data = await response.json(); // Parse the response JSON
+            setCards(data); // Set the cards state
+            setFilteredCards(data); // Set the filtered cards state
         } catch (error) {
-            console.error('Error fetching cards:', error);
+            console.error('Error fetching cards:', error); // Log any other errors
         }
     };
 
+    // Fetch a specific card by ID for updating
     const fetchCardById = async (cardId) => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/user/gett/${cardId}`); // Fetch specific card
-            setSelectedCard(response.data);
-            setIsUpdateModalOpen(true); // Open update modal
+            const response = await fetch(`http://localhost:3001/api/user/gett/${userId}/${cardId}`, {
+                method: 'GET',
+                credentials: 'include', // Include credentials for authentication
+            });
+
+            // Check for unauthorized access
+            if (response.status === 403 || response.status === 401) {
+                console.error('Unauthorized access. Redirecting...'); // Log unauthorized access
+                navigate('/'); // Redirect if not authorized
+                return;
+            }
+
+            // Parse the response JSON
+            const data = await response.json();
+
+            if (data.error) {
+                console.error(data.error); // Log error if there is one
+                return;
+            }
+
+            setSelectedCard(data); // Set the selected card if fetched successfully
+            setIsUpdateModalOpen(true); // Open the update modal
         } catch (error) {
-            console.error('Error fetching card:', error);
+            console.error('Error fetching card:', error); // Log any other errors
         }
     };
 
+    // Fetch cards when the component mounts
     useEffect(() => {
         fetchCards();
     }, []);
 
+    // Handle card update request
     const handleUpdate = (cardId) => {
-        fetchCardById(cardId); // Fetch card details before updating
+        fetchCardById(cardId);
     };
 
+    // Handle card deletion request
     const handleDelete = (cardId) => {
-        setSelectedCard(cardId); // Ensure this ID is valid
+        setSelectedCard(cardId);
         setIsDeleteModalOpen(true);
     };
 
+    // Refresh the card list after updating
     const handleCardUpdated = () => {
         fetchCards();
+        setIsUpdateModalOpen(false);
     };
 
+    // Refresh the card list after deletion
     const handleCardDeleted = () => {
         fetchCards();
+        setIsDeleteModalOpen(false);
     };
 
+    // Handle card search functionality
     const handleSearch = (e) => {
         const term = e.target.value;
         setSearchTerm(term);
@@ -72,6 +117,7 @@ const Wallet = () => {
         setFilteredCards(filtered);
     };
 
+    // Handle payment processing
     const handlePay = async (cardId) => {
         try {
             await axios.post(`http://localhost:5000/routeUsage/increment/${cardId}`);
@@ -83,6 +129,7 @@ const Wallet = () => {
         }
     };
 
+    // Handle report generation
     const handleDownloadReport = async () => {
         try {
             const response = await axios.get('http://localhost:5000/routeUsage/report');
@@ -136,7 +183,7 @@ const Wallet = () => {
                                             Update
                                         </button>
                                         <button
-                                            onClick={() => handleDelete(card._id)} // This should correctly pass card._id
+                                            onClick={() => handleDelete(card._id)}
                                             className="bg-red-500 text-white py-1 px-3 rounded hover:bg-red-600"
                                         >
                                             Delete
@@ -150,7 +197,7 @@ const Wallet = () => {
                                     </div>
                                     {paymentSuccess === card._id && (
                                         <div className="mt-4 bg-green-100 text-green-800 p-2 rounded">
-                                            Payment is Successful
+                                            Payment Successful
                                         </div>
                                     )}
                                 </div>

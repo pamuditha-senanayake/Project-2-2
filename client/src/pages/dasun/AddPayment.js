@@ -6,7 +6,7 @@ import NavigationBar from "../navodya/NavigationBar";
 const AddPayment = ({userId}) => {
     const navigate = useNavigate();
     const [cardData, setCardData] = useState({
-        cardType: 'Master', // Set a default value
+        cardType: 'Master',
         cardHolderName: '',
         cardNo: '',
         expiryDate: '',
@@ -40,22 +40,42 @@ const AddPayment = ({userId}) => {
     };
 
     const handleViewWallet = () => {
-        navigate(`/wallet/:userId${userId}`); // Pass userId as a query parameter
+        navigate(`/wallet/${userId}`); // Pass userId as a query parameter
     };
 
-    const handleSubmit = async (e) => {
+    const handleSubmit = (e) => {
         e.preventDefault();
+
+        // Check for any card errors before proceeding
         if (errors.cardNo || errors.cvcNo) {
             return;
         }
-        try {
-            const response = await axios.post('http://localhost:3001/api/user/adddd', cardData);
-            console.log('Card added successfully:', response.data);
-            setShowSuccess(true); // Show success modal after successful submission
-        } catch (error) {
-            console.error('Error adding card:', error);
-        }
+
+        // Use fetch API to submit the card data
+        fetch('http://localhost:3001/api/user/adddd', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(cardData), // Convert cardData to JSON
+            credentials: 'include', // Include credentials for authentication
+        })
+            .then((response) => {
+                if (!response.ok) {
+                    throw new Error('Network response was not ok ' + response.statusText);
+                }
+                return response.json(); // Parse the JSON response
+            })
+            .then((data) => {
+                console.log('Card added successfully:', data); // Debug log
+                setShowSuccess(true); // Show success modal after successful submission
+                // Reset or handle any additional state if needed
+            })
+            .catch((error) => {
+                console.error('Error adding card:', error); // Debug log
+            });
     };
+
 
     const handleCloseModal = () => {
         setShowSuccess(false);

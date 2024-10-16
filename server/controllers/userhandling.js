@@ -613,35 +613,39 @@ router.get('/myappointment/fetch', async (req, res) => {
 
 
 //dasun
-// Route to save card details in the `public.cards` table
+// Add a new card
+
+
 router.post('/adddd', async (req, res) => {
-    const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
+    // Check if the user is authenticated
+    if (req.isAuthenticated()) {
+        const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
 
-    if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-        return res.status(400).json({ message: 'All fields are required' });
-    }
-
-    try {
-        // Check if the card number already exists
-        const existingCard = await db.query('SELECT * FROM Cards WHERE cardNo = $1', [cardNo]);
-        if (existingCard.rows.length > 0) {
-            return res.status(409).json({ message: 'Card number already exists' });
+        // Validate that all required fields are provided
+        if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+            return res.status(400).json({ message: 'All fields are required' });
         }
 
-        const query = `
-            INSERT INTO Cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo)
-            VALUES ($1, $2, $3, $4, $5)
-            RETURNING *;
-        `;
-        const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo];
+        try {
+            // Insert a new card record along with the authenticated user's ID
+            const query = `
+                INSERT INTO cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo, user_id)
+                VALUES ($1, $2, $3, $4, $5, $6)
+                RETURNING *;
+            `;
+            const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.user.id];
 
-        const result = await db.query(query, values);
-        res.status(201).json(result.rows[0]);
-    } catch (error) {
-        res.status(400).json({ message: error.message });
+            const result = await db.query(query, values);
+            res.status(201).json(result.rows[0]);
+        } catch (error) {
+            console.error('Error creating card:', error.message);
+            res.status(500).json({ message: 'Error creating card' });
+        }
+    } else {
+        // If the user is not authenticated, respond with a 401 Unauthorized error
+        res.status(401).json({ error: 'Unauthorized' });
     }
 });
-
 
 
 // Get all cards
@@ -650,82 +654,71 @@ router.get('/get/100', async (req, res) => {
         const result = await db.query('SELECT * FROM Cards');
         res.json(result.rows);
     } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-// Get a specific card by ID
-router.get('/gett/:id', async (req, res) => {
-    try {
-        const result = await db.query('SELECT * FROM Cards WHERE id = $1', [req.params.id]);
-        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
-        res.json(result.rows[0]);
-    } catch (error) {
-        res.status(500).json({message: error.message});
-    }
-});
-
-// Update a card
-router.put('/updatte/:id', async (req, res) => {
-    const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
-
-    if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-        return res.status(400).json({message: 'All fields are required'});
-    }
-
-    try {
-        const query = `
-            UPDATE Cards
-            SET cardType       = $1,
-                cardHolderName = $2,
-                cardNo         = $3,
-                expiryDate     = $4,
-                cvcNo          = $5,
-                updated_at     = NOW()
-            WHERE id = $6 RETURNING *;
-        `;
-        const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.params.id];
-
-        const result = await db.query(query, values);
-        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
-        res.json(result.rows[0]);
-    } catch (error) {
-        res.status(400).json({message: error.message});
-    }
-});
-
-// Delete a card
-router.delete('/deletec/:id', async (req, res) => {
-    const cardId = req.params.id;
-    console.log(`Attempting to delete card with ID: ${cardId}`); // Debug log
-
-    try {
-        // First, check for any associated usage records
-        console.log(`Checking for usage records associated with card ID: ${cardId}`); // Debug log
-        const usageCheck = await db.query('SELECT * FROM CardUsage WHERE cardId = $1', [cardId]);
-
-        if (usageCheck.rows.length > 0) {
-            console.log(`Cannot delete card ID ${cardId}: it has existing usage records`); // Debug log
-            return res.status(400).json({ message: 'Cannot delete card with existing usage records' });
-        }
-
-        // Proceed to delete the card if no usage records exist
-        console.log(`Deleting card ID: ${cardId}`); // Debug log
-        const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [cardId]);
-        if (result.rows.length === 0) {
-            console.log(`Card ID ${cardId} not found for deletion`); // Debug log
-            return res.status(404).json({ message: 'Card not found' });
-        }
-
-        console.log(`Card ID ${cardId} deleted successfully`); // Debug log
-        res.json({ message: 'Card deleted successfully' });
-    } catch (error) {
-        console.error(`Error deleting card ID ${cardId}: ${error.message}`); // Error log
         res.status(500).json({ message: error.message });
     }
 });
 
+// Get a specific card by ID
+// Get all cards by user ID
+router.get('/gett/:userId', async (req, res) => {
+    // Check if the user is authenticated
+    if (req.isAuthenticated()) {
+        const { userId } = req.params; // Destructure userId from request parameters
 
+        try {
+            const cards = await Card.find({ userId }); // Find all cards for the given userId
+
+            if (!cards || cards.length === 0) {
+                return res.status(404).json({ error: 'No cards found for this user' }); // Send error if no cards found
+            }
+
+            res.status(200).json(cards); // Send the list of cards if found
+        } catch (error) {
+            console.error('Error fetching cards:', error); // Log error
+            res.status(500).json({ error: 'Server error' }); // Send server error
+        }
+    } else {
+        res.status(401).json({ error: 'Unauthorized' }); // Send unauthorized error if not authenticated
+    }
+});
+
+
+
+// Update a card
+router.put('/update/:id', async (req, res) => {
+    const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
+
+    if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+        return res.status(400).json({ message: 'All fields are required' });
+    }
+
+    try {
+        const query = `
+      UPDATE Cards
+      SET cardType = $1, cardHolderName = $2, cardNo = $3, expiryDate = $4, cvcNo = $5, updated_at = NOW()
+      WHERE id = $6
+      RETURNING *;
+    `;
+        const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.params.id];
+
+        const result = await db.query(query, values);
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Card not found' });
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(400).json({ message: error.message });
+    }
+});
+
+// Delete a card
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [req.params.id]);
+        if (result.rows.length === 0) return res.status(404).json({ message: 'Card not found' });
+        res.json({ message: 'Card deleted successfully' });
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+});
 
 // Increment usage count for a card
 router.post('/increment/:cardId', async (req, res) => {
@@ -733,16 +726,16 @@ router.post('/increment/:cardId', async (req, res) => {
 
     try {
         const result = await db.query(`
-            INSERT INTO CardUsage (cardId, usageCount)
-            VALUES ($1, 1) ON CONFLICT (cardId)
-      DO
-            UPDATE SET usageCount = CardUsage.usageCount + 1
-                RETURNING *;
-        `, [cardId]);
+      INSERT INTO CardUsage (cardId, usageCount)
+      VALUES ($1, 1)
+      ON CONFLICT (cardId)
+      DO UPDATE SET usageCount = CardUsage.usageCount + 1
+      RETURNING *;
+    `, [cardId]);
 
-        res.status(200).json({message: 'Usage count incremented successfully'});
+        res.status(200).json({ message: 'Usage count incremented successfully' });
     } catch (error) {
-        res.status(500).json({message: 'Error incrementing usage count', error: error.message});
+        res.status(500).json({ message: 'Error incrementing usage count', error: error.message });
     }
 });
 
@@ -750,16 +743,14 @@ router.post('/increment/:cardId', async (req, res) => {
 router.get('/report', async (req, res) => {
     try {
         const usageReport = await db.query(`
-            SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
-            FROM CardUsage
-                     JOIN Cards ON CardUsage.cardId = Cards.id;
-        `);
+      SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
+      FROM CardUsage
+      JOIN Cards ON CardUsage.cardId = Cards.id;
+    `);
 
         res.status(200).json(usageReport.rows);
     } catch (error) {
-        res.status(500).json({message: 'Error generating usage report', error: error.message});
+        res.status(500).json({ message: 'Error generating usage report', error: error.message });
     }
 });
-
-
 export default router;
