@@ -1,3 +1,6 @@
+// View service details
+
+
 import React, { useEffect, useState, useMemo } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
@@ -27,7 +30,6 @@ const Layout = () => {
         fetchCategories();
     }, []);
 
-    // category id to name
     const getCategoryName = (categoryId) => {
         const category = categories.find(cat => cat.id === categoryId);
         return category ? category.name : 'Unknown Category';
@@ -87,7 +89,7 @@ const Layout = () => {
         };
 
         const handleDeleteClick = async (id) => {
-
+            // Show confirmation popup
             const result = await Swal.fire({
                 title: 'Are you sure?',
                 text: "You won't be able to revert this!",
@@ -102,9 +104,9 @@ const Layout = () => {
             if (result.isConfirmed) {
                 try {
                     await axios.delete(`http://localhost:3001/service/services/${id}`);
-
+                    // Update the state to remove the deleted service
                     setServices(services.filter(service => service.id !== id));
-
+                    // Show success popup
                     Swal.fire({
                         title: 'Deleted!',
                         text: 'Your service has been deleted.',

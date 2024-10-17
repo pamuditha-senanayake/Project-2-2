@@ -1,3 +1,5 @@
+//Category add form
+
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
@@ -14,6 +16,7 @@ const Layout = () => {
     const [categoryName, setCategoryName] = useState('');
     const [categoryId, setCategoryId] = useState('');
 
+    // Admin authentication check
     useEffect(() => {
         const checkAdmin = async () => {
             try {
@@ -39,8 +42,7 @@ const Layout = () => {
         checkAdmin();
     }, [navigate]);
 
-   //display categories
-
+    // Fetch categories on component mount
     useEffect(() => {
         const fetchCategories = async () => {
             try {
@@ -61,8 +63,7 @@ const Layout = () => {
         fetchCategories();
     }, []);
 
-    // generate category id
-
+    // Generate a random category ID
     useEffect(() => {
         const generateCategoryId = () => {
             const generatedId = `C${Math.floor(100000 + Math.random() * 900000)}`;
@@ -77,7 +78,7 @@ const Layout = () => {
             await axios.delete(`http://localhost:3001/service/categories/${id}`, {
                 withCredentials: true
             });
-            setCategories(categories.filter(category => category.id !== id));
+            setCategories(categories.filter(category => category.id !== id)); // Update state to remove deleted category
             Swal.fire({
                 title: 'Deleted!',
                 text: 'Your category has been deleted.',
@@ -93,7 +94,7 @@ const Layout = () => {
         }
     };
 
-    // delete button click
+    // Handle delete button click with confirmation
     const handleDeleteClick = async (id) => {
         const result = await Swal.fire({
             title: 'Are you sure?',
@@ -107,14 +108,15 @@ const Layout = () => {
         });
 
         if (result.isConfirmed) {
-            await deleteCategory(id);
+            await deleteCategory(id); // Proceed with deletion if confirmed
         }
     };
 
-    // add new category popup msg
+    // Handle form submission to add a new category
     const handleSubmit = async (e) => {
         e.preventDefault();
 
+        // Validate category name
         if (!categoryName.trim()) {
             Swal.fire({
                 title: "Error!",
@@ -176,7 +178,7 @@ const Layout = () => {
         }
     };
 
-    // search
+    // Filter categories based on the search term
     const filteredCategories = categories.filter(category =>
         category.name.toLowerCase().includes(searchTerm.toLowerCase())
     );
@@ -246,21 +248,15 @@ const Layout = () => {
                                     id="name"
                                     value={categoryName}
                                     onChange={(e) => setCategoryName(e.target.value)}
-
-                                    className="shadow-sm bg-gray-100 border border-gray-400 text-gray-400 text-sm rounded-lg focus:ring-gray-50 focus:border-gray-200 block w-full p-2.5
-                                    dark:bg-gray-300 dark:border-gray-300 dark:placeholder-gray-400 dark:text-black dark:focus:ring-gray-300 dark:focus:border-gray-300 dark:shadow-sm-light"
-
+                                    className="shadow-sm bg-gray-100 border border-gray-900 text-gray-900 text-sm rounded-lg focus:ring-gray-100 focus:border-gray-500 block w-full p-2.5 dark:bg-gray-300 dark:border-gray-600 dark:placeholder-gray-400 dark:text-black dark:focus:ring-gray-500 dark:focus:border-gray-500 dark:shadow-sm-light"
                                     placeholder="Enter category name"
                                     required
                                 />
                             </div>
                             <div className="flex justify-end">
                                 <button
-                                    type="submit
-                                    "
-                                    className="text-white font-bold bg-pink-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center
-                                     dark:bg-black dark:hover:bg-pink-900 dark:focus:ring-blue-800 icon-button transition duration-300 ease-in-out transform hover:scale-110">
-
+                                    type="submit"
+                                    className="text-white font-bold bg-pink-900 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 rounded-lg text-sm px-5 py-2.5 text-center dark:bg-black dark:hover:bg-pink-900 dark:focus:ring-blue-800 icon-button transition duration-300 ease-in-out transform hover:scale-110">
                                     Add Category
                                 </button>
                             </div>
