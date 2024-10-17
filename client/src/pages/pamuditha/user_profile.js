@@ -222,7 +222,9 @@ const UserProfile = () => {
     }
 
     const handleButtonClick = (buttonName) => {
+        // Set active button and navigate
         setActiveButton(buttonName);
+        navigate(buttonName === 'profile' ? '/userp' : buttonName === 'appointments' ? '/myappointment2' : '/userpayment');
     };
 
     return (
