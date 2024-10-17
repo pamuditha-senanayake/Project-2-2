@@ -75,6 +75,7 @@ const UserAppointments = () => {
                         <th className="px-4 py-2">Time Slots</th>
                         <th className="px-4 py-2">Cost</th>
                         <th className="px-4 py-2">Status</th>
+                        {/*<th className="px-4 py-2">Payment Slip</th>*/}
                     </tr>
                     </thead>
                     <tbody>
@@ -87,6 +88,7 @@ const UserAppointments = () => {
                             <td className="border px-4 py-2">{app.time_slots.map(index => timeslots[index] || 'Unknown').join(', ') || 'N/A'}</td>
                             <td className="border px-4 py-2">{app.total_cost || 'N/A'}</td>
                             <td className="border px-4 py-2">{app.status}</td>
+                            {/*<td className="border px-4 py-2">{app.payment_slip}</td>*/}
                         </tr>
                     ))}
                     </tbody>

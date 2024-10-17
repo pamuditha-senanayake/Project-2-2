@@ -5,7 +5,7 @@ import {useLocation, useNavigate, useParams} from "react-router-dom";
 const ConfirmAppointment = () => {
     const navigate = useNavigate();
     const {appointmentId} = useParams();
-    const location = useLocation(); // Use the useLocation hook
+    const location = useLocation();
 
     const timeslots = [
         "8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM",
@@ -26,27 +26,24 @@ const ConfirmAppointment = () => {
     const [serviceNames, setServiceNames] = useState([]);
     const [timeSlots, setTimeSlots] = useState([]);
     const [totalCost, setTotalCost] = useState();
-    const [totalTime, setTotalTime] = useState({hours: 0, minutes: 0}); // Default value
-
+    const [totalTime, setTotalTime] = useState({hours: 0, minutes: 0});
     const [errorMsg, setErrorMsg] = useState(null);
+    const [successMsg, setSuccessMsg] = useState(null);  // New state for success message
 
     useEffect(() => {
         const getAppointmentStatus = async () => {
             fetch(`http://localhost:3001/api/user/status/${appointmentId}`, {credentials: 'include'})
                 .then((response) => response.json())
                 .then((data) => {
-                    console.log('Fetched appointment status data:', data); // Debug log
-
-                    // Set the fetched data to the appropriate state variables
                     setAppointmentStatus(data.status);
                     setAppointmentDate(data.appointment_date);
                     setAppointmentProfessionalName(data.professional_name);
-                    setServiceNames(data.service_names || []); // Ensure it's an array
-                    setTimeSlots(data.time_slots || []); // Ensure it's an array
+                    setServiceNames(data.service_names || []);
+                    setTimeSlots(data.time_slots || []);
                     setTotalCost(data.total_cost);
-                    setTotalTime(data.total_time || {hours: 0, minutes: 0}); // Ensure default value
+                    setTotalTime(data.total_time || {hours: 0, minutes: 0});
                 })
-                .catch((error) => console.error('Fetch error:', error)); // Debug log
+                .catch((error) => console.error('Fetch error:', error));
         };
 
         if (appointmentId) {
@@ -74,12 +71,7 @@ const ConfirmAppointment = () => {
     };
 
     const handleDelete = async (appointmentId) => {
-        console.log("Attempting to delete appointment with ID:", appointmentId);
-
-        // Ensure the appointment status is "pending"
         if (appointmentStatus === "pending") {
-            console.log("Appointment status is pending, proceeding with deletion.");
-
             try {
                 const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
                     method: 'DELETE',
@@ -93,14 +85,15 @@ const ConfirmAppointment = () => {
                 const data = await response.json();
                 console.log("Appointment deletion successful:", data);
 
-                alert("Appointment deleted successfully.");
-                navigate('/appointments'); // Assuming you have a route to show the appointments list
+                setSuccessMsg("Appointment deleted successfully.");  // Set success message
+                setTimeout(() => {
+                    navigate('/appointments');
+                }, 2000);  // Redirect after 2 seconds
             } catch (error) {
                 console.error('Delete error:', error.message);
                 setErrorMsg("An error occurred while trying to delete the appointment. Please try again later.");
             }
         } else {
-            console.warn("Cannot delete appointment. Status is not pending.");
             setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };
@@ -152,6 +145,13 @@ const ConfirmAppointment = () => {
                                  role="alert">
                                 <p className="font-bold">Be Warned</p>
                                 <p>{errorMsg}</p>
+                            </div>
+                        )}
+                        {successMsg && (
+                            <div className="bg-green-100 border-l-4 border-green-500 text-green-700 p-4 mb-4"
+                                 role="alert">
+                                <p className="font-bold">Success</p>
+                                <p>{successMsg}</p>
                             </div>
                         )}
                         <button

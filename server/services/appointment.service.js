@@ -109,7 +109,8 @@ const getAllAppointmentDetails = async () => {
                     ARRAY_AGG(DISTINCT ats.time_number) AS time_numbers,
                     a.total_time,
                     a.total_cost,
-                    a.status                            AS status
+                    a.status                            AS status,
+                    a.payment_slip                      AS payment_slip
              FROM appointments a
                       JOIN appointment_services aps ON a.id = aps.appointment_id
                       JOIN services s ON aps.service_id = s.id
@@ -189,7 +190,8 @@ const getDoneAppointmentDetails = async () => {
                     ARRAY_AGG(DISTINCT ats.time_number) AS time_numbers,
                     a.total_time,
                     a.total_cost,
-                    a.status                            AS status
+                    a.status                            AS status,
+                    a.payment_slip                      AS payment_slip
              FROM appointments a
                       JOIN appointment_services aps ON a.id = aps.appointment_id
                       JOIN services s ON aps.service_id = s.id

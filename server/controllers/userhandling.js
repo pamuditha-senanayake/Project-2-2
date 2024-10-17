@@ -4,9 +4,6 @@ import service from "../services/appointment.service.js"; // Replace with your a
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
 import multer from "multer";
-import path from 'path';
-import {v4 as uuidv4} from 'uuid';
-import fs from "fs";
 
 const router = express.Router();
 
@@ -157,7 +154,7 @@ router.put('/update/:id', async (req, res) => {
                     phone_number = $3,
                     lastname     = $4,
                     address      = $5
-              
+
                 WHERE id = $6 RETURNING *`;
 
             const params = [firstname, email, phone_number, lastname, address, id];
@@ -672,7 +669,8 @@ router.get('/myappointment/fetch', async (req, res) => {
                             a.total_cost,
                             ARRAY_AGG(DISTINCT s.name)          AS service_names,
                             p.name                              AS professional_name,
-                            ARRAY_AGG(DISTINCT ats.time_number) AS time_slots
+                            ARRAY_AGG(DISTINCT ats.time_number) AS time_slots,
+                            a.payment_slip                      AS payment_slip -- Directly select the payment slip from the appointments table
                      FROM appointments a
                               JOIN appointment_services aps ON a.id = aps.appointment_id
                               JOIN services s ON aps.service_id = s.id
@@ -885,7 +883,7 @@ router.get('/report', async (req, res) => {
 // const storage = multer.memoryStorage(); // Store file in memory
 // const upload = multer({storage});
 
-router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, res) => {
+/*router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, res) => {
     const appointmentId = req.params.appointmentId;
     const paymentSlip = req.file; // Access the uploaded file
 
@@ -910,6 +908,6 @@ router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, re
         console.error('Error uploading slip:', error);
         res.status(500).json({message: 'An error occurred while uploading the payment slip.'});
     }
-});
+});*/
 
 export default router;

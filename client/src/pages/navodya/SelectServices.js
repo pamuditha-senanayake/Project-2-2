@@ -7,10 +7,12 @@ const SelectServices = () => {
     const navigate = useNavigate();
 
     const [services, setServices] = useState([]);
+    const [filteredServices, setFilteredServices] = useState([]); // For filtered services
     const [selectedServices, setSelectedServices] = useState([]);
     const [total, setTotal] = useState(0);
     const [totalTime, setTotalTime] = useState(0);
     const [showAlert, setShowAlert] = useState(false); // Add state for the alert
+    const [searchTerm, setSearchTerm] = useState("");  // State for search input
 
     // Fetch all services
     useEffect(() => {
@@ -21,6 +23,7 @@ const SelectServices = () => {
                 );
                 console.log(response);
                 setServices(response.data);
+                setFilteredServices(response.data); // Set initially filtered services to all services
             } catch (err) {
                 console.error(err);
             }
@@ -41,21 +44,25 @@ const SelectServices = () => {
         setTotalTime(newTotalTime);
     }, [selectedServices]);
 
+    // Handle adding service
     const handleAddService = (service) => {
         setSelectedServices([...selectedServices, service]);
         setShowAlert(false); // Hide the alert if a service is added
     };
 
+    // Handle removing service
     const handleRemoveService = (indexToRemove) => {
         setSelectedServices(selectedServices.filter((_, index) => index !== indexToRemove));
     };
 
+    // Format time
     const formatTime = (mins) => {
         const hours = Math.floor(mins / 60);
         const minutes = mins % 60;
         return `${hours} Hour(s) ${minutes} Min(s)`;
     };
 
+    // Handle continue button click
     const handleContinue = () => {
         if (selectedServices.length > 0) {
             navigate("/professional", {state: {selectedServices}});
@@ -63,6 +70,14 @@ const SelectServices = () => {
             setShowAlert(true); // Show the alert if no services are selected
         }
     };
+
+    // Filter services based on search input
+    useEffect(() => {
+        const filtered = services.filter(service =>
+            service.name.toLowerCase().includes(searchTerm.toLowerCase())
+        );
+        setFilteredServices(filtered);
+    }, [searchTerm, services]);
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
@@ -84,8 +99,16 @@ const SelectServices = () => {
 
                     <h2 className="text-2xl font-bold mb-6">Select Services</h2>
 
+                    {/* Search bar for filtering services */}
+                    <input
+                        type="text"
+                        value={searchTerm}
+                        onChange={(e) => setSearchTerm(e.target.value)}
+                        className="border border-gray-300 rounded-lg p-2 mb-6 w-full"
+                        placeholder="Search for services..."
+                    />
 
-                    {services.map((service) => (
+                    {filteredServices.map((service) => (
                         <div
                             key={service.id}
                             className="bg-gray-200 p-4 mb-4 flex justify-between items-center rounded-lg"
@@ -155,17 +178,18 @@ const SelectServices = () => {
                     </div>
                     <div className="flex justify-between">
                         <p>Total Cost</p>
-                        <p>LKR {total.toFixed(2)}</p> {/* Ensure cost is displayed with two decimal places */}
+                        <p>LKR {total.toFixed(2)}</p>
                     </div>
                     <button
                         onClick={handleContinue}
-                        /* disabled={selectedServices.length === 0}*/
-                        className={`w-full mt-6 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white 
-                          ${selectedServices.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-gray-800 hover:before:left-0'}
+                        disabled={!selectedServices}
+                        className={`w-full mt-6 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md text-white 
+                        ${!selectedServices ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0'}
                         `}
                     >
                         Continue
                     </button>
+
                 </div>
             </div>
         </div>

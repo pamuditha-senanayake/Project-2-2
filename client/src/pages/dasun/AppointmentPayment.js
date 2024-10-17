@@ -46,10 +46,10 @@ const AppointmentPayment = () => {
     }, [appointmentId]);
 
     const handlePay = () => {
-        navigate(`/addpayment/${appointmentId}`, {
-            state: {appointmentId}
-        });
+        alert('Appointment is booked!'); // Show a message indicating the appointment is booked
+        navigate(`/home`, {});
     };
+
 
     const handleSlipUpload = (event) => {
         const file = event.target.files[0];
@@ -68,7 +68,7 @@ const AppointmentPayment = () => {
         formData.append("slip", slip);
 
         try {
-            const response = await fetch(`http://localhost:3001/api/user/upload-slip/${appointmentId}`, {
+            const response = await fetch(`http://localhost:3001/api/upload-slip/${appointmentId}`, {
                 method: "POST",
                 body: formData,
                 credentials: 'include',
@@ -135,6 +135,9 @@ const AppointmentPayment = () => {
                 );
         }
     };
+
+    // Calculate half of the total cost
+    const halfTotalCost = totalCost ? (totalCost / 2).toFixed(2) : "0.00";
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
@@ -214,23 +217,45 @@ const AppointmentPayment = () => {
                         <p>Total Cost</p>
                         <p>LKR {totalCost || "0.00"}</p>
                     </div>
+
+                    {/* Half of the total cost */}
+                    <div className="flex justify-between">
+                        <p>Amount to Pay (50%)</p>
+                        <p>LKR {halfTotalCost}</p>
+                    </div>
+
                     <div className="flex justify-between">
                         <p>Total Time</p>
-                        <p>{totalTime.hours || totalTime.minutes ? `${totalTime.hours || 0} Hour(s) ${totalTime.minutes || 0} Min(s)` : "0 Hour(s) 0 Min(s)"}</p>
+                        <p>{totalTime.hours} Hours {totalTime.minutes} Minutes</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-8 mt-6">
+                        <h3 className="text-lg font-semibold mb-4">Bank Account Details</h3>
+                        <p className="text-sm">Bank Name: ABC Bank</p>
+                        <p className="text-sm">Account Name: Salon Diamond</p>
+                        <p className="text-sm">Account Number: 123456789</p>
+                        <p className="text-sm">Branch: Main City Branch</p>
+                    </div>
+                    <div className="bg-white rounded-lg p-8 mt-6">
+                        <h3 className="text-lg font-semibold mb-4">Bank Account Details</h3>
+                        <p className="text-sm">Bank Name: HNB Bank</p>
+                        <p className="text-sm">Account Name: Salon Diamond</p>
+                        <p className="text-sm">Account Number: 456789101112</p>
+                        <p className="text-sm">Branch: Main City Branch</p>
                     </div>
                     <button
                         onClick={handlePay}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white"
+                        disabled={!slip} // Disable the button if slip is null
+                        className={`w-full h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md ${slip ? 'bg-green-500 hover:scale-105 hover:shadow-lg' : 'bg-gray-400'} text-white`}
                     >
-                        Pay Now
+                        Confirm
                     </button>
 
-                    <button
+                    {/* <button
                         onClick={() => handleDelete(appointmentId)}
-                        className="w-full mt-4 bg-red-500 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white"
+                        className="w-full bg-red-500 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg text-white mt-2"
                     >
-                        Delete Appointment
-                    </button>
+                        Cancel Appointment
+                    </button>*/}
                 </div>
             </div>
         </div>

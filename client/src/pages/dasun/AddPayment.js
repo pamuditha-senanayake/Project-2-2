@@ -1,5 +1,4 @@
 import React, {useState} from 'react';
-import axios from 'axios';
 import {useNavigate} from 'react-router-dom';
 import NavigationBar from "../navodya/NavigationBar";
 
@@ -40,7 +39,7 @@ const AddPayment = ({userId}) => {
     };
 
     const handleViewWallet = () => {
-        navigate(`/wallet/${userId}`); // Pass userId as a query parameter
+        navigate(`/wallet`); // Pass userId as a query parameter
     };
 
     const handleSubmit = (e) => {
