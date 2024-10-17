@@ -2,6 +2,8 @@ import React from 'react';
 import {BrowserRouter as Router, Route, Routes, useLocation} from 'react-router-dom';
 import {CSSTransition, TransitionGroup} from 'react-transition-group';
 import './App.css';
+
+// Import pages
 import Home from './pages/pamuditha/home';
 import Register from './pages/pamuditha/register';
 import Login from './pages/pamuditha/login';
@@ -18,6 +20,7 @@ import ConfirmAppointment from "./pages/navodya/ConfirmAppointment";
 import AdminAppointmentView from "./pages/navodya/AdminAppointmentView";
 import AdminAppointmentList from "./pages/navodya/AdminAppointmentList";
 import UserAppointmentView from "./pages/navodya/UserAppointmentView";
+import UserAppointmentView2 from "./pages/navodya/UserAppointmentView2";
 import Adminhome from "./pages/pamuditha/adminhome";
 import Adminprofile from "./pages/pamuditha/admin_profile";
 import Adminreg from "./pages/pamuditha/admin-register";
@@ -39,7 +42,6 @@ import Allcategory from "./pages/ishan/Allcategory";
 
 
 import StatsPage from './pages/anuththara/StatsPage';
-//new Anuththara
 import Add_Product from './pages/anuththara/Add Product';
 import Product_List from './pages/anuththara/Product List';
 import UpdateProduct from './pages/anuththara/Update Product';
@@ -49,9 +51,13 @@ import Addservice from './pages/ishan/ServiceAddForm';
 import Addcategory from "./pages/ishan/CategoryAddForm";
 import Adminservicview from "./pages/ishan/VeawServiceDetails";
 import Service from './pages/ishan/Service';
-
-import Vservice from './pages/ishan/Vservice';
-
+import AddPayment from './pages/dasun/AddPayment';
+import UpdateCard from './pages/dasun/UpdateCard';
+import DeleteCard from './pages/dasun/DeleteCard';
+import Wallet from './pages/dasun/Wallet';
+import AddCard from './pages/dasun/addcard';
+import ViewCard from './pages/dasun/viewcard';
+import AppointmentPayment from "./pages/dasun/AppointmentPayment";
 
 const AnimatedRoutes = () => {
     const location = useLocation();
@@ -83,6 +89,7 @@ const AnimatedRoutes = () => {
                         <Route path="/confirm/:appointmentId" element={<ConfirmAppointment/>}/>
                         <Route path="/view" element={<AdminAppointmentView/>}/>
                         <Route path="/myappointment" element={<UserAppointmentView/>}/>
+                        <Route path="/myappointment2" element={<UserAppointmentView2/>}/>
                         <Route path="/pay" element={<Home/>}/>
                         <Route path="/viewList" element={<AdminAppointmentList/>}/>
                         <Route path="/adminhome" element={<Adminhome/>}/>
@@ -116,6 +123,14 @@ const AnimatedRoutes = () => {
 
                         <Route path="/inq" element={<InqHome/>}/>
                         <Route path="/admin_inq" element={<Admin_inq/>}/>
+                        <Route path="/addpayment" element={<AddPayment/>}/>
+                        <Route path="/upcard" element={<UpdateCard/>}/>
+                        <Route path="/deletecard" element={<DeleteCard/>}/>
+                        <Route path="/wallet/:userId" element={<Wallet/>}/>
+                        <Route path="/addcard" element={<AddCard/>}/>
+                        <Route path="/viewcard" element={<ViewCard/>}/>
+                        <Route path="/deletecd" element={<DeleteCard/>}/>
+                        <Route path="/appointmentpayment/:appointmentId" element={<AppointmentPayment/>}/>
 
                     </Routes>
                 </div>

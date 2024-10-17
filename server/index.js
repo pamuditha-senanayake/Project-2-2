@@ -12,6 +12,7 @@ import employeeRoutes from './controllers/employee.controller.js';
 import UserH from './controllers/userhandling.js';
 import beautyServicesRoutes from './controllers/beautyService.controller.js';
 import professionalRoutes from './controllers/professional.controller.js';
+import professionalSRoutes from './controllers/professional.controller.js';
 import appointmentRoutes from './controllers/appointment.controller.js';
 import appointmentDetailsRoutes from './controllers/appointment.controller.js';
 import appointmentStatusRoutes from './controllers/appointment.controller.js';
@@ -19,9 +20,9 @@ import appointmentConfirmedRoutes from './controllers/appointment.controller.js'
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 //ishan
 import addService from './controllers/AddService.js';
-import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 import testimonialRoutes from './controllers/testimonial.controller.js';
 
 import productsController from './controllers/productsController.js';
@@ -29,6 +30,9 @@ import cartController from './controllers/cartController.js';
 import checkoutRoutes from './controllers/checkoutController.js';
 //Anuththara
 import productsRoutes from './controllers/products.controller.js';
+
+//dasun
+import addcard2 from './controllers/Addcard.js';
 
 
 dotenv.config();
@@ -59,6 +63,7 @@ app.use(bodyParser.json());
 app.use('/api/employees', employeeRoutes);
 app.use('/api/beautyservices', beautyServicesRoutes);
 app.use('/api/selectprofessional', professionalRoutes);
+app.use('/api/selectprofessionalservice', professionalSRoutes);
 app.use('/api/appointmentservice', appointmentRoutes);
 app.use('/api/appointmentdetails', appointmentDetailsRoutes);
 app.use('/api/appointmentstatus', appointmentStatusRoutes);
@@ -73,7 +78,12 @@ app.use('/api/myappointment', myAllAppointmentsRoutes);
 
 app.use(ErrorHandler)
 app.use(express.json());
+
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json({limit: '10mb'}));
+app.use(express.urlencoded({limit: '10mb'}));
+
 app.use(express.static("public"));
 app.use(ErrorHandler);
 app.use(passport.initialize());
@@ -89,9 +99,13 @@ app.use('/service', addService);
 app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
+
 //Anuththara
 app.use('/api/products', productsRoutes)
 app.use('/uploads', express.static('uploads'));
+
+
+app.use('/card', addcard2);
 
 
 app.get("/", (req, res) => {

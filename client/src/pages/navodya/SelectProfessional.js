@@ -11,19 +11,24 @@ const SelectProfessional = () => {
     const [showAlert, setShowAlert] = useState(false);  // To manage alert visibility
     const navigate = useNavigate();
 
-    // Fetch professionals from the API
+    // Fetch professionals based on selected services from the API
     useEffect(() => {
         const getProfessionals = async () => {
             try {
-                const response = await axios.get(process.env.REACT_APP_API_URL + "/api/selectprofessional");
-                setProfessionals(response.data);
-                console.log(response);
+                if (selectedServices.length > 0) {
+                    // Extract service IDs to be sent as query parameters
+                    const serviceIds = selectedServices.map(service => service.id).join(',');
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/selectprofessionalservice?services=${serviceIds}`);
+                    setProfessionals(response.data);
+                } else {
+                    setProfessionals([]);
+                }
             } catch (err) {
                 console.error(err);
             }
         };
         getProfessionals();
-    }, []);
+    }, [selectedServices]);
 
     const handleProfessionalSelect = (professional) => {
         setSelectedProfessional(professional);
