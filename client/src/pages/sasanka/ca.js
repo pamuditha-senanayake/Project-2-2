@@ -1,180 +1,292 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
-import Navbar from '../pamuditha/nav';
+import Sidebar from '../com/admindash';
+import { useNavigate } from 'react-router-dom';
+import axios from "axios";
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import af from "../../images/bcimage.avif";
+import Swal from 'sweetalert2';
+import jsPDF from 'jspdf';
+import 'jspdf-autotable';
+import { useEffect, useState, useMemo } from 'react';
 
-const ShoppingCart = () => {
-    const [cart, setCart] = useState([]);
-    const [error, setError] = useState(null);
-    const [loading, setLoading] = useState(true);
+const Layout = () => {
     const navigate = useNavigate();
+    const [categories, setCategories] = useState([]);
 
     useEffect(() => {
-        // Fetch the user's cart
-        const fetchCart = async () => {
+        const fetchCategories = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/user/cartget`, {
-                    credentials: 'include',
-                });
-                if (!response.ok) throw new Error('Network response was not ok');
-                const data = await response.json();
-                setCart(data);
+                const response = await axios.get("http://localhost:3001/service/categories");
+                setCategories(response.data);
             } catch (error) {
-                console.error("Error fetching cart:", error);
-                setError('Failed to load cart.');
-            } finally {
-                setLoading(false);
+                console.error("Error fetching categories:", error);
+            }
+        };
+        fetchCategories();
+    }, []);
+
+    const getCategoryName = (categoryId) => {
+        const category = categories.find(cat => cat.id === categoryId);
+        return category ? category.name : 'Unknown Category';
+    };
+
+    useEffect(() => {
+        const checkAdmin = async () => {
+            try {
+                const response = await fetch('http://localhost:3001/api/user/admin', {
+                    credentials: 'include'
+                });
+
+                if (response.status === 403 || response.status === 401) {
+                    navigate('/');
+                    return;
+                }
+
+                const data = await response.json();
+                if (!data.isAdmin) {
+                    navigate('/');
+                }
+            } catch (error) {
+                console.error('Error checking user role:', error);
+                navigate('/');
             }
         };
 
-        fetchCart();
-    }, []);
+        checkAdmin();
+    }, [navigate]);
 
-    const handleUpdateQuantity = async (cartItemId, newQuantity) => {
-        if (newQuantity < 1) return; // Prevent negative or zero quantity
+    const ServicesPage = () => {
+        const [services, setServices] = useState([]);
+        const [selectedService, setSelectedService] = useState(null);
+        const [showEditModal, setShowEditModal] = useState(false);
+        const [message, setMessage] = useState("");
+        const [showPopup, setShowPopup] = useState(false);
+        const [searchTerm, setSearchTerm] = useState("");
 
-        const originalQuantity = cart.find(item => item.cart_id === cartItemId).quantity;
+        useEffect(() => {
+            const fetchServices = async () => {
+                try {
+                    const response = await axios.get("http://localhost:3001/service/services");
+                    setServices(response.data);
+                } catch (err) {
+                    console.error("Error fetching services:", err);
+                    setMessage("Failed to fetch services.");
+                    setShowPopup(true);
+                }
+            };
+            fetchServices();
+        }, []);
 
-        // Optimistic UI update
-        setCart(cart.map(item =>
-            item.cart_id === cartItemId ? { ...item, quantity: newQuantity } : item
-        ));
+        const handleEditClick = (service) => {
+            setSelectedService(service);
+            setShowEditModal(true);
+        };
 
-        try {
-            const response = await fetch(`http://localhost:3001/api/user/update/${cartItemId}`, {
-                method: "PUT",
-                headers: {
-                    "Content-Type": "application/json",
-                },
-                body: JSON.stringify({ quantity: newQuantity }),
-                credentials: 'include', // Ensure this is included to send cookies
+        const handleDeleteClick = async (id) => {
+            const result = await Swal.fire({
+                title: 'Are you sure?',
+                text: "You won't be able to revert this!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Yes, delete it!',
+                cancelButtonText: 'Cancel'
             });
 
-            if (!response.ok) {
-                throw new Error('Failed to update item');
-            }
-        } catch (error) {
-            console.error("Error updating quantity:", error);
-            setError('Failed to update item quantity.');
-            // Revert UI in case of error
-            setCart(cart.map(item =>
-                item.cart_id === cartItemId ? { ...item, quantity: originalQuantity } : item
-            ));
-        }
-    };
+            if (result.isConfirmed) {
+                try {
+                    await axios.delete(`http://localhost:3001/service/services/${id}`);
+                    setServices(services.filter(service => service.id !== id));
 
-
-    const handleRemoveItem = async (cartItemId) => {
-        if (window.confirm('Are you sure you want to remove this item?')) {
-            try {
-                const response = await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
-                    method: "DELETE",
-                    credentials: 'include',
-                });
-
-                if (response.ok) {
-                    setCart(cart.filter(item => item.cart_id !== cartItemId));
-                } else {
-                    console.error('Failed to remove item, status:', response.status);
-                    setError('Failed to remove item.');
+                    Swal.fire({
+                        title: 'Deleted!',
+                        text: 'Your service has been deleted.',
+                        icon: 'success'
+                    });
+                } catch (err) {
+                    console.error("Error deleting service:", err);
+                    Swal.fire({
+                        title: 'Error!',
+                        text: 'Failed to delete service.',
+                        icon: 'error'
+                    });
                 }
-            } catch (error) {
-                console.error('Error removing item:', error);
-                setError('Error removing item.');
             }
-        }
-    };
+        };
 
-    const totalCost = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
+        const handleUpdateService = async () => {
+            try {
+                await axios.put(`http://localhost:3001/service/services/${selectedService.id}`, selectedService);
+                setServices(services.map(service =>
+                    service.id === selectedService.id ? selectedService : service
+                ));
+                setShowEditModal(false);
+                setMessage("Service updated successfully!");
+                setShowPopup(true);
+                window.location.reload();
+            } catch (err) {
+                console.error("Error updating service:", err);
+                setMessage("Failed to update service.");
+                setShowPopup(true);
+            }
+        };
 
-    const handleCheckout = () => {
-        navigate("/checkout");
+        // Corrected Time Taken Options
+        const durationOptions = [
+            { label: "15 minutes", interval: '15 minutes' },
+            { label: "30 minutes", interval: '30 minutes' },
+            { label: "45 minutes", interval: '45 minutes' },
+            { label: "1 hour", interval: '1 hour' },
+            { label: "2 hours", interval: '2 hours' },
+            { label: "3 hours", interval: '3 hours' },
+            { label: "4 hours", interval: '4 hours' },
+        ];
+
+        const handleChange = (e) => {
+            const { name, value } = e.target;
+
+            if (name === "duration") {
+                const selectedOption = durationOptions.find(option => option.label === value);
+                const interval = selectedOption ? selectedOption.interval : '0 minutes'; // Default to '0 minutes' if not found
+                setSelectedService({ ...selectedService, duration: interval });
+            } else {
+                setSelectedService({ ...selectedService, [name]: value });
+            }
+        };
+
+        const formatDuration = (duration) => {
+            if (typeof duration === 'string') {
+                const parts = duration.split(' ');
+                const timeUnit = parts[1];
+                const timeValue = parseInt(parts[0], 10);
+
+                return `${timeValue} ${timeUnit}${timeValue > 1 ? 's' : ''}`;
+            }
+            return "No duration available";
+        };
+
+        const categoryMap = useMemo(() => {
+            const map = {};
+            categories.forEach(cat => {
+                map[cat.id] = cat.name;
+            });
+            return map;
+        }, [categories]);
+
+        const handleSearchChange = (e) => {
+            setSearchTerm(e.target.value);
+        };
+
+        const filteredServices = services.filter(service => {
+            const term = searchTerm.toLowerCase();
+            const categoryName = getCategoryName(service.category_id).toLowerCase();
+            return (
+                service.name.toLowerCase().includes(term) ||
+                service.description.toLowerCase().includes(term) ||
+                categoryName.includes(term)
+            );
+        });
+
+        const generatePDF = () => {
+            const doc = new jsPDF();
+
+            doc.setFontSize(18);
+            doc.text("Services Report", 14, 22);
+
+            doc.setFontSize(11);
+            doc.setTextColor(100);
+            doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
+
+            doc.setFontSize(12);
+            doc.setTextColor(12, 10, 9);
+            doc.text(`Total services: ${filteredServices.length}`, 14, 40);
+
+            const tableColumn = ["Service Name", "Description", "Price (Rs.)", "Time Taken", "Category"];
+            const tableRows = [];
+
+            filteredServices.forEach(service => {
+                const serviceData = [
+                    service.name,
+                    service.description,
+                    service.price.toString(),
+                    formatDuration(service.duration),
+                    getCategoryName(service.category_id)
+                ];
+                tableRows.push(serviceData);
+            });
+
+            doc.autoTable({
+                startY: 50,
+                head: [tableColumn],
+                body: tableRows,
+                styles: { font: "helvetica", fontSize: 10 },
+                headStyles: { fillColor: [22, 160, 133] },
+                alternateRowStyles: { fillColor: [238, 238, 238] },
+                margin: { left: 14, right: 14 },
+                tableLineColor: [44, 62, 80],
+                tableLineWidth: 0.1
+            });
+
+            doc.save("services_report.pdf");
+        };
+
+        return (
+            <div>
+                <Sidebar />
+                <div className="services-container">
+                    <h2>Services</h2>
+                    <input
+                        type="text"
+                        placeholder="Search services"
+                        value={searchTerm}
+                        onChange={handleSearchChange}
+                    />
+                    <button onClick={generatePDF}>
+                        <FontAwesomeIcon icon={faFilePdf} /> Generate PDF
+                    </button>
+
+                    <table>
+                        <thead>
+                        <tr>
+                            <th>Service Name</th>
+                            <th>Description</th>
+                            <th>Price</th>
+                            <th>Time Taken</th>
+                            <th>Category</th>
+                            <th>Actions</th>
+                        </tr>
+                        </thead>
+                        <tbody>
+                        {filteredServices.map((service) => (
+                            <tr key={service.id}>
+                                <td>{service.name}</td>
+                                <td>{service.description}</td>
+                                <td>{service.price}</td>
+                                <td>{formatDuration(service.duration)}</td>
+                                <td>{getCategoryName(service.category_id)}</td>
+                                <td>
+                                    <button onClick={() => handleEditClick(service)}>
+                                        <FontAwesomeIcon icon={faEdit} /> Edit
+                                    </button>
+                                    <button onClick={() => handleDeleteClick(service.id)}>
+                                        <FontAwesomeIcon icon={faTrash} /> Delete
+                                    </button>
+                                </td>
+                            </tr>
+                        ))}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        );
     };
 
     return (
-        <div className="flex flex-col w-full min-h-screen bg-gray-100 p-6 mt-[100px] md:p-10" style={{ fontFamily: 'Roboto, sans-serif' }}>
-            <Navbar />
-            {loading && <p className="text-gray-600 text-center mb-4">Loading your cart...</p>}
-            {error && <p className="text-red-500 text-center mb-4">{error}</p>}
-            {!loading && !error && (
-                <div className="flex flex-col md:flex-row w-full mt-4">
-                    <div className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300">
-                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Shopping Cart</h2>
-                        {cart.length === 0 ? (
-                            <p className="text-gray-600 text-center">Your cart is empty.</p>
-                        ) : (
-                            <table className="w-full bg-gray-50 border border-gray-200 rounded-lg">
-                                <thead>
-                                <tr className="bg-gray-200 border-b">
-                                    <th className="p-4 text-left font-medium text-gray-700">Product</th>
-                                    <th className="p-4 text-left font-medium text-gray-700">Quantity</th>
-                                    <th className="p-4 text-left font-medium text-gray-700">Price</th>
-                                    <th className="p-4 text-left font-medium text-gray-700">Actions</th>
-                                </tr>
-                                </thead>
-                                <tbody>
-                                {cart.map((item) => (
-                                    <tr key={item.cart_id} className="border-b hover:bg-gray-50 transition duration-200">
-                                        <td className="p-4 flex items-center">
-                                            <img
-                                                src={`data:image/jpeg;base64,${item.image}`}
-                                                alt={item.product_name}
-                                                className="w-24 h-24 object-cover rounded-lg shadow-sm mr-4"
-                                            />
-                                            <span className="text-gray-800 font-medium">{item.product_name}</span>
-                                        </td>
-                                        <td className="p-4">
-                                            <div className="flex items-center space-x-2">
-                                                <button
-                                                    aria-label="Decrease quantity"
-                                                    onClick={() => handleUpdateQuantity(item.cart_id, item.quantity - 1)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
-                                                >
-                                                    -
-                                                </button>
-                                                <span className="text-lg font-semibold">{item.quantity}</span>
-                                                <button
-                                                    aria-label="Increase quantity"
-                                                    onClick={() => handleUpdateQuantity(item.cart_id, item.quantity + 1)}
-                                                    className="bg-blue-500 hover:bg-blue-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
-                                                >
-                                                    +
-                                                </button>
-                                            </div>
-                                        </td>
-                                        <td className="p-4 text-gray-800">${(item.price * item.quantity).toFixed(2)}</td>
-                                        <td className="p-4">
-                                            <button
-                                                onClick={() => handleRemoveItem(item.cart_id)}
-                                                className="bg-red-500 hover:bg-red-600 text-white font-bold py-2 px-4 rounded-lg shadow-md"
-                                            >
-                                                Remove
-                                            </button>
-                                        </td>
-                                    </tr>
-                                ))}
-                                </tbody>
-                            </table>
-                        )}
-                    </div>
-
-                    {/* Cart Summary */}
-                    <div className="w-full md:w-1/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300 mt-4 md:mt-0">
-                        <h2 className="text-3xl font-semibold mb-6 text-gray-800">Cart Summary</h2>
-                        <div className="flex justify-between mb-4 text-lg font-medium text-gray-800">
-                            <p>Total Cost</p>
-                            <p>${totalCost.toFixed(2)}</p>
-                        </div>
-                        <button
-                            onClick={handleCheckout}
-                            className="w-full bg-black text-white py-3 rounded-xl shadow-md hover:bg-gray-800 font-semibold"
-                        >
-                            Checkout
-                        </button>
-                    </div>
-                </div>
-            )}
+        <div style={{ backgroundImage: `url(${af})`, backgroundSize: 'cover' }}>
+            <ServicesPage />
         </div>
     );
 };
 
-export default ShoppingCart;
+export default Layout;
