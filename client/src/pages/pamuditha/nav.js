@@ -1,8 +1,9 @@
 import React from 'react';
-import {Link, useNavigate, useLocation} from 'react-router-dom';
+import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {useLogout} from './authUtils';
 import logo2 from "../../images/logow.png";
+import cartIcon from '../../images/cart.png';
 
 function Navbar() {
     const logout = useLogout(); // Using the custom hook
@@ -12,25 +13,7 @@ function Navbar() {
 
     React.useEffect(() => {
         const cookie = Cookies.get('diamond');
-
-        if (cookie) {
-            fetch('http://localhost:3001/role', {
-                method: 'GET',
-                credentials: 'include' // Include credentials to ensure session or cookie is sent
-            })
-                .then(response => response.json())
-                .then(data => {
-                    const role = data?.user?.role;
-                    const hasValidRole = role === 'customer' || role === 'admin';
-                    setCookieExists(hasValidRole);  // Set state based on valid roles
-                })
-                .catch(err => {
-                    console.error('Error fetching user role:', err);
-                    setCookieExists(false);  // If there's an error, don't consider the cookie valid
-                });
-        } else {
-            setCookieExists(false);  // No cookie exists
-        }
+        setCookieExists(!!cookie);
 
         // Detect section to scroll after navigating from another page
         const hash = location.hash;
@@ -39,7 +22,6 @@ function Navbar() {
             scrollToSection(sectionId);
         }
     }, [location]);
-
 
     const scrollToSection = (id) => {
         const element = document.getElementById(id);
@@ -98,6 +80,12 @@ function Navbar() {
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Products
                                 </Link>
+                                <Link to="/cart"
+                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+
+                                    Cart |
+                                    <img src={cartIcon} alt="Cart" className="w-4 h-4 inline-block"/>
+                                </Link>
 
                                 {/* Dropdown Menu */}
                                 <div>
@@ -109,11 +97,11 @@ function Navbar() {
                                     <div className="dropdown-menu" aria-labelledby="dropdown07">
                                         {cookieExists ? (
                                             <>
-                                                <a className="dropdown-item julius-sans-one-regular" href="/Cart">Cart</a>
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/userp">Settings</a>
+
                                                 <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/supporthome">Support</a>
+                                                   href="/inq">Support</a>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#"
                                                    onClick={(e) => {
                                                        e.preventDefault();
@@ -139,3 +127,4 @@ function Navbar() {
 }
 
 export default Navbar;
+

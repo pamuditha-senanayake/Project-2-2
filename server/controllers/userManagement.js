@@ -144,9 +144,10 @@ router.post("/register", async (req, res) => {
                     res.status(500).json({message: "Server error during registration"});
                 } else {
                     const result = await db.query(
-                        "INSERT INTO users (email, password, role) VALUES ($1, $2, $3) RETURNING *",
+                        "INSERT INTO users (email, password, role, date) VALUES ($1, $2, $3, CURRENT_DATE) RETURNING *",
                         [email, hash, role]
                     );
+                    console.log(result);
                     const user = result.rows[0];
 
                     req.login(user, (err) => {
@@ -357,7 +358,7 @@ passport.use(
         async (accessToken, refreshToken, profile, cb) => {
             try {
                 // Log profile object to debug
-                // console.log("Google profile:", profile);
+                //console.log("Google profile:", profile);
 
                 // Extract email from profile
                 const email = profile.email || (profile.emails && profile.emails[0].value);
@@ -371,7 +372,7 @@ passport.use(
                 if (result.rows.length === 0) {
                     // Insert new user with a placeholder password
                     const newUser = await db.query(
-                        "INSERT INTO users (email, password) VALUES ($1, $2) RETURNING *",
+                        "INSERT INTO users (email, password,date) VALUES ($1, $2,CURRENT_DATE) RETURNING *",
                         [email, "google"]
                     );
 
@@ -449,6 +450,93 @@ router.post('/ask', async (req, res) => {
     } catch (error) {
         console.error('Error generating response:', error);
         res.status(500).json({response: 'Error generating response'});
+    }
+});
+
+
+router.post('/predict-registrations', async (req, res) => {
+    const {userRegistrationData} = req.body;
+
+    console.log('Received request to predict registrations with data:', userRegistrationData);
+
+    if (!userRegistrationData) {
+        console.error('Error: Missing user registration data');
+        return res.status(400).json({error: 'Missing user registration data'});
+    }
+
+    try {
+        const message = `Predict the future growth of user registrations based on the following data:\n${JSON.stringify(userRegistrationData)} and provide suggestions for a social media manager to optimize growth. **Don't make mathematical explanations, just give basic predictions and mostly give suggestions like run fb ads and all.**`;
+        console.log('Generated message for AI model:', message);
+
+        const model = genAI.getGenerativeModel({model: 'gemini-pro'});
+
+        // Start the chat
+        const chat = model.startChat({
+            history: [
+                {
+                    role: 'user',
+                    parts: [{text: message}],
+                }
+            ],
+            generationConfig: {
+                maxOutputTokens: 200,
+                temperature: 0.7,
+            }
+        });
+
+        // Send the message
+        const result = await chat.sendMessage(message);
+        const response = await result.response;
+        const text = response.text();
+
+        console.log('Received response from AI model:', text);
+
+        // Assuming the AI response is in bullet points with newline separators
+        const lines = text.split('\n');
+
+        let prediction = "";
+        let peakSeasons = [];
+        const suggestions = {
+            advertising: [],
+            content: [],
+            engagement: [],
+            other: [],
+        };
+
+        for (const line of lines) {
+            const trimmedLine = line.trim();
+            if (trimmedLine.startsWith('*')) {
+                const item = trimmedLine.slice(1).trim();
+                if (item.includes("Growth Prediction") || item.includes("Overall Growth")) {
+                    prediction = item;
+                } else if (item.includes('peak seasons') || item.includes('peak months')) {
+                    peakSeasons.push(item);
+                } else {
+                    const suggestion = item.trim();
+                    let category = "other";
+                    if (suggestion.includes('Facebook ads')) {
+                        category = "advertising";
+                    } else if (suggestion.includes('influencers')) {
+                        category = "engagement";
+                    } else if (suggestion.includes('contests')) {
+                        category = "content";
+                    }
+                    suggestions[category].push(suggestion);
+                }
+            }
+        }
+
+        // Update the structured prediction object
+        const structuredPrediction = {
+            growthTrend: prediction,
+            peakSeasons: peakSeasons,
+            suggestions: suggestions,
+        };
+
+        res.json({prediction: structuredPrediction});
+    } catch (error) {
+        console.error('Error fetching prediction:', error);
+        res.status(500).json({error: 'Error generating prediction'});
     }
 });
 

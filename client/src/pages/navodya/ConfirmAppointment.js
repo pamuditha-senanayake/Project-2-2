@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar";
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 const ConfirmAppointment = () => {
     const navigate = useNavigate();
     const {appointmentId} = useParams();
+    const location = useLocation(); // Use the useLocation hook
 
     const timeslots = [
         "8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM",
@@ -12,6 +13,12 @@ const ConfirmAppointment = () => {
         "2.00 PM - 3.00 PM", "3.00 PM - 4.00 PM", "4.00 PM - 5.00 PM",
         "5.00 PM - 6.00 PM"
     ];
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
+    const {selectedServices, selectedProfessional} = location.state || {
+        selectedServices: [],
+        selectedProfessional: null
+    };
 
     const [appointmentStatus, setAppointmentStatus] = useState();
     const [appointmentDate, setAppointmentDate] = useState();
@@ -47,56 +54,56 @@ const ConfirmAppointment = () => {
         }
     }, [appointmentId]);
 
-
     const handlePay = async () => {
-        try {
-            navigate("/pay", {
-                state: {
-                    appointmentId
-                }
-            });
-        } catch (error) {
-            console.error('Error during payment process or navigation:', error);
+        if (appointmentStatus === 'confirmed') {
+            try {
+                navigate(`/appointmentpayment/` + appointmentId, {
+                    state: {
+                        selectedServices,
+                        selectedProfessional,
+                        selectedTimeSlots,
+                        selectedDate
+                    }
+                });
+            } catch (error) {
+                console.error('Error during payment process or navigation:', error);
+            }
+        } else {
+            setErrorMsg("Payment can only be made for confirmed appointments.");
         }
     };
 
-    const handleDelete = (appointmentId) => {
+    const handleDelete = async (appointmentId) => {
         console.log("Attempting to delete appointment with ID:", appointmentId);
 
         // Ensure the appointment status is "pending"
         if (appointmentStatus === "pending") {
             console.log("Appointment status is pending, proceeding with deletion.");
 
-            // Make DELETE request to the server, passing appointmentId as a query parameter
-            fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
-                method: 'DELETE',
-                credentials: 'include',
-            })
-                .then(response => {
-                    // Check if the response is OK (status in the range 200-299)
-                    if (!response.ok) {
-                        throw new Error(`Failed to delete: ${response.statusText}`);
-                    }
-                    return response.json();
-                })
-                .then(data => {
-                    console.log("Appointment deletion successful:", data);
-
-                    // Show an alert to indicate successful deletion
-                    alert("Appointment deleted successfully.");
-
-                    // Optional: Navigate back or update state/UI if needed
-                    navigate('/appointments'); // Assuming you have a route to show the appointments list
-                })
-                .catch(error => {
-                    console.error('Delete error:', error.message);
+            try {
+                const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
+                    method: 'DELETE',
+                    credentials: 'include',
                 });
+
+                if (!response.ok) {
+                    throw new Error(`Failed to delete: ${response.statusText}`);
+                }
+
+                const data = await response.json();
+                console.log("Appointment deletion successful:", data);
+
+                alert("Appointment deleted successfully.");
+                navigate('/appointments'); // Assuming you have a route to show the appointments list
+            } catch (error) {
+                console.error('Delete error:', error.message);
+                setErrorMsg("An error occurred while trying to delete the appointment. Please try again later.");
+            }
         } else {
             console.warn("Cannot delete appointment. Status is not pending.");
             setErrorMsg("You cannot cancel a confirmed or rejected appointment.");
         }
     };
-
 
     const renderStatusContent = () => {
         switch (appointmentStatus) {
@@ -141,7 +148,11 @@ const ConfirmAppointment = () => {
 
                     <div className="bg-white rounded-lg p-8">
                         {errorMsg && (
-                            <div className="text-red-500 text-center mb-4">{errorMsg}</div>
+                            <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4"
+                                 role="alert">
+                                <p className="font-bold">Be Warned</p>
+                                <p>{errorMsg}</p>
+                            </div>
                         )}
                         <button
                             onClick={() => handleDelete(appointmentId)}
@@ -160,13 +171,6 @@ const ConfirmAppointment = () => {
                         serviceNames.map((service, index) => (
                             <div key={index} className="mb-2">
                                 <h3 className="text-lg font-semibold">{service}</h3>
-                                {/* Assuming price and duration are not provided, they need to be displayed if available */}
-                                {/* <p>LKR {service.price}</p> */}
-                                {/* <p>
-                                    {service.duration?.hours ? `${service.duration.hours} hr` : ''}
-                                    {service.duration?.hours && service.duration?.minutes ? ' ' : ''}
-                                    {service.duration?.minutes ? `${service.duration.minutes} min` : ''}
-                                </p> */}
                             </div>
                         ))
                     ) : (
@@ -200,9 +204,11 @@ const ConfirmAppointment = () => {
                         <p>Total Time</p>
                         <p>{totalTime.hours || totalTime.minutes ? `${totalTime.hours || 0} Hour(s) ${totalTime.minutes || 0} Min(s)` : "0 Hour(s) 0 Min(s)"}</p>
                     </div>
+                    <hr className="my-4"/>
                     <button
                         onClick={handlePay}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"
+                        className={`w-full h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg ${appointmentStatus === 'confirmed' ? 'bg-[#00796b] text-white' : 'bg-gray-300 text-gray-700 cursor-not-allowed'}`}
+                        disabled={appointmentStatus !== 'confirmed'}
                     >
                         Pay Now
                     </button>

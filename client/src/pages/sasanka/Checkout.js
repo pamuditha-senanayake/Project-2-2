@@ -65,7 +65,7 @@ const Checkout = () => {
             const result = await response.json();
             if (response.ok) {
                 console.log('Checkout successful:', result);
-                navigate('/payment');
+                navigate('/addpayment');
             } else {
                 throw new Error(result.message || 'Checkout failed');
             }

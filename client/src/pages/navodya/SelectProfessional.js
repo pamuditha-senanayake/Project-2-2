@@ -8,42 +8,53 @@ const SelectProfessional = () => {
     const {selectedServices} = location.state || {selectedServices: []};
     const [selectedProfessional, setSelectedProfessional] = useState(null);
     const [professionals, setProfessionals] = useState([]);
+    const [showAlert, setShowAlert] = useState(false);  // To manage alert visibility
     const navigate = useNavigate();
 
-    // Fetch professionals from the API
+    // Fetch professionals based on selected services from the API
     useEffect(() => {
         const getProfessionals = async () => {
             try {
-                const response = await axios.get(process.env.REACT_APP_API_URL + "/api/selectprofessional");
-                setProfessionals(response.data);
-                console.log(response);
+                if (selectedServices.length > 0) {
+                    // Extract service IDs to be sent as query parameters
+                    const serviceIds = selectedServices.map(service => service.id).join(',');
+                    const response = await axios.get(`${process.env.REACT_APP_API_URL}/api/selectprofessionalservice?services=${serviceIds}`);
+                    setProfessionals(response.data);
+                } else {
+                    setProfessionals([]);
+                }
             } catch (err) {
                 console.error(err);
             }
         };
         getProfessionals();
-    }, []);
+    }, [selectedServices]);
 
     const handleProfessionalSelect = (professional) => {
         setSelectedProfessional(professional);
+        setShowAlert(false);  // Hide alert once a professional is selected
     };
 
     const handleRandomProfessionalSelect = () => {
         if (professionals.length > 0) {
             const randomIndex = Math.floor(Math.random() * professionals.length);
             setSelectedProfessional(professionals[randomIndex]);
+            setShowAlert(false);  // Hide alert after random selection
         }
-
     };
 
     const handleContinue = () => {
+        if (!selectedProfessional) {
+            setShowAlert(true); // Show alert if no professional is selected
+            return;
+        }
         navigate("/date&time", {
             state: {
                 selectedServices,
                 selectedProfessional
             }
         });
-    }
+    };
 
     // Calculate total cost
     const totalCost = selectedServices.reduce(
@@ -70,13 +81,6 @@ const SelectProfessional = () => {
         minutes: totalTime.minutes % 60,
     };
 
-    // Format duration object into a string
-    // const formatDuration = (duration) => {
-    //     const hours = duration.hours || 0;
-    //     const minutes = duration.minutes || 0;
-    //     return `${hours} Hour(s) ${minutes} Min(s)`;
-    // };
-
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 px-[200px]">
             <NavigationBar activeTab={2}/>
@@ -85,12 +89,21 @@ const SelectProfessional = () => {
                 {/* Left side - Professional Selection */}
                 <div className="w-full md:w-2/3 bg-gray-100 p-8">
                     <h2 className="text-2xl font-bold mb-6">Select Professional</h2>
+
+                    {/* Alert if no professional is selected */}
+                    {showAlert && (
+                        <div className="bg-orange-100 border-l-4 border-orange-500 text-orange-700 p-4 mb-4"
+                             role="alert">
+                            <p className="font-bold">Be Warned</p>
+                            <p>Please select a professional before continuing.</p>
+                        </div>
+                    )}
+
                     <div className="grid grid-cols-2 gap-4">
                         <button
-                            onClick={() => handleRandomProfessionalSelect()}
+                            onClick={handleRandomProfessionalSelect}
                             className="flex flex-col items-center justify-center p-4 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
                         >
-                            {/* <span className="text-3xl">{professional.icon}</span> */}
                             <h3 className="text-lg font-semibold mt-2">Any Professional</h3>
                             <p className="text-sm">for maximum availability</p>
                         </button>
@@ -101,7 +114,6 @@ const SelectProfessional = () => {
                                 onClick={() => handleProfessionalSelect(professional)}
                                 className="flex flex-col items-center justify-center p-4 bg-gray-200 rounded-lg hover:bg-gray-300 transition"
                             >
-                                {/* <span className="text-3xl">{professional.icon}</span> */}
                                 <h3 className="text-lg font-semibold mt-2">{professional.name}</h3>
                                 <p className="text-sm">{professional.specialty}</p>
                                 <p className="text-sm">{professional.description}</p>
@@ -134,7 +146,7 @@ const SelectProfessional = () => {
                     <hr className="my-4"/>
                     <div className="flex justify-between">
                         <p>Total Cost</p>
-                        <p>LKR {totalCost.toFixed(2)}</p> {/* Ensure cost is displayed with two decimal places */}
+                        <p>LKR {totalCost.toFixed(2)}</p>
                     </div>
                     <div className="flex justify-between">
                         <p>Total Time</p>
@@ -146,7 +158,6 @@ const SelectProfessional = () => {
                     >
                         Continue
                     </button>
-
                 </div>
             </div>
         </div>

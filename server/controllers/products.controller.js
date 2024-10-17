@@ -103,7 +103,7 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         });
 
         if (updatedProduct) {
-            res.send(updatedProduct);
+            res.send(updatedProduct); // Ensure the updated product details are sent back
         } else {
             res.status(404).json('No record with given id: ' + req.params.id);
         }
@@ -111,7 +111,6 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         next(error);
     }
 });
-
 
 
 

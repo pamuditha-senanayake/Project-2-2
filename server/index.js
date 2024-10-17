@@ -12,22 +12,27 @@ import employeeRoutes from './controllers/employee.controller.js';
 import UserH from './controllers/userhandling.js';
 import beautyServicesRoutes from './controllers/beautyService.controller.js';
 import professionalRoutes from './controllers/professional.controller.js';
+import professionalSRoutes from './controllers/professional.controller.js';
 import appointmentRoutes from './controllers/appointment.controller.js';
 import appointmentDetailsRoutes from './controllers/appointment.controller.js';
 import appointmentStatusRoutes from './controllers/appointment.controller.js';
 import appointmentConfirmedRoutes from './controllers/appointment.controller.js';
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
-import testimonialRoutes from './controllers/testimonial.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
+//ishan
+import addService from './controllers/AddService.js';
+import testimonialRoutes from './controllers/testimonial.controller.js';
 
 import productsController from './controllers/productsController.js';
-import cartController from './controllers/cartController.js'; // Ensure this import is correct
-import checkoutRoutes from './controllers/checkoutController.js'
-
+import cartController from './controllers/cartController.js';
+import checkoutRoutes from './controllers/checkoutController.js';
 //Anuththara
 import productsRoutes from './controllers/products.controller.js';
 
+//dasun
+import addcard2 from './controllers/Addcard.js';
 
 
 dotenv.config();
@@ -46,7 +51,7 @@ app.use(
         resave: false,
         saveUninitialized: true,
         cookie: {
-            maxAge: 1000 * 60 * 10, // 10 minutes
+            maxAge: 1000 * 60 * 100, // 100 minutes
             httpOnly: false,
             secure: false
         },
@@ -58,6 +63,7 @@ app.use(bodyParser.json());
 app.use('/api/employees', employeeRoutes);
 app.use('/api/beautyservices', beautyServicesRoutes);
 app.use('/api/selectprofessional', professionalRoutes);
+app.use('/api/selectprofessionalservice', professionalSRoutes);
 app.use('/api/appointmentservice', appointmentRoutes);
 app.use('/api/appointmentdetails', appointmentDetailsRoutes);
 app.use('/api/appointmentstatus', appointmentStatusRoutes);
@@ -67,39 +73,46 @@ app.use('/api/appointmentdelete', appointmentDeleteRoutes)
 app.use('/api/testimonials', testimonialRoutes);
 app.use('/api/appointmentdelete', appointmentDeleteRoutes);
 app.use('/api/appointmentdone', appointmentDoneRoutes);
+app.use('/api/myappointment', myAllAppointmentsRoutes);
 
 
 app.use(ErrorHandler)
-
 app.use(express.json());
+
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json({limit: '10mb'}));
+app.use(express.urlencoded({limit: '10mb'}));
+
 app.use(express.static("public"));
 app.use(ErrorHandler);
-
 app.use(passport.initialize());
 app.use(passport.session());
-
 app.use("/api/employees", employeeRoutes);
 app.use("/", userManagementController);
 app.use('/api/crud', crudController);
 app.use('/api/user', UserH);
+app.use('/service', addService);
 
 
 // app.use("/api/ai", aiController); // Updated route for AiManagement
 app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
+
 //Anuththara
-app.use('/api/products',productsRoutes)
+app.use('/api/products', productsRoutes)
 app.use('/uploads', express.static('uploads'));
+
+
+app.use('/card', addcard2);
 
 
 app.get("/", (req, res) => {
     res.redirect("http://localhost:3000/home");
 });
 
-// Error handling middleware should be last
-// First, make sure the DB connection is successful, then start the express server.
+
 db.query("SELECT 1")
     .then(() => {
         console.log('DB connection succeeded.');
