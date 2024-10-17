@@ -1,5 +1,3 @@
-// View service details
-
 
 import React, { useEffect, useState, useMemo } from 'react';
 import Sidebar from '../com/admindash';
@@ -126,19 +124,39 @@ const Layout = () => {
         const handleUpdateService = async () => {
             try {
                 await axios.put(`http://localhost:3001/service/services/${selectedService.id}`, selectedService);
+
+                // Update the state to reflect the updated service
                 setServices(services.map(service =>
                     service.id === selectedService.id ? selectedService : service
                 ));
+
+                // Show success popup and refresh the page on confirmation
+                Swal.fire({
+                    title: 'Updated!',
+                    text: 'Your service has been updated successfully.',
+                    icon: 'success'
+                }).then(() => {
+                    // Refresh the page after the user clicks "OK"
+                    window.location.reload();
+                });
+
                 setShowEditModal(false);
-                setMessage("Service updated successfully!");
-                setShowPopup(true);
-                window.location.reload();
             } catch (err) {
                 console.error("Error updating service:", err);
-                setMessage("Failed to update service.");
-                setShowPopup(true);
+
+                // Show error popup
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to update service.',
+                    icon: 'error'
+                }).then(() => {
+                    // Optionally, refresh the page or perform any other action
+                    // window.location.reload(); // Uncomment if you want to refresh on error as well
+                });
             }
         };
+
+
 
         // Time taken mapping as an array for easier manipulation
         const durationOptions = [
@@ -381,10 +399,10 @@ const Layout = () => {
                                         <div className="mb-4">
                                             <label className="block font-semibold">Price:</label>
                                             <div className="flex">
-        <span
-            className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
-            Rs.
-        </span>
+                                                    <span
+                                                        className="inline-flex items-center px-3 text-sm text-gray-900 bg-gray-200 border border-r-0 border-gray-300 rounded-l-md">
+                                                        Rs.
+                                                    </span>
                                                 <input
                                                     type="number"
                                                     name="price"

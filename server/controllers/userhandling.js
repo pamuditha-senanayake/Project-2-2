@@ -865,17 +865,34 @@ router.post('/increment/:cardId', async (req, res) => {
 });
 
 // Get usage report
-router.get('/report', async (req, res) => {
+// router.get('/report', async (req, res) => {
+//     try {
+//         const usageReport = await db.query(`
+//             SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
+//             FROM CardUsage
+//                      JOIN Cards ON CardUsage.cardId = Cards.id;
+//         `);
+//
+//         res.status(200).json(usageReport.rows);
+//     } catch (error) {
+//         res.status(500).json({message: 'Error generating usage report', error: error.message});
+//     }
+// });
+
+// Get usage report
+router.get('/reportt', async (req, res) => {
     try {
         const usageReport = await db.query(`
-            SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
+            SELECT Cards.cardType, Cards.cardHolderName, COUNT(CardUsage.cardId) AS usageCount
             FROM CardUsage
-                     JOIN Cards ON CardUsage.cardId = Cards.id;
+            JOIN Cards ON CardUsage.cardId = Cards.id
+            GROUP BY Cards.cardType, Cards.cardHolderName
+            ORDER BY Cards.cardType;
         `);
 
         res.status(200).json(usageReport.rows);
     } catch (error) {
-        res.status(500).json({message: 'Error generating usage report', error: error.message});
+        res.status(500).json({ message: 'Error generating usage report', error: error.message });
     }
 });
 

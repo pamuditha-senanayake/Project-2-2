@@ -115,6 +115,30 @@ router.put("/services/:id", async (req, res) => {
     }
 });
 
+// router.put("/services/:id", async (req, res) => {
+//     try {
+//         const { id } = req.params;
+//         const { name, description, price, duration, category_id } = req.body;
+//
+//         // Convert the duration from minutes to PostgreSQL INTERVAL
+//         const durationInMinutes = duration.minutes || 0; // Default to 0 if not provided
+//         const durationInterval = `${durationInMinutes} minutes`; // Create the interval string
+//
+//         const updatedService = await db.query(
+//             `UPDATE services
+//              SET name = $1, description = $2, price = $3, duration = $4, category_id = $5
+//              WHERE id = $6 RETURNING *`,
+//             [name, description, price, durationInterval, category_id, id]
+//         );
+//
+//         res.json(updatedService.rows[0]);
+//     } catch (err) {
+//         console.error(err.message);
+//         res.status(500).json({ error: "Internal server error" });
+//     }
+// });
+
+
 
 //Delete service
 

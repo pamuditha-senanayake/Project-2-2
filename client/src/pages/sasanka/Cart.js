@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from '../pamuditha/nav';
+import Swal from 'sweetalert2';
 
 
 
@@ -61,9 +62,15 @@ const ShoppingCart = () => {
     const handleUpdateQuantity = async (cartItemId, newQuantity) => {
         try {
             if (newQuantity < 1) {
-                alert("Quantity must be at least 1.");
+                Swal.fire({
+                    title: "Invalid Quantity",
+                    text: "Quantity must be at least 1.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
                 return;
             }
+
 
             const response = await fetch(`http://localhost:3001/api/cart/update/${cartItemId}`, {
                 method: "PUT",
@@ -93,20 +100,43 @@ const ShoppingCart = () => {
     };
 
     const handleRemoveItem = async (cartItemId) => {
-        try {
-            const confirmRemove = window.confirm("Are you sure you want to remove this item?");
-            if (!confirmRemove) return;
+        // Show confirmation popup
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'Cancel'
+        });
 
-            await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
-                method: "DELETE",
-                credentials: 'include',
-            });
-            setCart(cart.filter(item => item.cart_id !== cartItemId));
-        } catch (error) {
-            console.error("Error removing item:", error);
-            setError('Failed to remove item.');
+        if (result.isConfirmed) {
+            try {
+                await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
+                    method: "DELETE",
+                    credentials: 'include',
+                });
+                // Update the state to remove the deleted cart item
+                setCart(cart.filter(item => item.cart_id !== cartItemId));
+                // Show success popup
+                Swal.fire({
+                    title: 'Removed!',
+                    text: 'Your item has been removed from the cart.',
+                    icon: 'success'
+                });
+            } catch (error) {
+                console.error("Error removing item:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to remove item.',
+                    icon: 'error'
+                });
+            }
         }
     };
+
 
     const totalCost = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
