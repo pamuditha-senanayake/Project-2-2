@@ -1,5 +1,8 @@
+//chekout
+
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import homepic6 from "../../images/e.jpg";
 
 const Checkout = () => {
     const [shippingDetails, setShippingDetails] = useState({
@@ -77,8 +80,18 @@ const Checkout = () => {
     const totalCost = cartItems.reduce((acc, item) => acc + item.price * item.quantity, 0);
 
     return (
-        <div className="flex flex-col items-center w-full min-h-screen bg-gray-100 py-12">
-            <div className="max-w-4xl w-full bg-white p-8 rounded-lg shadow-lg">
+
+        <div className="flex flex-col items-center w-full min-h-screen bg-gray-100 py-12"
+             style={{
+                 backgroundImage: `url(${homepic6})`,
+                 backgroundSize: 'cover',
+                 backgroundPosition: 'center',
+                 backgroundRepeat: 'no-repeat',
+                 minHeight: "100vh",
+                 padding: "20px",
+             }}
+        >
+            <div className="max-w-4xl w-full bg-white p-8 rounded-lg mt-20 shadow-lg">
                 <h2 className="text-3xl font-bold text-center mb-6">Checkout</h2>
                 {error && <p className="text-red-500 text-center mb-4">{error}</p>}
                 <form onSubmit={handleCheckout}>
@@ -120,7 +133,8 @@ const Checkout = () => {
                             />
                         </div>
                         <div>
-                            <label htmlFor="contactNumber" className="block text-lg font-medium mb-2">Contact Number</label>
+                            <label htmlFor="contactNumber" className="block text-lg font-medium mb-2">Contact
+                                Number</label>
                             <input
                                 type="text"
                                 id="contactNumber"
@@ -150,8 +164,9 @@ const Checkout = () => {
                     </div>
 
                     <button
+
                         type="submit"
-                        className="w-full mt-4 bg-black text-white py-3 rounded-lg shadow-lg transition-all transform hover:bg-gray-600 hover:shadow-xl"
+                        className="w-full bg-black text-white py-3 rounded-lg font-semibold cursor-pointer shadow-md hover:bg-gray-800 transition-transform duration-200 transform hover:scale-105"
                     >
                         Confirm Purchase
                     </button>
