@@ -1,9 +1,12 @@
+//list
+
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { Modal, InputNumber, Tooltip } from 'antd';
 import 'antd/dist/reset.css'; // Ensure Ant Design styles are imported
 import Navbar from '../pamuditha/nav';
 import Banner from "../../images/Banner.jpg"; // Import the banner image
+import homepic6 from "../../images/e.jpg";
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -14,6 +17,7 @@ const ProductList = () => {
     const [quantity, setQuantity] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
     const [categoryFilter, setCategoryFilter] = useState(''); // New state for category filter
+    const [cartCount, setCartCount] = useState(0); // State to track cart item count
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -33,7 +37,7 @@ const ProductList = () => {
 
     const handleAddToCart = (product) => {
         setSelectedProduct(product);
-        setQuantity(1);
+        setQuantity(1); // Reset quantity to 1 when selecting a new product
         setVisible(true);
     };
 
@@ -52,6 +56,7 @@ const ProductList = () => {
 
             if (response.ok) {
                 console.log('Added/Updated item:', data);
+                setCartCount(prevCount => prevCount + quantity); // Update cart count
                 setVisible(false);
             } else {
                 console.error('Failed to add/update item:', data);
@@ -78,7 +83,7 @@ const ProductList = () => {
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 mt-[100px] px-6 md:p-10">
-            <Navbar />
+            <Navbar cartCount={cartCount} /> {/* Pass cartCount to Navbar */}
             {/* Banner */}
             <div className="mb-8">
                 <img src={Banner} alt="Banner" className="w-full h-60 object-cover rounded-lg shadow-lg" />
@@ -149,6 +154,7 @@ const ProductList = () => {
                             key="submit"
                             onClick={handleOk}
                             className="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors duration-300"
+                            disabled={quantity > selectedProduct.quantity} // Disable if quantity exceeds stock
                         >
                             Add to Cart
                         </button>,
@@ -168,17 +174,17 @@ const ProductList = () => {
                                 <strong>Description:</strong> {selectedProduct.description || 'No description available.'}
                             </p>
                             <p className="text-gray-700 mb-2">
-                                <strong>Price:</strong> ${selectedProduct.price}
+                                <strong>Price:</strong> Rs.{selectedProduct.price}
                             </p>
                             <p className="text-gray-700 mb-4">
-                                <strong>In Stock:</strong> {selectedProduct.stock}
+                                <strong>In Stock:</strong> {selectedProduct.quantity}
                             </p>
                             <div className="flex items-center mb-4">
                                 <label className="mr-4 font-semibold text-gray-800">Quantity:</label>
                                 <Tooltip title={`Total: Rs.${(quantity * selectedProduct.price).toFixed(2)}`}>
                                     <InputNumber
                                         min={1}
-                                        max={selectedProduct.stock}
+                                        max={selectedProduct.quantity} // Limit max quantity to stock
                                         value={quantity}
                                         onChange={(value) => setQuantity(value)}
                                         className="w-24"
