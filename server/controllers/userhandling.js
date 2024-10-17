@@ -3,6 +3,9 @@ import db from '../db.js';
 import service from "../services/appointment.service.js"; // Replace with your actual DB connection module
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
+import multer from 'multer';
+import path from 'path';
+import fs from 'fs';
 
 const router = express.Router();
 
@@ -30,6 +33,32 @@ router.get('/admin', (req, res) => {
     }
 });
 
+router.put('/api/user/update/pic', async (req, res) => {
+    if (req.isAuthenticated()) {
+        const userId = req.user.id; // Get user ID from the authenticated request
+        const {image} = req.body;
+
+        try {
+            const query = 'UPDATE users SET image = $1 WHERE id = $2 RETURNING *';
+            const params = [image, userId];
+
+            const result = await db.query(query, params);
+
+            if (result.rows.length) {
+                res.status(200).json({user: result.rows[0]});
+            } else {
+                res.status(404).json({error: 'User not found'});
+            }
+        } catch (err) {
+            console.error('Error updating user picture:', err);
+            res.status(500).json({error: 'Error updating user picture'});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+
 router.get('/customer', (req, res) => {
     // Ensure the user is authenticated and role is admin
     if (req.user && (req.user.role === 'customer' || req.user.role === 'admin')) {
@@ -49,46 +78,53 @@ router.get('/verify', (req, res) => {
 });
 
 
-        // // UPDATE a user by ID
-        // router.put('/update/:id', async (req, res) => {
-        //     if (req.isAuthenticated()) {
-        //         const {id} = req.params;
-        //         const {firstname, email, phone_number, lastname, address, role} = req.body; // Use firstName here
-        //         try {
-        //             const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6, role=$7 WHERE id = $4 RETURNING *';
-        //             const params = [firstname, email, phone_number, id, lastname, address, role]; // Pass firstName here
-        //             const result = await db.query(query, params);
-        //             // console.log(result);
-        //             if (result.rows.length) {
-        //                 res.status(200).json({user: result.rows[0]});
-        //             } else {
-        //                 res.status(404).json({error: 'User not found'});
-        //             }
-        //         } catch (err) {
-        //             console.error('Error updating user:', err.message);
-        //             res.status(500).json({error: 'Error updating user'});
-        //         }
-        //     } else {
-        //         res.status(401).json({error: 'Unauthorized'});
-        //     }
-        // });
+// UPDATE a user by ID
+// router.put('/update/:id', async (req, res) => {
+//     if (req.isAuthenticated()) {
+//         const {id} = req.params;
+//         const {firstname, email, phone_number, lastname, address, role} = req.body; // Use firstName here
+//         try {
+//             const query = 'UPDATE users SET firstname=$1, email = $2, phone_number = $3, lastname=$5, address=$6, role=$7 WHERE id = $4 RETURNING *';
+//             const params = [firstname, email, phone_number, id, lastname, address, role]; // Pass firstName here
+//             const result = await db.query(query, params);
+//             // console.log(result);
+//             if (result.rows.length) {
+//                 res.status(200).json({user: result.rows[0]});
+//             } else {
+//                 res.status(404).json({error: 'User not found'});
+//             }
+//         } catch (err) {
+//             console.error('Error updating user:', err.message);
+//             res.status(500).json({error: 'Error updating user'});
+//         }
+//     } else {
+//         res.status(401).json({error: 'Unauthorized'});
+//     }
+// });
 
 router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
-        const {firstname, email, phone_number, lastname, address, role} = req.body;
-        console.log(firstname, email, phone_number, lastname, address, role);
+        const {firstname, email, phone_number, lastname, address, image, role} = req.body;
+
+        console.log(firstname, email, phone_number, lastname, address, image, role);
 
         try {
+            // Convert the Base64-encoded image to a binary buffer if image is provided
+            const imageBuffer = image ? Buffer.from(image, 'base64') : null;
+
             const query = `
                 UPDATE users
-                SET firstname    = $1,
-                    email        = $2,
+                SET firstname = $1,
+                    email = $2,
                     phone_number = $3,
-                    lastname     = $4,
-                    address      = $5
-                WHERE id = $6 RETURNING *`;
-            const params = [firstname, email, phone_number, lastname, address, id];
+                    lastname = $4,
+                    address = $5,
+                    image = $6
+                WHERE id = $7
+                RETURNING *`;
+
+            const params = [firstname, email, phone_number, lastname, address, imageBuffer, id];
 
             const result = await db.query(query, params);
 
@@ -116,12 +152,14 @@ router.put('/update2/:id', async (req, res) => {
         try {
             const query = `
                 UPDATE users
-                SET firstname    = $1,
-                    email        = $2,
+                SET firstname = $1,
+                    email = $2,
                     phone_number = $3,
-                    role         = $4
+                    role = $4
 
-                WHERE id = $5 RETURNING *`;
+
+                WHERE id = $5
+                RETURNING *`;
             const params = [firstname, email, phone_number, role, id];
 
             const result = await db.query(query, params);

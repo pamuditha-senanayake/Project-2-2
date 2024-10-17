@@ -76,7 +76,12 @@ app.use('/api/myappointment', myAllAppointmentsRoutes);
 
 app.use(ErrorHandler)
 app.use(express.json());
+
+
 app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.json({limit: '10mb'}));
+app.use(express.urlencoded({limit: '10mb'}));
+
 app.use(express.static("public"));
 app.use(ErrorHandler);
 app.use(passport.initialize());
