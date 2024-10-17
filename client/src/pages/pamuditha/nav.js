@@ -3,6 +3,7 @@ import {Link, useLocation, useNavigate} from 'react-router-dom';
 import Cookies from 'js-cookie';
 import {useLogout} from './authUtils';
 import logo2 from "../../images/logow.png";
+import cartIcon from '../../images/cart.png';
 
 function Navbar() {
     const logout = useLogout(); // Using the custom hook
@@ -79,6 +80,12 @@ function Navbar() {
                                       className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
                                     Products
                                 </Link>
+                                <Link to="/cart"
+                                      className="julius-sans-one-regular text-white hover:bg-red-500 hover:text-white px-3 py-2 rounded-md text-sm font-medium">
+
+                                    Cart |
+                                    <img src={cartIcon} alt="Cart" className="w-4 h-4 inline-block"/>
+                                </Link>
 
                                 {/* Dropdown Menu */}
                                 <div>
@@ -91,11 +98,8 @@ function Navbar() {
                                         {cookieExists ? (
                                             <>
                                                 <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/cart">Cart</a>
-                                                <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/userp">Profile</a>
-                                                <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/myappointment">My Appointments</a>
+                                                   href="/userp">Settings</a>
+
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/inq">Support</a>
                                                 <a className="dropdown-item julius-sans-one-regular" href="#"
