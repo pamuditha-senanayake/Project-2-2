@@ -95,20 +95,20 @@ router.get("/services", async (req, res) => {
 
 router.put("/services/:id", async (req, res) => {
     try {
-        const {id} = req.params;
-        const {name, description, price, duration, category_id} = req.body;
+        const { id } = req.params;
+        const { name, description, price, duration, category_id } = req.body;
 
         const updatedService = await db.query(
             `UPDATE services
-           SET name = $1, description = $2, price = $3, duration = $4, category_id = $5
-           WHERE id = $6 RETURNING *`,
+             SET name = $1, description = $2, price = $3, duration = $4::interval, category_id = $5
+             WHERE id = $6 RETURNING *`,
             [name, description, price, duration, category_id, id]
         );
 
         res.json(updatedService.rows[0]);
     } catch (err) {
         console.error(err.message);
-        res.status(500).json({error: "Internal server error"});
+        res.status(500).json({ error: "Internal server error" });
     }
 });
 

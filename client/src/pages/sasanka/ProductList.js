@@ -4,6 +4,7 @@ import { Modal, InputNumber, Tooltip } from 'antd';
 import 'antd/dist/reset.css'; // Ensure Ant Design styles are imported
 import Navbar from '../pamuditha/nav';
 import Banner from "../../images/Banner.jpg"; // Import the banner image
+import homepic6 from "../../images/e.jpg";
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);

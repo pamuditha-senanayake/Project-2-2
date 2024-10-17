@@ -1,3 +1,6 @@
+// View service details
+
+
 import React, { useEffect, useState, useMemo } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
@@ -7,7 +10,7 @@ import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
 import af from "../../images/bcimage.avif";
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
-import 'jspdf-autotable'; // Import the plugin
+import 'jspdf-autotable';
 
 
 const Layout = () => {
@@ -202,15 +205,14 @@ const Layout = () => {
 
 
 
-        // PDF Generation Function
+        // report generation
+
         const generatePDF = () => {
             const doc = new jsPDF();
 
-            // Title
             doc.setFontSize(18);
             doc.text("Services Report", 14, 22);
 
-            // Subtitle
             doc.setFontSize(11);
             doc.setTextColor(100);
             doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 30);
@@ -219,7 +221,6 @@ const Layout = () => {
             doc.setTextColor(12, 10, 9);
             doc.text(`Total services: ${filteredServices.length}`, 14, 40);
 
-            // Define table columns and rows
             const tableColumn = ["Service Name", "Description", "Price (Rs.)", "Time Taken", "Category"];
             const tableRows = [];
 
@@ -234,7 +235,6 @@ const Layout = () => {
                 tableRows.push(serviceData);
             });
 
-            // Add table
             doc.autoTable({
                 startY: 35,
                 head: [tableColumn],
@@ -247,7 +247,6 @@ const Layout = () => {
                 tableLineWidth: 0.1
             });
 
-            // Save PDF
             doc.save("services_report.pdf");
         };
 
@@ -275,7 +274,7 @@ const Layout = () => {
                             <br/>
 
                             {/* Search and Generate PDF Buttons */}
-                            <div className="lg:mx-5 mb-4 flex justify-between items-center">
+                            <div className="lg:mx-5 mb-4 flex justify-between items-center ">
                                 <input
                                     type="text"
                                     value={searchTerm}
@@ -285,7 +284,7 @@ const Layout = () => {
                                 />
                                 <button
                                     onClick={generatePDF}
-                                    className="flex items-center bg-black text-white font-bold px-4 py-2 rounded hover:bg-pink-700"
+                                    className="flex items-center bg-black text-white font-bold px-4 py-2 rounded hover:bg-pink-700 icon-button transition duration-300 ease-in-out transform hover:scale-110"
                                 >
                                     <FontAwesomeIcon icon={faFilePdf} className="mr-2 "/>
                                     Generate Report
@@ -332,14 +331,14 @@ const Layout = () => {
                                             <td className="py-2 px-4 flex space-x-2">
                                                 <button
                                                     onClick={() => handleEditClick(service)}
-                                                    className="bg-pink-500 text-white py-1 px-4 rounded hover:bg-pink-700"
+                                                    className="bg-pink-500 text-white py-1 px-4 rounded hover:bg-pink-700 icon-button transition duration-300 ease-in-out transform hover:scale-110"
                                                 >
                                                     <FontAwesomeIcon icon={faEdit}/>
                                                 </button>
 
                                                 <button
                                                     onClick={() => handleDeleteClick(service.id)}
-                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-pink-700"
+                                                    className="bg-black text-white py-1 px-4 rounded hover:bg-pink-700 icon-button transition duration-300 ease-in-out transform hover:scale-110"
                                                 >
                                                     <FontAwesomeIcon icon={faTrash}/>
                                                 </button>
@@ -348,6 +347,7 @@ const Layout = () => {
                                     ))}
                                     </tbody>
                                 </table>
+
                             </div>
 
                             {showEditModal && selectedService && (
@@ -399,12 +399,9 @@ const Layout = () => {
                                         </div>
 
                                         <style jsx>{`
-                                            /* Disable arrows in Firefox */
                                             input[type='number'] {
                                                 -moz-appearance: textfield;
                                             }
-
-                                            /* Disable arrows in Chrome, Safari, Edge, Opera */
                                             input[type='number']::-webkit-outer-spin-button,
                                             input[type='number']::-webkit-inner-spin-button {
                                                 -webkit-appearance: none;

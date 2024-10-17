@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
-import su from "../../images/bcimage.avif";
+import homepic6 from "../../images/e.jpg";
 import Swal from "sweetalert2";
 
 const Layout = () => {
@@ -109,7 +109,7 @@ const Layout = () => {
 
                             <div
                                 style={{
-                                    backgroundImage: `url(${su})`,
+                                    backgroundImage: `url(${homepic6})`,
                                     backgroundSize: 'cover',
                                     backgroundPosition: 'center',
                                     backgroundRepeat: 'no-repeat',
@@ -123,7 +123,7 @@ const Layout = () => {
                                     Service</h1>
 
                                         <div style={{
-                                            backgroundImage: `url(${su})`,
+                                            backgroundImage: `url(${homepic6})`,
                                             backgroundSize: "cover",
                                             backgroundPosition: "center",
                                             backgroundRepeat: "no-repeat",
