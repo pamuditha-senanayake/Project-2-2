@@ -33,61 +33,28 @@ router.get('/admin', (req, res) => {
     }
 });
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, 'uploads/'); // Change to your desired upload folder
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}${path.extname(file.originalname)}`); // Append date to filename
-    }
-});
-
-// Initialize upload
-const upload = multer({storage});
-
-router.put('/api/user/update/pic', upload.single('pic'), async (req, res) => {
+router.put('/api/user/update/pic', async (req, res) => {
     if (req.isAuthenticated()) {
+        const userId = req.user.id; // Get user ID from the authenticated request
+        const {image} = req.body;
+
         try {
-            const userId = req.user.id; // Get user ID from the authenticated request
-            console.log('Authenticated User ID:', userId); // Debug log for user ID
+            const query = 'UPDATE users SET image = $1 WHERE id = $2 RETURNING *';
+            const params = [image, userId];
 
-            if (req.file && req.file.buffer) {
-                console.log('Received file:', req.file); // Debug log for received file
-                const fileName = `${userId}.png`; // Create a filename with user ID
-                console.log('File will be saved as:', fileName); // Debug log for filename
+            const result = await db.query(query, params);
 
-                // Write the file to the specified directory
-                fs.writeFileSync(`src/images/${fileName}`, req.file.buffer);
-                console.log('File saved successfully to src/images/'); // Confirmation log
-
-                // Update the user's profile picture in the database
-                const query = 'UPDATE users SET pic = $1 WHERE id = $2';
-                const values = [fileName, userId];
-                console.log('Executing query:', query, 'with values:', values); // Debug log for query execution
-
-                const result = await db.query(query, values);
-
-                if (result.rowCount === 0) {
-                    console.log('No user found with the provided ID.'); // Log if user not found
-                    return res.status(404).json({message: 'User not found'});
-                }
-
-                // Fetch updated user data
-                const updatedUser = await db.query('SELECT * FROM users WHERE id = $1', [userId]);
-                console.log('Updated user data:', updatedUser.rows[0]); // Debug log for updated user data
-
-                return res.status(200).json({user: updatedUser.rows[0]});
+            if (result.rows.length) {
+                res.status(200).json({user: result.rows[0]});
             } else {
-                console.log('No image file provided in the request.'); // Log if no file is provided
-                return res.status(400).json({message: 'Image file not provided'});
+                res.status(404).json({error: 'User not found'});
             }
-        } catch (error) {
-            console.error('Error updating user picture:', error); // Log the error
-            return res.status(500).json({message: 'Server error'});
+        } catch (err) {
+            console.error('Error updating user picture:', err);
+            res.status(500).json({error: 'Error updating user picture'});
         }
     } else {
-        console.log('Unauthorized access attempt.'); // Log for unauthorized access
-        return res.status(401).json({error: 'Unauthorized'});
+        res.status(401).json({error: 'Unauthorized'});
     }
 });
 
@@ -138,20 +105,26 @@ router.get('/verify', (req, res) => {
 router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
-        const {firstname, email, phone_number, lastname, address, role} = req.body;
-        console.log(firstname, email, phone_number, lastname, address, role);
+        const {firstname, email, phone_number, lastname, address, image, role} = req.body;
+
+        console.log(firstname, email, phone_number, lastname, address, image, role);
 
         try {
+            // Convert the Base64-encoded image to a binary buffer if image is provided
+            const imageBuffer = image ? Buffer.from(image, 'base64') : null;
+
             const query = `
-                UPDATE users 
-                SET firstname = $1, 
-                    email = $2, 
-                    phone_number = $3, 
+                UPDATE users
+                SET firstname = $1,
+                    email = $2,
+                    phone_number = $3,
                     lastname = $4,
-                    address = $5
-                WHERE id = $6 
+                    address = $5,
+                    image = $6
+                WHERE id = $7
                 RETURNING *`;
-            const params = [firstname, email, phone_number, lastname, address, id];
+
+            const params = [firstname, email, phone_number, lastname, address, imageBuffer, id];
 
             const result = await db.query(query, params);
 
@@ -178,13 +151,14 @@ router.put('/update2/:id', async (req, res) => {
 
         try {
             const query = `
-                UPDATE users 
-                SET firstname = $1, 
-                    email = $2, 
-                    phone_number = $3, 
+                UPDATE users
+                SET firstname = $1,
+                    email = $2,
+                    phone_number = $3,
                     role = $4
-                
-                WHERE id = $5 
+
+
+                WHERE id = $5
                 RETURNING *`;
             const params = [firstname, email, phone_number, role, id];
 
