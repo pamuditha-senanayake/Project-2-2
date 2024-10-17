@@ -142,13 +142,13 @@ router.get('/verify', (req, res) => {
 router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
-        const {firstname, email, phone_number, lastname, address, image, role} = req.body;
+        const {firstname, email, phone_number, lastname, address, role} = req.body;
 
-        console.log(firstname, email, phone_number, lastname, address, image, role);
+        console.log(firstname, email, phone_number, lastname, address, role);
 
         try {
             // Convert the Base64-encoded image to a binary buffer if image is provided
-            const imageBuffer = image ? Buffer.from(image, 'base64') : null;
+
 
             const query = `
                 UPDATE users
@@ -156,11 +156,11 @@ router.put('/update/:id', async (req, res) => {
                     email        = $2,
                     phone_number = $3,
                     lastname     = $4,
-                    address      = $5,
-                    image        = $6
-                WHERE id = $7 RETURNING *`;
+                    address      = $5
+              
+                WHERE id = $6 RETURNING *`;
 
-            const params = [firstname, email, phone_number, lastname, address, imageBuffer, id];
+            const params = [firstname, email, phone_number, lastname, address, id];
 
             const result = await db.query(query, params);
 
