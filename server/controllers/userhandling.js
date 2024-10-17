@@ -4,6 +4,9 @@ import service from "../services/appointment.service.js"; // Replace with your a
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
 import multer from "multer";
+import path from 'path';
+import {v4 as uuidv4} from 'uuid';
+import fs from "fs";
 
 const router = express.Router();
 
@@ -31,30 +34,66 @@ router.get('/admin', (req, res) => {
     }
 });
 
-router.put('/api/user/update/pic', async (req, res) => {
-    if (req.isAuthenticated()) {
-        const userId = req.user.id; // Get user ID from the authenticated request
-        const {image} = req.body;
 
-        try {
-            const query = 'UPDATE users SET image = $1 WHERE id = $2 RETURNING *';
-            const params = [image, userId];
-
-            const result = await db.query(query, params);
-
-            if (result.rows.length) {
-                res.status(200).json({user: result.rows[0]});
-            } else {
-                res.status(404).json({error: 'User not found'});
-            }
-        } catch (err) {
-            console.error('Error updating user picture:', err);
-            res.status(500).json({error: 'Error updating user picture'});
-        }
-    } else {
-        res.status(401).json({error: 'Unauthorized'});
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Save to 'uploads' directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname); // Save the file with a unique name
     }
 });
+
+const upload = multer({storage: storage});
+
+/**
+ * Route for uploading profile pictures
+ */
+router.post('/upload-profile-image', upload.single('image'), async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({message: "Unauthorized"});
+    }
+
+    try {
+        const filename = req.file.filename;
+        const imageUrl = `${filename}`; // Construct the image URL
+
+        // Update the user's profile picture in the database
+        const result = await db.query('UPDATE users SET image = $1 WHERE id = $2', [imageUrl, req.user.id]);
+
+        res.status(200).json({imageUrl});
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        res.status(500).json({message: "Server error"});
+    }
+});
+
+
+// router.put('/api/user/update/pic', async (req, res) => {
+//     if (req.isAuthenticated()) {
+//         const userId = req.user.id; // Get user ID from the authenticated request
+//         const {image} = req.body;
+//
+//         try {
+//             const query = 'UPDATE users SET image = $1 WHERE id = $2 RETURNING *';
+//             const params = [image, userId];
+//
+//             const result = await db.query(query, params);
+//
+//             if (result.rows.length) {
+//                 res.status(200).json({user: result.rows[0]});
+//             } else {
+//                 res.status(404).json({error: 'User not found'});
+//             }
+//         } catch (err) {
+//             console.error('Error updating user picture:', err);
+//             res.status(500).json({error: 'Error updating user picture'});
+//         }
+//     } else {
+//         res.status(401).json({error: 'Unauthorized'});
+//     }
+// });
 
 
 router.get('/customer', (req, res) => {
@@ -183,6 +222,25 @@ router.get("/profile", async (req, res) => {
 
     try {
         const result = await db.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({message: "User not found"});
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).json({message: "Server error"});
+    }
+});
+
+router.get("/profile2", async (req, res) => {
+    res.setHeader('Cache-Control', 'no-store'); // Disable caching
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({message: "Unauthorized"});
+    }
+
+    try {
+        const result = await db.query("SELECT image FROM users WHERE id = $1", [req.user.id]);
         if (result.rows.length > 0) {
             res.json(result.rows[0]);
         } else {
@@ -792,9 +850,9 @@ router.get('/report', async (req, res) => {
 
 
 //Dasun Appointment Payment
-
-const storage = multer.memoryStorage(); // Store file in memory
-const upload = multer({storage});
+//
+// const storage = multer.memoryStorage(); // Store file in memory
+// const upload = multer({storage});
 
 router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, res) => {
     const appointmentId = req.params.appointmentId;
