@@ -3,9 +3,7 @@ import db from '../db.js';
 import service from "../services/appointment.service.js"; // Replace with your actual DB connection module
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
-import multer from 'multer';
-import path from 'path';
-import fs from 'fs';
+import multer from "multer";
 
 const router = express.Router();
 
@@ -115,14 +113,13 @@ router.put('/update/:id', async (req, res) => {
 
             const query = `
                 UPDATE users
-                SET firstname = $1,
-                    email = $2,
+                SET firstname    = $1,
+                    email        = $2,
                     phone_number = $3,
-                    lastname = $4,
-                    address = $5,
-                    image = $6
-                WHERE id = $7
-                RETURNING *`;
+                    lastname     = $4,
+                    address      = $5,
+                    image        = $6
+                WHERE id = $7 RETURNING *`;
 
             const params = [firstname, email, phone_number, lastname, address, imageBuffer, id];
 
@@ -152,14 +149,13 @@ router.put('/update2/:id', async (req, res) => {
         try {
             const query = `
                 UPDATE users
-                SET firstname = $1,
-                    email = $2,
+                SET firstname    = $1,
+                    email        = $2,
                     phone_number = $3,
-                    role = $4
+                    role         = $4
 
 
-                WHERE id = $5
-                RETURNING *`;
+                WHERE id = $5 RETURNING *`;
             const params = [firstname, email, phone_number, role, id];
 
             const result = await db.query(query, params);
@@ -657,19 +653,18 @@ router.get('/myappointment/fetch', async (req, res) => {
 router.post('/adddd', async (req, res) => {
     // Check if the user is authenticated
     if (req.isAuthenticated()) {
-        const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
+        const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
 
         // Validate that all required fields are provided
         if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-            return res.status(400).json({ message: 'All fields are required' });
+            return res.status(400).json({message: 'All fields are required'});
         }
 
         try {
             // Insert a new card record along with the authenticated user's ID
             const query = `
                 INSERT INTO cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo, user_id)
-                VALUES ($1, $2, $3, $4, $5, $6)
-                RETURNING *;
+                VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
             `;
             const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.user.id];
 
@@ -677,11 +672,11 @@ router.post('/adddd', async (req, res) => {
             res.status(201).json(result.rows[0]);
         } catch (error) {
             console.error('Error creating card:', error.message);
-            res.status(500).json({ message: 'Error creating card' });
+            res.status(500).json({message: 'Error creating card'});
         }
     } else {
         // If the user is not authenticated, respond with a 401 Unauthorized error
-        res.status(401).json({ error: 'Unauthorized' });
+        res.status(401).json({error: 'Unauthorized'});
     }
 });
 
@@ -692,7 +687,7 @@ router.get('/get/100', async (req, res) => {
         const result = await db.query('SELECT * FROM Cards');
         res.json(result.rows);
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 });
 
@@ -701,49 +696,52 @@ router.get('/get/100', async (req, res) => {
 router.get('/gett/:Id', async (req, res) => {
     // Check if the user is authenticated
     if (req.isAuthenticated()) {
-        const { userId } = req.params; // Destructure userId from request parameters
+        const {userId} = req.params; // Destructure userId from request parameters
 
         try {
-            const cards = await Card.find({ userId }); // Find all cards for the given userId
+            const cards = await Card.find({userId}); // Find all cards for the given userId
 
             if (!cards || cards.length === 0) {
-                return res.status(404).json({ error: 'No cards found for this user' }); // Send error if no cards found
+                return res.status(404).json({error: 'No cards found for this user'}); // Send error if no cards found
             }
 
             res.status(200).json(cards); // Send the list of cards if found
         } catch (error) {
             console.error('Error fetching cards:', error); // Log error
-            res.status(500).json({ error: 'Server error' }); // Send server error
+            res.status(500).json({error: 'Server error'}); // Send server error
         }
     } else {
-        res.status(401).json({ error: 'Unauthorized' }); // Send unauthorized error if not authenticated
+        res.status(401).json({error: 'Unauthorized'}); // Send unauthorized error if not authenticated
     }
 });
 
 
-
 // Update a card
 router.put('/update/:id', async (req, res) => {
-    const { cardType, cardHolderName, cardNo, expiryDate, cvcNo } = req.body;
+    const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
 
     if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
-        return res.status(400).json({ message: 'All fields are required' });
+        return res.status(400).json({message: 'All fields are required'});
     }
 
     try {
         const query = `
-      UPDATE Cards
-      SET cardType = $1, cardHolderName = $2, cardNo = $3, expiryDate = $4, cvcNo = $5, updated_at = NOW()
-      WHERE id = $6
-      RETURNING *;
-    `;
+            UPDATE Cards
+            SET cardType       = $1,
+                cardHolderName = $2,
+                cardNo         = $3,
+                expiryDate     = $4,
+                cvcNo          = $5,
+                updated_at     = NOW()
+            WHERE id = $6 RETURNING *;
+        `;
         const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.params.id];
 
         const result = await db.query(query, values);
-        if (result.rows.length === 0) return res.status(404).json({ message: 'Card not found' });
+        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
         res.json(result.rows[0]);
     } catch (error) {
-        res.status(400).json({ message: error.message });
+        res.status(400).json({message: error.message});
     }
 });
 
@@ -751,10 +749,10 @@ router.put('/update/:id', async (req, res) => {
 router.delete('/delete/:id', async (req, res) => {
     try {
         const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [req.params.id]);
-        if (result.rows.length === 0) return res.status(404).json({ message: 'Card not found' });
-        res.json({ message: 'Card deleted successfully' });
+        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
+        res.json({message: 'Card deleted successfully'});
     } catch (error) {
-        res.status(500).json({ message: error.message });
+        res.status(500).json({message: error.message});
     }
 });
 
@@ -764,16 +762,16 @@ router.post('/increment/:cardId', async (req, res) => {
 
     try {
         const result = await db.query(`
-      INSERT INTO CardUsage (cardId, usageCount)
-      VALUES ($1, 1)
-      ON CONFLICT (cardId)
-      DO UPDATE SET usageCount = CardUsage.usageCount + 1
-      RETURNING *;
-    `, [cardId]);
+            INSERT INTO CardUsage (cardId, usageCount)
+            VALUES ($1, 1) ON CONFLICT (cardId)
+      DO
+            UPDATE SET usageCount = CardUsage.usageCount + 1
+                RETURNING *;
+        `, [cardId]);
 
-        res.status(200).json({ message: 'Usage count incremented successfully' });
+        res.status(200).json({message: 'Usage count incremented successfully'});
     } catch (error) {
-        res.status(500).json({ message: 'Error incrementing usage count', error: error.message });
+        res.status(500).json({message: 'Error incrementing usage count', error: error.message});
     }
 });
 
@@ -781,14 +779,48 @@ router.post('/increment/:cardId', async (req, res) => {
 router.get('/report', async (req, res) => {
     try {
         const usageReport = await db.query(`
-      SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
-      FROM CardUsage
-      JOIN Cards ON CardUsage.cardId = Cards.id;
-    `);
+            SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
+            FROM CardUsage
+                     JOIN Cards ON CardUsage.cardId = Cards.id;
+        `);
 
         res.status(200).json(usageReport.rows);
     } catch (error) {
-        res.status(500).json({ message: 'Error generating usage report', error: error.message });
+        res.status(500).json({message: 'Error generating usage report', error: error.message});
     }
 });
+
+
+//Dasun Appointment Payment
+
+const storage = multer.memoryStorage(); // Store file in memory
+const upload = multer({storage});
+
+router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, res) => {
+    const appointmentId = req.params.appointmentId;
+    const paymentSlip = req.file; // Access the uploaded file
+
+    if (!paymentSlip) {
+        return res.status(400).json({message: 'No file uploaded.'});
+    }
+
+    try {
+        // Convert the file buffer to bytea format for PostgreSQL
+        const paymentSlipBuffer = paymentSlip.buffer;
+
+        // Update the appointment with the payment slip in the database
+        const query = `
+            UPDATE public.appointments
+            SET payment_slip = $1
+            WHERE id = $2
+        `;
+        await db.query(query, [paymentSlipBuffer, appointmentId]);
+
+        res.status(200).json({message: 'Slip uploaded successfully!'});
+    } catch (error) {
+        console.error('Error uploading slip:', error);
+        res.status(500).json({message: 'An error occurred while uploading the payment slip.'});
+    }
+});
+
 export default router;
