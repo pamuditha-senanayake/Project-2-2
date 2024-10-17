@@ -5,7 +5,7 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
-import af from "../../images/bcimage.avif";
+import homepic6 from "../../images/e.jpg";
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -279,7 +279,7 @@ const Layout = () => {
                     <div className="flex h-screen">
                         <div className="w-full h-full p-4"
                              style={{
-                                 backgroundImage: `url(${af})`,
+                                 backgroundImage: `url(${homepic6})`,
                                  backgroundSize: "cover",
                                  backgroundPosition: "center",
                                  backgroundRepeat: "no-repeat",
@@ -342,7 +342,7 @@ const Layout = () => {
                                                 ) : service.duration.minutes ? (
                                                     <span>{service.duration.minutes} minute{service.duration.minutes > 1 ? 's' : ''}</span>
                                                 ) : (
-                                                    <span>No duration available</span> // Optional: Show this if neither value exists
+                                                    <span>45 minutes</span> // Optional: Show this if neither value exists
                                                 )}
                                             </td>
                                             <td className="py-2 px-4">{getCategoryName(service.category_id)}</td>

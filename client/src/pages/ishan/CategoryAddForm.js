@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import Sidebar from '../com/admindash';
 import { useNavigate } from 'react-router-dom';
-import af from "../../images/bcimage.avif";
+import homepic6 from "../../images/e.jpg";
 import Swal from 'sweetalert2';
 import axios from 'axios';
 import { faTrash } from "@fortawesome/free-solid-svg-icons";
@@ -192,7 +192,7 @@ const Layout = () => {
             <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular overflow-auto">
                 <div
                     style={{
-                        backgroundImage: `url(${af})`,
+                        backgroundImage: `url(${homepic6})`,
                         backgroundSize: "cover",
                         backgroundPosition: "center",
                         backgroundRepeat: "no-repeat",

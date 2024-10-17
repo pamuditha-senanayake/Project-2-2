@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import homepic6 from "../../images/e.jpg";
 import { useNavigate, useParams } from "react-router-dom";
 
 const Wallet = () => {
@@ -162,6 +163,7 @@ const Wallet = () => {
     }, []);
 
     return (
+
         <div className="container mx-auto p-4">
             <h2 className="text-7xl font-semibold mb-6">My Wallet</h2>
 
