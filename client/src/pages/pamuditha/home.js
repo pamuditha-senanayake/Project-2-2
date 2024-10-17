@@ -2,16 +2,19 @@ import Cookies from 'js-cookie';
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import logo from "../../images/logo.jpeg";
-import logo2 from "../../images/logow.png";
+
 import homepic from "../../images/home.jpg";
 import homepic2 from "../../images/c.jpg";
 import homepic3 from "../../images/a.jpg";
+
+import muta from "../../images/muta.jpg";
+import buta from "../../images/buta.jpg";
 import homepic4 from "../../images/5.jpg";
-import homepic5 from "../../images/d.jpg";
+import kota from "../../images/kota.jpg";
 import homepic6 from "../../images/e.jpg";
 import homepic7 from "../../images/f.jpg";
 import bride from "../../images/file.png";
-import star from "../../images/s.png";
+
 import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
 import {useLogout} from './authUtils';
 import Navbar from './nav';
@@ -62,10 +65,12 @@ const PictureGrid = () => {
     const imageSrcs = [
         homepic,
         homepic2,
-        homepic3,
-        homepic4,
-        homepic2,
-        homepic3,
+
+
+        kota,
+        buta,
+        muta,
+        homepic2
     ];
 
     return (
@@ -102,7 +107,9 @@ const Card = () => {
                     "This is a testimonial text that highlights the service or product experience. It's an example of
                     how users might review or comment on the service."
                 </p>
+
             </div>
+
         </div>
     );
 };
