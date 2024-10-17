@@ -3,9 +3,10 @@ import db from '../db.js';
 import service from "../services/appointment.service.js"; // Replace with your actual DB connection module
 import cartService from "../services/cartService.js"; // Replace with your actual DB connection module
 import checkoutService from '../services/checkoutService.js';
-import multer from 'multer';
+import multer from "multer";
 import path from 'path';
-import fs from 'fs';
+import {v4 as uuidv4} from 'uuid';
+import fs from "fs";
 
 const router = express.Router();
 
@@ -33,30 +34,66 @@ router.get('/admin', (req, res) => {
     }
 });
 
-router.put('/api/user/update/pic', async (req, res) => {
-    if (req.isAuthenticated()) {
-        const userId = req.user.id; // Get user ID from the authenticated request
-        const {image} = req.body;
 
-        try {
-            const query = 'UPDATE users SET image = $1 WHERE id = $2 RETURNING *';
-            const params = [image, userId];
-
-            const result = await db.query(query, params);
-
-            if (result.rows.length) {
-                res.status(200).json({user: result.rows[0]});
-            } else {
-                res.status(404).json({error: 'User not found'});
-            }
-        } catch (err) {
-            console.error('Error updating user picture:', err);
-            res.status(500).json({error: 'Error updating user picture'});
-        }
-    } else {
-        res.status(401).json({error: 'Unauthorized'});
+// Multer configuration for file uploads
+const storage = multer.diskStorage({
+    destination: function (req, file, cb) {
+        cb(null, 'uploads/'); // Save to 'uploads' directory
+    },
+    filename: function (req, file, cb) {
+        cb(null, Date.now() + '-' + file.originalname); // Save the file with a unique name
     }
 });
+
+const upload = multer({storage: storage});
+
+/**
+ * Route for uploading profile pictures
+ */
+router.post('/upload-profile-image', upload.single('image'), async (req, res) => {
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({message: "Unauthorized"});
+    }
+
+    try {
+        const filename = req.file.filename;
+        const imageUrl = `${filename}`; // Construct the image URL
+
+        // Update the user's profile picture in the database
+        const result = await db.query('UPDATE users SET image = $1 WHERE id = $2', [imageUrl, req.user.id]);
+
+        res.status(200).json({imageUrl});
+    } catch (error) {
+        console.error("Error uploading image:", error);
+        res.status(500).json({message: "Server error"});
+    }
+});
+
+
+// router.put('/api/user/update/pic', async (req, res) => {
+//     if (req.isAuthenticated()) {
+//         const userId = req.user.id; // Get user ID from the authenticated request
+//         const {image} = req.body;
+//
+//         try {
+//             const query = 'UPDATE users SET image = $1 WHERE id = $2 RETURNING *';
+//             const params = [image, userId];
+//
+//             const result = await db.query(query, params);
+//
+//             if (result.rows.length) {
+//                 res.status(200).json({user: result.rows[0]});
+//             } else {
+//                 res.status(404).json({error: 'User not found'});
+//             }
+//         } catch (err) {
+//             console.error('Error updating user picture:', err);
+//             res.status(500).json({error: 'Error updating user picture'});
+//         }
+//     } else {
+//         res.status(401).json({error: 'Unauthorized'});
+//     }
+// });
 
 
 router.get('/customer', (req, res) => {
@@ -105,26 +142,25 @@ router.get('/verify', (req, res) => {
 router.put('/update/:id', async (req, res) => {
     if (req.isAuthenticated()) {
         const {id} = req.params;
-        const {firstname, email, phone_number, lastname, address, image, role} = req.body;
+        const {firstname, email, phone_number, lastname, address, role} = req.body;
 
-        console.log(firstname, email, phone_number, lastname, address, image, role);
+        console.log(firstname, email, phone_number, lastname, address, role);
 
         try {
             // Convert the Base64-encoded image to a binary buffer if image is provided
-            const imageBuffer = image ? Buffer.from(image, 'base64') : null;
+
 
             const query = `
                 UPDATE users
-                SET firstname = $1,
-                    email = $2,
+                SET firstname    = $1,
+                    email        = $2,
                     phone_number = $3,
-                    lastname = $4,
-                    address = $5,
-                    image = $6
-                WHERE id = $7
-                RETURNING *`;
+                    lastname     = $4,
+                    address      = $5
+              
+                WHERE id = $6 RETURNING *`;
 
-            const params = [firstname, email, phone_number, lastname, address, imageBuffer, id];
+            const params = [firstname, email, phone_number, lastname, address, id];
 
             const result = await db.query(query, params);
 
@@ -152,14 +188,13 @@ router.put('/update2/:id', async (req, res) => {
         try {
             const query = `
                 UPDATE users
-                SET firstname = $1,
-                    email = $2,
+                SET firstname    = $1,
+                    email        = $2,
                     phone_number = $3,
-                    role = $4
+                    role         = $4
 
 
-                WHERE id = $5
-                RETURNING *`;
+                WHERE id = $5 RETURNING *`;
             const params = [firstname, email, phone_number, role, id];
 
             const result = await db.query(query, params);
@@ -187,6 +222,25 @@ router.get("/profile", async (req, res) => {
 
     try {
         const result = await db.query("SELECT * FROM users WHERE id = $1", [req.user.id]);
+        if (result.rows.length > 0) {
+            res.json(result.rows[0]);
+        } else {
+            res.status(404).json({message: "User not found"});
+        }
+    } catch (error) {
+        console.error("Error fetching user data:", error);
+        res.status(500).json({message: "Server error"});
+    }
+});
+
+router.get("/profile2", async (req, res) => {
+    res.setHeader('Cache-Control', 'no-store'); // Disable caching
+    if (!req.isAuthenticated()) {
+        return res.status(401).json({message: "Unauthorized"});
+    }
+
+    try {
+        const result = await db.query("SELECT image FROM users WHERE id = $1", [req.user.id]);
         if (result.rows.length > 0) {
             res.json(result.rows[0]);
         } else {
@@ -649,5 +703,182 @@ router.get('/myappointment/fetch', async (req, res) => {
     }
 });
 
+
+//dasun
+// Add a new card
+
+
+router.post('/adddd', async (req, res) => {
+    // Check if the user is authenticated
+    if (req.isAuthenticated()) {
+        const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
+
+        // Validate that all required fields are provided
+        if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+            return res.status(400).json({message: 'All fields are required'});
+        }
+
+        try {
+            // Insert a new card record along with the authenticated user's ID
+            const query = `
+                INSERT INTO cards (cardType, cardHolderName, cardNo, expiryDate, cvcNo, user_id)
+                VALUES ($1, $2, $3, $4, $5, $6) RETURNING *;
+            `;
+            const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.user.id];
+
+            const result = await db.query(query, values);
+            res.status(201).json(result.rows[0]);
+        } catch (error) {
+            console.error('Error creating card:', error.message);
+            res.status(500).json({message: 'Error creating card'});
+        }
+    } else {
+        // If the user is not authenticated, respond with a 401 Unauthorized error
+        res.status(401).json({error: 'Unauthorized'});
+    }
+});
+
+
+// Get all cards
+router.get('/get/100', async (req, res) => {
+    try {
+        const result = await db.query('SELECT * FROM Cards');
+        res.json(result.rows);
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+// Get a specific card by ID
+// Get all cards by user ID
+router.get('/gett/:Id', async (req, res) => {
+    // Check if the user is authenticated
+    if (req.isAuthenticated()) {
+        const {userId} = req.params; // Destructure userId from request parameters
+
+        try {
+            const cards = await Card.find({userId}); // Find all cards for the given userId
+
+            if (!cards || cards.length === 0) {
+                return res.status(404).json({error: 'No cards found for this user'}); // Send error if no cards found
+            }
+
+            res.status(200).json(cards); // Send the list of cards if found
+        } catch (error) {
+            console.error('Error fetching cards:', error); // Log error
+            res.status(500).json({error: 'Server error'}); // Send server error
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'}); // Send unauthorized error if not authenticated
+    }
+});
+
+
+// Update a card
+router.put('/update/:id', async (req, res) => {
+    const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
+
+    if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+        return res.status(400).json({message: 'All fields are required'});
+    }
+
+    try {
+        const query = `
+            UPDATE Cards
+            SET cardType       = $1,
+                cardHolderName = $2,
+                cardNo         = $3,
+                expiryDate     = $4,
+                cvcNo          = $5,
+                updated_at     = NOW()
+            WHERE id = $6 RETURNING *;
+        `;
+        const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.params.id];
+
+        const result = await db.query(query, values);
+        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
+        res.json(result.rows[0]);
+    } catch (error) {
+        res.status(400).json({message: error.message});
+    }
+});
+
+// Delete a card
+router.delete('/delete/:id', async (req, res) => {
+    try {
+        const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [req.params.id]);
+        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
+        res.json({message: 'Card deleted successfully'});
+    } catch (error) {
+        res.status(500).json({message: error.message});
+    }
+});
+
+// Increment usage count for a card
+router.post('/increment/:cardId', async (req, res) => {
+    const cardId = req.params.cardId;
+
+    try {
+        const result = await db.query(`
+            INSERT INTO CardUsage (cardId, usageCount)
+            VALUES ($1, 1) ON CONFLICT (cardId)
+      DO
+            UPDATE SET usageCount = CardUsage.usageCount + 1
+                RETURNING *;
+        `, [cardId]);
+
+        res.status(200).json({message: 'Usage count incremented successfully'});
+    } catch (error) {
+        res.status(500).json({message: 'Error incrementing usage count', error: error.message});
+    }
+});
+
+// Get usage report
+router.get('/report', async (req, res) => {
+    try {
+        const usageReport = await db.query(`
+            SELECT Cards.cardType, Cards.cardHolderName, CardUsage.usageCount
+            FROM CardUsage
+                     JOIN Cards ON CardUsage.cardId = Cards.id;
+        `);
+
+        res.status(200).json(usageReport.rows);
+    } catch (error) {
+        res.status(500).json({message: 'Error generating usage report', error: error.message});
+    }
+});
+
+
+//Dasun Appointment Payment
+//
+// const storage = multer.memoryStorage(); // Store file in memory
+// const upload = multer({storage});
+
+router.post('/upload-slip/:appointmentId', upload.single('slip'), async (req, res) => {
+    const appointmentId = req.params.appointmentId;
+    const paymentSlip = req.file; // Access the uploaded file
+
+    if (!paymentSlip) {
+        return res.status(400).json({message: 'No file uploaded.'});
+    }
+
+    try {
+        // Convert the file buffer to bytea format for PostgreSQL
+        const paymentSlipBuffer = paymentSlip.buffer;
+
+        // Update the appointment with the payment slip in the database
+        const query = `
+            UPDATE public.appointments
+            SET payment_slip = $1
+            WHERE id = $2
+        `;
+        await db.query(query, [paymentSlipBuffer, appointmentId]);
+
+        res.status(200).json({message: 'Slip uploaded successfully!'});
+    } catch (error) {
+        console.error('Error uploading slip:', error);
+        res.status(500).json({message: 'An error occurred while uploading the payment slip.'});
+    }
+});
 
 export default router;

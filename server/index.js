@@ -31,6 +31,9 @@ import checkoutRoutes from './controllers/checkoutController.js';
 //Anuththara
 import productsRoutes from './controllers/products.controller.js';
 
+//dasun
+import addcard2 from './controllers/Addcard.js';
+
 
 dotenv.config();
 
@@ -96,9 +99,13 @@ app.use('/service', addService);
 app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
+
 //Anuththara
 app.use('/api/products', productsRoutes)
 app.use('/uploads', express.static('uploads'));
+
+
+app.use('/card', addcard2);
 
 
 app.get("/", (req, res) => {

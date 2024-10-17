@@ -56,7 +56,7 @@ const UserAppointments2 = () => {
         "5:00 PM - 6:00 PM"
     ];
 
-    const [activeButton, setActiveButton] = useState('profile');
+    const [activeButton, setActiveButton] = useState('appointments');
 
     const handleButtonClick = (buttonName) => {
         // Set active button and navigate
