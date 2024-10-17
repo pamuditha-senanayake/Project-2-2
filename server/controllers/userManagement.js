@@ -372,7 +372,7 @@ passport.use(
                 if (result.rows.length === 0) {
                     // Insert new user with a placeholder password
                     const newUser = await db.query(
-                        "INSERT INTO users (email, password,date) VALUES ($1, $2,CURRENT_DATE) RETURNING *",
+                        "INSERT INTO users (email, password,date,role) VALUES ($1, $2,CURRENT_DATE,'customer') RETURNING *",
                         [email, "google"]
                     );
 
