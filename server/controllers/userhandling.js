@@ -741,44 +741,59 @@ router.post('/adddd', async (req, res) => {
 
 // Get all cards
 router.get('/get/100', async (req, res) => {
-    try {
-        const result = await db.query('SELECT * FROM Cards');
-        res.json(result.rows);
-    } catch (error) {
-        res.status(500).json({message: error.message});
+    if (req.isAuthenticated()) {
+        try {
+            const uid = req.user.id;
+            const result = await db.query('SELECT * FROM Cards WHERE user_id = $1', [uid]);
+            res.json(result.rows);
+        } catch (error) {
+            res.status(500).json({message: error.message});
+        }
+    } else {
+        res.status(401).json({error: 'Unauthorized'});
     }
+
 });
 
 // Get a specific card by ID
-// Get all cards by user ID
+
 router.get('/gett/:Id', async (req, res) => {
-    // Check if the user is authenticated
     if (req.isAuthenticated()) {
-        const {userId} = req.params; // Destructure userId from request parameters
+        const {Id} = req.params; // Extract card ID from request parameters
 
         try {
-            const cards = await Card.find({userId}); // Find all cards for the given userId
+            // PostgreSQL query to fetch card details by card ID
+            const query = 'SELECT * FROM cards WHERE id = $1';
+            const result = await db.query(query, [Id]); // Execute query with card ID as a parameter
 
-            if (!cards || cards.length === 0) {
-                return res.status(404).json({error: 'No cards found for this user'}); // Send error if no cards found
+            // If no card is found, return a 404 response
+            if (result.rows.length === 0) {
+                return res.status(404).json({error: 'Card not found'});
             }
 
-            res.status(200).json(cards); // Send the list of cards if found
+            // Return card details if found
+            res.status(200).json(result.rows[0]);
         } catch (error) {
-            console.error('Error fetching cards:', error); // Log error
-            res.status(500).json({error: 'Server error'}); // Send server error
+            console.error('Error fetching card details:', error);
+            res.status(500).json({error: 'Server error'});
         }
     } else {
-        res.status(401).json({error: 'Unauthorized'}); // Send unauthorized error if not authenticated
+        res.status(401).json({error: 'Unauthorized'});
     }
 });
 
 
 // Update a card
-router.put('/update/:id', async (req, res) => {
+router.put('/updatecard/:id', async (req, res) => {
     const {cardType, cardHolderName, cardNo, expiryDate, cvcNo} = req.body;
 
+    // Log incoming request body and parameters
+    console.log('Request Body:', req.body);
+    console.log('Card ID:', req.params.id);
+
+    // Validate that all required fields are present
     if (!cardType || !cardHolderName || !cardNo || !expiryDate || !cvcNo) {
+        console.log('Validation Error: Missing required fields');
         return res.status(400).json({message: 'All fields are required'});
     }
 
@@ -793,18 +808,34 @@ router.put('/update/:id', async (req, res) => {
                 updated_at     = NOW()
             WHERE id = $6 RETURNING *;
         `;
+
+        // Log query and values before executing
+        console.log('Query:', query);
         const values = [cardType, cardHolderName, cardNo, expiryDate, cvcNo, req.params.id];
+        console.log('Values:', values);
 
         const result = await db.query(query, values);
-        if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
+
+        // Log result after query execution
+        console.log('Query Result:', result.rows);
+
+        if (result.rows.length === 0) {
+            console.log('Card not found for ID:', req.params.id);
+            return res.status(404).json({message: 'Card not found'});
+        }
+
+        // Return the updated card
         res.json(result.rows[0]);
+
     } catch (error) {
-        res.status(400).json({message: error.message});
+        console.error('Error executing query:', error.message);
+        res.status(500).json({message: 'Server error'});
     }
 });
 
+
 // Delete a card
-router.delete('/delete/:id', async (req, res) => {
+router.delete('/deletecard/:id', async (req, res) => {
     try {
         const result = await db.query('DELETE FROM Cards WHERE id = $1 RETURNING *', [req.params.id]);
         if (result.rows.length === 0) return res.status(404).json({message: 'Card not found'});
