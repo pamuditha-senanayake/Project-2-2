@@ -402,6 +402,7 @@ const Layout = () => {
                                             input[type='number'] {
                                                 -moz-appearance: textfield;
                                             }
+
                                             input[type='number']::-webkit-outer-spin-button,
                                             input[type='number']::-webkit-inner-spin-button {
                                                 -webkit-appearance: none;
@@ -414,19 +415,18 @@ const Layout = () => {
                                             <label className="block font-semibold">Time Taken:</label>
                                             <select
                                                 name="duration"
-                                                value={
-                                                    selectedService.duration.hours
-                                                        ? `${selectedService.duration.hours} hour${selectedService.duration.hours > 1 ? 's' : ''}`
-                                                        : selectedService.duration.minutes
-                                                            ? `${selectedService.duration.minutes} minute${selectedService.duration.minutes > 1 ? 's' : ''}`
-                                                            : ""}
+                                                value={selectedService.duration.hours
+                                                    ? `${selectedService.duration.hours} hour${selectedService.duration.hours > 1 ? 's' : ''}`
+                                                    : selectedService.duration.minutes
+                                                        ? `${selectedService.duration.minutes} minute${selectedService.duration.minutes > 1 ? 's' : ''}`
+                                                        : ""} // Ensure the value corresponds to the selected service duration
                                                 onChange={handleChange}
                                                 className="w-full px-4 py-2 border rounded"
                                             >
-                                                <option disabled>Select duration</option>
+
                                                 {durationOptions.map(option => (
-                                                    <option key={option.interval} value={option.label}>
-                                                        {option.label}
+                                                    <option key={option.interval} value={option.interval}>
+                                                        {option.label} {/* Display label (like "15 minutes") */}
                                                     </option>
                                                 ))}
                                             </select>
@@ -469,7 +469,7 @@ const Layout = () => {
                                         onClick={() => setShowPopup(false)}
                                         className="popup-button"
                                     >
-                                        &times;
+                                    &times;
                                     </button>
                                 </div>
                             )}
