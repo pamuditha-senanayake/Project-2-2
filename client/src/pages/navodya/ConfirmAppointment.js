@@ -1,10 +1,11 @@
 import React, {useEffect, useState} from "react";
 import NavigationBar from "./NavigationBar";
-import {useNavigate, useParams} from "react-router-dom";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 const ConfirmAppointment = () => {
     const navigate = useNavigate();
     const {appointmentId} = useParams();
+    const location = useLocation(); // Use the useLocation hook
 
     const timeslots = [
         "8.00 AM - 9.00 AM", "9.00 AM - 10.00 AM", "10.00 AM - 11.00 AM",
@@ -12,6 +13,12 @@ const ConfirmAppointment = () => {
         "2.00 PM - 3.00 PM", "3.00 PM - 4.00 PM", "4.00 PM - 5.00 PM",
         "5.00 PM - 6.00 PM"
     ];
+    const [selectedDate, setSelectedDate] = useState(null);
+    const [selectedTimeSlots, setSelectedTimeSlots] = useState([]);
+    const {selectedServices, selectedProfessional} = location.state || {
+        selectedServices: [],
+        selectedProfessional: null
+    };
 
     const [appointmentStatus, setAppointmentStatus] = useState();
     const [appointmentDate, setAppointmentDate] = useState();
@@ -48,14 +55,21 @@ const ConfirmAppointment = () => {
     }, [appointmentId]);
 
     const handlePay = async () => {
-        try {
-            navigate("/pay", {
-                state: {
-                    appointmentId
-                }
-            });
-        } catch (error) {
-            console.error('Error during payment process or navigation:', error);
+        if (appointmentStatus === 'confirmed') {
+            try {
+                navigate(`/appointmentpayment/` + appointmentId, {
+                    state: {
+                        selectedServices,
+                        selectedProfessional,
+                        selectedTimeSlots,
+                        selectedDate
+                    }
+                });
+            } catch (error) {
+                console.error('Error during payment process or navigation:', error);
+            }
+        } else {
+            setErrorMsg("Payment can only be made for confirmed appointments.");
         }
     };
 
@@ -67,7 +81,6 @@ const ConfirmAppointment = () => {
             console.log("Appointment status is pending, proceeding with deletion.");
 
             try {
-                // Make DELETE request to the server, passing appointmentId as a query parameter
                 const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
                     method: 'DELETE',
                     credentials: 'include',
@@ -80,10 +93,7 @@ const ConfirmAppointment = () => {
                 const data = await response.json();
                 console.log("Appointment deletion successful:", data);
 
-                // Show an alert to indicate successful deletion
                 alert("Appointment deleted successfully.");
-
-                // Optional: Navigate back to the appointments list after deletion
                 navigate('/appointments'); // Assuming you have a route to show the appointments list
             } catch (error) {
                 console.error('Delete error:', error.message);
@@ -194,9 +204,11 @@ const ConfirmAppointment = () => {
                         <p>Total Time</p>
                         <p>{totalTime.hours || totalTime.minutes ? `${totalTime.hours || 0} Hour(s) ${totalTime.minutes || 0} Min(s)` : "0 Hour(s) 0 Min(s)"}</p>
                     </div>
+                    <hr className="my-4"/>
                     <button
                         onClick={handlePay}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white"
+                        className={`w-full h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105 hover:shadow-lg ${appointmentStatus === 'confirmed' ? 'bg-[#00796b] text-white' : 'bg-gray-300 text-gray-700 cursor-not-allowed'}`}
+                        disabled={appointmentStatus !== 'confirmed'}
                     >
                         Pay Now
                     </button>

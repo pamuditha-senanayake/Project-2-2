@@ -1,16 +1,20 @@
 import React, {useEffect, useState} from 'react';
-import Sidebar from '../com/admindash'; // Import your Sidebar component
+import Sidebar from '../com/admindash';
 import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import homepic7 from "../../images/f.jpg";
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
+import DatePicker from 'react-datepicker'; // Import DatePicker
+import 'react-datepicker/dist/react-datepicker.css'; // Import DatePicker styles
 
 const Layout = () => {
     const navigate = useNavigate();
     const [filter, setFilter] = useState('All');
     const [appointments, setAppointments] = useState([]);
     const [selectedService, setSelectedService] = useState('');
+    const [startDate, setStartDate] = useState(null); // Start date filter
+    const [endDate, setEndDate] = useState(null);     // End date filter
 
     const services = [
         'Ladies Hair Cut', 'Men Hair Cut', 'Hair Coloring', 'Beard Trim', 'Facial Treatment', 'Manicure',
@@ -23,7 +27,7 @@ const Layout = () => {
         const checkAdmin = async () => {
             try {
                 const response = await fetch('http://localhost:3001/api/user/admin', {
-                    credentials: 'include' // Include credentials with the request
+                    credentials: 'include'
                 });
 
                 if (response.status === 403 || response.status === 401) {
@@ -37,7 +41,7 @@ const Layout = () => {
                 }
             } catch (error) {
                 console.error('Error checking user role:', error);
-                navigate('/'); // Redirect in case of an error
+                navigate('/');
             }
         };
 
@@ -64,6 +68,22 @@ const Layout = () => {
         return date.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
     };
 
+    const isWithinDateRange = (appointmentDate) => {
+        const appointmentTime = new Date(appointmentDate).getTime();
+        const start = startDate ? new Date(startDate).getTime() : null;
+        const end = endDate ? new Date(endDate).getTime() : null;
+
+        if (start && end) {
+            return appointmentTime >= start && appointmentTime <= end;
+        } else if (start) {
+            return appointmentTime >= start;
+        } else if (end) {
+            return appointmentTime <= end;
+        }
+
+        return true; // No date filters applied
+    };
+
     const getFilteredAppointments = () => {
         let filtered = appointments;
 
@@ -73,6 +93,11 @@ const Layout = () => {
 
         if (selectedService) {
             filtered = filtered.filter(app => app.service_names.includes(selectedService));
+        }
+
+        // Apply date range filter
+        if (startDate || endDate) {
+            filtered = filtered.filter(app => isWithinDateRange(app.appointment_date));
         }
 
         return filtered;
@@ -86,12 +111,9 @@ const Layout = () => {
 
     const generatePDF = () => {
         const doc = new jsPDF();
-
-        // Set document title
         doc.setFontSize(20);
         doc.text('All Appointments', 14, 22);
 
-        // Create table data
         const filteredAppointments = getFilteredAppointments();
         const tableData = filteredAppointments.map(app => [
             app.firstname,
@@ -102,14 +124,12 @@ const Layout = () => {
             app.status
         ]);
 
-        // Add the table to the PDF
         doc.autoTable({
             head: [['Name', 'Services', 'Professional', 'Date', 'Time Slots', 'Status']],
             body: tableData,
             startY: 30,
         });
 
-        // Save the PDF
         doc.save('appointments.pdf');
     };
 
@@ -133,7 +153,7 @@ const Layout = () => {
                  }}>
                 <div className="p-8 bg-gray-100">
                     <h1 className="text-2xl font-bold mb-4">All Appointments</h1>
-                    <div className="mb-4 flex flex-col md:flex-row space-y-2 md:space-y-0">
+                    <div className="mb-4 flex flex-col md:flex-row space-y-2 md:space-y-0 space-x-2">
                         <select
                             className="border rounded px-4 py-2"
                             value={filter}
@@ -153,6 +173,23 @@ const Layout = () => {
                                 <option key={index} value={service}>{service}</option>
                             ))}
                         </select>
+                        {/* Date filters */}
+                        <div className="flex space-x-2">
+                            <DatePicker
+                                selected={startDate}
+                                onChange={date => setStartDate(date)}
+                                className="border rounded px-4 py-2"
+                                placeholderText="Start Date"
+                                dateFormat="yyyy-MM-dd"
+                            />
+                            <DatePicker
+                                selected={endDate}
+                                onChange={date => setEndDate(date)}
+                                className="border rounded px-4 py-2"
+                                placeholderText="End Date"
+                                dateFormat="yyyy-MM-dd"
+                            />
+                        </div>
                     </div>
                     <div className="bg-white shadow-md rounded-lg overflow-hidden flex flex-col md:flex-row">
                         <table className="min-w-full">

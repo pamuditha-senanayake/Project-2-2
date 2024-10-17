@@ -55,7 +55,7 @@ const Layout = () => {
                     backgroundPosition: 'center',
                     backgroundRepeat: 'no-repeat',
                 }}>
-                <div className="flex flex-col mx-3 my-3 ">
+                <div className="flex flex-col mx-3 my-3 w-[80%] overflow-y-auto h-full">
                     <div className="text-center text-black"
                          style={{
                              animation: 'fadeIn 2s ease-in-out',
@@ -71,7 +71,7 @@ const Layout = () => {
                     </div>
 
                     <div className="w-full mt-8 overflow-auto"
-                         style={{maxHeight: '600px'}}> {/* Adjust maxHeight as needed */}
+                         style={{maxHeight: '1400px'}}> {/* Adjust maxHeight as needed */}
                         <div className="bg-white p-6 rounded shadow-lg w[90%]">
                             <UserRegistrationChart/> {/* Rendering the chart inside a box */}
                         </div>
