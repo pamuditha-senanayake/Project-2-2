@@ -5,6 +5,8 @@ import 'antd/dist/reset.css'; // Ensure Ant Design styles are imported
 import Navbar from '../pamuditha/nav';
 import Banner from "../../images/Banner.jpg"; // Import the banner image
 
+const ITEMS_PER_PAGE = 4;
+
 const ProductList = () => {
     const [products, setProducts] = useState([]);
     const [loading, setLoading] = useState(true);
@@ -13,8 +15,10 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [categoryFilter, setCategoryFilter] = useState(''); // New state for category filter
+    const [categoryFilter, setCategoryFilter] = useState('');
+    const [currentPage, setCurrentPage] = useState(1);
 
+    // Fetch products from the backend
     useEffect(() => {
         const fetchProducts = async () => {
             try {
@@ -31,12 +35,18 @@ const ProductList = () => {
         fetchProducts();
     }, []);
 
+    // Handle adding a product to the cart
     const handleAddToCart = (product) => {
+        if (product.quantity === 0) {
+            alert(`${product.title} is out of stock.`);
+            return;
+        }
         setSelectedProduct(product);
         setQuantity(1);
         setVisible(true);
     };
 
+    // Handle submitting the cart update
     const handleOk = async () => {
         try {
             const response = await fetch('http://localhost:3001/api/user/cartadd', {
@@ -67,11 +77,17 @@ const ProductList = () => {
         setVisible(false);
     };
 
+    // Filter products based on search and category filter
     const filteredProducts = products
         .filter(product =>
             product.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
             (categoryFilter ? product.category === categoryFilter : true)
         );
+
+    // Pagination Logic
+    const totalProducts = filteredProducts.length;
+    const totalPages = Math.ceil(totalProducts / ITEMS_PER_PAGE);
+    const paginatedProducts = filteredProducts.slice((currentPage - 1) * ITEMS_PER_PAGE, currentPage * ITEMS_PER_PAGE);
 
     if (loading) return <p className="text-center mt-4 text-gray-600">Loading...</p>;
     if (error) return <p className="text-center mt-4 text-red-500">{error}</p>;
@@ -107,9 +123,9 @@ const ProductList = () => {
             </div>
 
             {/* Product Grid */}
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
-                {filteredProducts.map((product) => (
-                    <div key={product.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105">
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-8">
+                {paginatedProducts.map((product) => (
+                    <div key={product.id} className="relative bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105">
                         <img
                             src={product.image ? `http://localhost:3001/uploads/${product.image}` : 'default-image-url'}
                             alt={product.title}
@@ -118,8 +134,12 @@ const ProductList = () => {
                         <div className="p-5 flex flex-col items-center">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.title}</h3>
                             <p className="text-pink-600 font-bold mb-3">RS {product.price}</p>
-                            {product.stock === 0 ? (
-                                <span className="text-red-600 font-semibold">Unavailable</span>
+                            <p className="text-gray-500 mb-3">In Stock: {product.quantity}</p>
+
+                            {product.quantity === 0 ? (
+                                <div className="absolute top-0 left-0 w-full h-full bg-black bg-opacity-60 flex items-center justify-center">
+                                    <span className="text-red-600 text-lg font-bold bg-white px-4 py-2 rounded-lg">Out of Stock</span>
+                                </div>
                             ) : (
                                 <button
                                     onClick={() => handleAddToCart(product)}
@@ -131,6 +151,20 @@ const ProductList = () => {
                             )}
                         </div>
                     </div>
+                ))}
+            </div>
+
+            {/* Pagination */}
+            <div className="flex justify-center mt-8">
+                {Array.from({ length: totalPages }, (_, index) => (
+                    <button
+                        key={index + 1}
+                        onClick={() => setCurrentPage(index + 1)}
+                        className={`mx-2 py-2 px-4 rounded-lg transition-colors duration-300 
+                            ${currentPage === index + 1 ? 'bg-pink-500 text-white' : 'bg-gray-300 text-gray-800 hover:bg-pink-500 hover:text-white'}`}
+                    >
+                        {index + 1}
+                    </button>
                 ))}
             </div>
 
@@ -153,8 +187,9 @@ const ProductList = () => {
                             key="submit"
                             onClick={handleOk}
                             className="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors duration-300"
+                            disabled={selectedProduct.quantity === 0}
                         >
-                            Add to Cart
+                            {selectedProduct.quantity === 0 ? 'Out of Stock' : 'Add to Cart'}
                         </button>,
                     ]}
                     style={{ top: 20 }}
@@ -174,21 +209,19 @@ const ProductList = () => {
                             <p className="text-gray-700 mb-2">
                                 <strong>Price:</strong> RS {selectedProduct.price}
                             </p>
-                            <p className="text-gray-700 mb-4">
-                                <strong>In Stock:</strong> {selectedProduct.stock}
+                            <p className="text-gray-700 mb-2">
+                                <strong>Available Stock:</strong> {selectedProduct.quantity}
                             </p>
-                            <div className="flex items-center mb-4">
-                                <label className="mr-4 font-semibold text-gray-800">Quantity:</label>
-                                <Tooltip title={`Total: RS ${(quantity * selectedProduct.price).toFixed(2)}`}>
-                                    <InputNumber
-                                        min={1}
-                                        max={selectedProduct.stock}
-                                        value={quantity}
-                                        onChange={(value) => setQuantity(value)}
-                                        className="w-24"
-                                        aria-label="Product Quantity"
-                                    />
-                                </Tooltip>
+                            <div className="mt-4">
+                                <span className="text-gray-700">Quantity:</span>
+                                <InputNumber
+                                    min={1}
+                                    max={selectedProduct.quantity}
+                                    value={quantity}
+                                    onChange={setQuantity}
+                                    className="ml-2"
+                                    disabled={selectedProduct.quantity === 0}
+                                />
                             </div>
                         </div>
                     </div>
