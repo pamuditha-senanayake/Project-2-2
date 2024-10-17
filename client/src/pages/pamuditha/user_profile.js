@@ -5,6 +5,7 @@ import homepic4 from "../../images/f.jpg";
 import Swal from 'sweetalert2';
 import homepic7 from "../../images/f.jpg";
 import homepic8 from "../../images/d.jpg";
+import axios from 'axios'; // Import Axios for easier FormData handling
 
 const UserProfile = () => {
     const [userData, setUserData] = useState(null);
@@ -38,9 +39,7 @@ const UserProfile = () => {
                     const data = await response.json();
                     console.log('Fetched user data:', data);
                     setUserData(data);
-                    if (data.image) {
-                        setProfilePic(`data:image/jpeg;base64,${data.image}`);
-                    }
+
                     setFormData({
                         firstname: data.firstname || '',
                         lastname: data.lastname || '',
@@ -48,11 +47,32 @@ const UserProfile = () => {
                         address: data.address || '',
                         email: data.email || '',
                     });
+
+                    // Fetch profile picture
+                    fetchProfilePicture(data.id); // Assuming you have an ID field in userData
                 } else {
                     console.error('Failed to fetch user data, status:', response.status);
                 }
             } catch (error) {
                 console.error('Error fetching user data:', error);
+            }
+        };
+
+        const fetchProfilePicture = async (userId) => {
+            try {
+                const response = await fetch(`http://localhost:3001/api/user/profile2`, { // Adjust this endpoint as needed
+                    method: 'GET',
+                    credentials: 'include',
+                });
+
+                if (response.ok) {
+                    const data = await response.json();
+                    setProfilePic(data.image); // Assuming image is the field in the response
+                } else {
+                    console.error('Failed to fetch profile picture, status:', response.status);
+                }
+            } catch (error) {
+                console.error('Error fetching profile picture:', error);
             }
         };
 
@@ -67,64 +87,6 @@ const UserProfile = () => {
         }));
     };
 
-    const handleImageChange = (event) => {
-        const file = event.target.files[0];
-        if (file) {
-            const reader = new FileReader();
-            reader.onloadend = () => {
-                setProfilePic(reader.result);
-                setImageBlob(file);
-            };
-            reader.readAsDataURL(file);
-        }
-    };
-
-    const uploadImage = async () => {
-        try {
-            const reader = new FileReader();
-            reader.readAsDataURL(imageBlob);
-
-            reader.onloadend = async () => {
-                const base64Image = reader.result.split(',')[1];
-                try {
-                    const response = await fetch(
-                        `http://localhost:3001/api/user/update/pic`,
-                        {
-                            method: 'PUT',
-                            headers: {
-                                'Content-Type': 'application/json',
-                            },
-                            credentials: 'include',
-                            body: JSON.stringify({image: base64Image}),
-                        }
-                    );
-
-                    if (response.ok) {
-                        const updatedUser = await response.json();
-                        setUserData(updatedUser.user);
-                        setProfilePic(`data:image/jpeg;base64,${updatedUser.user.image}`);
-                    } else {
-                        const errorMessage = await response.json();
-                        console.error(
-                            'Failed to upload image, status:',
-                            response.status,
-                            'Message:',
-                            errorMessage.message
-                        );
-                        alert(
-                            `Error: ${errorMessage.message || 'Failed to upload image.'}`
-                        );
-                    }
-                } catch (error) {
-                    console.error('Error uploading image:', error);
-                    alert('An error occurred while uploading the image.');
-                }
-            };
-        } catch (error) {
-            console.error('Error converting Blob to base64:', error);
-            alert('An error occurred while processing the image.');
-        }
-    };
 
     const handleUpdate = async () => {
         try {
@@ -222,10 +184,50 @@ const UserProfile = () => {
     }
 
     const handleButtonClick = (buttonName) => {
-        // Set active button and navigate
         setActiveButton(buttonName);
-        navigate(buttonName === 'profile' ? '/userp' : buttonName === 'appointments' ? '/myappointment2' : '/userpayment');
     };
+
+    // Handle profile picture upload
+    const handleImageChange = (e) => {
+        if (e.target.files && e.target.files[0]) { // Corrected line
+            const file = e.target.files[0]; // Access the file directly from the event target
+            setImageBlob(file);
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                setProfilePic(e.target.result); // Update the preview
+            };
+            reader.readAsDataURL(file);
+        }
+    };
+
+    // Function to upload profile picture
+    const handleUploadImage = async () => {
+        try {
+            const formData = new FormData();
+            formData.append('image', imageBlob);
+
+            const response = await fetch('http://localhost:3001/api/user/upload-profile-image', {
+                method: 'POST',
+                body: formData,
+                credentials: 'include', // Include credentials for authentication
+                headers: {
+                    'Accept': 'application/json', // Set acceptable response format
+                },
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                setProfilePic(data.imageUrl); // Update the profilePic state
+            } else {
+                console.error('Error uploading image:', response.statusText);
+                alert('Error uploading image. Please try again.');
+            }
+        } catch (error) {
+            console.error('Error uploading image:', error);
+            alert('Error uploading image. Please try again.');
+        }
+    };
+
 
     return (
         <div
@@ -303,46 +305,27 @@ const UserProfile = () => {
                                     backgroundRepeat: 'no-repeat',
                                 }}
                             >
-                                <div className="mr-[100px]">
-                                    <img
-                                        src={profilePic || 'default-profile-pic-url'}
-                                        alt="Profile"
-                                        className="w-24 h-24 rounded-full border-2 border-gray-300"
-                                    />
+                                <div className="flex flex-row">
+                                    <div className="mr-[100px]">
+                                        <img
+                                            src={profilePic ? `http://localhost:3001/uploads/${profilePic}` : homepic7}
+                                            alt="Profile"
+                                            className="w-24 h-24 rounded-full border-2 border-gray-300"
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col">
+                                        <input type="file" onChange={handleImageChange}/>
+                                        <button
+                                            className="text-black bg-pink-300 mt-3 hover:bg-pink-400 py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                            onClick={handleUploadImage}
+                                        >
+                                            Upload Profile Picture
+                                        </button>
+                                    </div>
                                 </div>
 
-                                <div className="flex flex-col">
-                                    <input
-                                        type="file"
-                                        accept="image/*"
-                                        onChange={handleImageChange}
-                                        className="mt-2"
-                                    />
-                                    <button
-                                        className="mt-2 bg-pink-400 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                                        onClick={() =>
-                                            document
-                                                .querySelector('input[type="file"]')
-                                                .click()
-                                        }
-                                    >
-                                        Edit Photo
-                                    </button>
-                                    <button
-                                        className="mt-2 bg-pink-400 hover:bg-blue-700 text-white py-2 px-4 rounded"
-                                        onClick={uploadImage}
-                                    >
-                                        Upload
-                                    </button>
-                                    {/*<div className="flex justify-end mt-4">*/}
-                                    {/*    <button*/}
-                                    {/*        className="bg-blue-500 hover:bg-blue-700 text-white py-2 px-4 rounded"*/}
-                                    {/*        onClick={handleUpdate}*/}
-                                    {/*    >*/}
-                                    {/*        Save Changes*/}
-                                    {/*    </button>*/}
-                                    {/*</div>*/}
-                                </div>
+
                             </div>
                         </div>
 
