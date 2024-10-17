@@ -12,6 +12,7 @@ import employeeRoutes from './controllers/employee.controller.js';
 import UserH from './controllers/userhandling.js';
 import beautyServicesRoutes from './controllers/beautyService.controller.js';
 import professionalRoutes from './controllers/professional.controller.js';
+import professionalSRoutes from './controllers/professional.controller.js';
 import appointmentRoutes from './controllers/appointment.controller.js';
 import appointmentDetailsRoutes from './controllers/appointment.controller.js';
 import appointmentStatusRoutes from './controllers/appointment.controller.js';
@@ -19,9 +20,9 @@ import appointmentConfirmedRoutes from './controllers/appointment.controller.js'
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 //ishan
 import addService from './controllers/AddService.js';
-import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 import testimonialRoutes from './controllers/testimonial.controller.js';
 
 import productsController from './controllers/productsController.js';
@@ -59,6 +60,7 @@ app.use(bodyParser.json());
 app.use('/api/employees', employeeRoutes);
 app.use('/api/beautyservices', beautyServicesRoutes);
 app.use('/api/selectprofessional', professionalRoutes);
+app.use('/api/selectprofessionalservice', professionalSRoutes);
 app.use('/api/appointmentservice', appointmentRoutes);
 app.use('/api/appointmentdetails', appointmentDetailsRoutes);
 app.use('/api/appointmentstatus', appointmentStatusRoutes);
