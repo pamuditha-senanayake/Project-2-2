@@ -19,9 +19,9 @@ import appointmentConfirmedRoutes from './controllers/appointment.controller.js'
 import appointmentRejectedRoutes from './controllers/appointment.controller.js';
 import appointmentDeleteRoutes from './controllers/appointment.controller.js';
 import appointmentDoneRoutes from './controllers/appointment.controller.js';
+import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 //ishan
 import addService from './controllers/AddService.js';
-import myAllAppointmentsRoutes from './controllers/appointment.controller.js';
 import testimonialRoutes from './controllers/testimonial.controller.js';
 
 import productsController from './controllers/productsController.js';
@@ -29,6 +29,9 @@ import cartController from './controllers/cartController.js';
 import checkoutRoutes from './controllers/checkoutController.js';
 //Anuththara
 import productsRoutes from './controllers/products.controller.js';
+
+//dasun
+import addcard2 from './controllers/Addcard.js';
 
 
 dotenv.config();
@@ -94,9 +97,13 @@ app.use('/service', addService);
 app.use('/api/cart', cartController);
 app.use('/products', productsController);
 app.use('/api/checkout', checkoutRoutes);
+
 //Anuththara
 app.use('/api/products', productsRoutes)
 app.use('/uploads', express.static('uploads'));
+
+
+app.use('/card', addcard2);
 
 
 app.get("/", (req, res) => {
