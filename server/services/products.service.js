@@ -51,6 +51,7 @@ const updateProduct = async (id, productData) => {
     return result.rows[0];
 };
 
+
 // service.js (or your service file)
 
 const getProductStats = async () => {

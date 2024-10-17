@@ -4,6 +4,8 @@ import { useNavigate } from 'react-router-dom';
 import homepic7 from "../../images/f.jpg";
 import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
 import axios from "axios";
+import jsPDF from 'jspdf'; // Import jsPDF
+import 'jspdf-autotable'; // Import jspdf-autotable for table export
 
 const AllProductsPage = () => {
     const [products, setProducts] = useState([]);
@@ -64,6 +66,53 @@ const AllProductsPage = () => {
         setSelectedProduct(null);
     };
 
+    const generatePDF = () => {
+        const doc = new jsPDF();
+
+        // PDF title and generation date
+        doc.setFontSize(18);
+        doc.text("Product Inventory Report", 14, 15);
+        doc.setFontSize(12);
+        doc.text(`Generated on: ${new Date().toLocaleDateString()}`, 14, 20);
+
+        // Calculating statistics
+        const totalProducts = filteredProducts.length;
+        const outOfStock = filteredProducts.filter(product => product.quantity === 0).length;
+        const totalInventoryValue = filteredProducts.reduce((acc, product) => acc + (product.price * product.quantity), 0);
+
+        // Adding statistics to the PDF
+        doc.text(`Total Products: ${totalProducts}`, 14, 30);
+        doc.text(`Out of Stock Products: ${outOfStock}`, 14, 35);
+        doc.text(`Total Inventory Value (RS): ${totalInventoryValue.toLocaleString()}`, 14, 40);
+
+        doc.text("Product Details:", 14, 50);
+
+        // Table columns and data
+        const tableColumn = ["ID", "Product", "Price (RS)", "Quantity", "In Stock"];
+        const tableRows = [];
+
+        filteredProducts.forEach(product => {
+            const productData = [
+                product.id,
+                product.title,
+                product.price,
+                product.quantity,
+                product.quantity > 0 ? 'Yes' : 'No',
+            ];
+            tableRows.push(productData);
+        });
+
+        // Adding the table to the PDF
+        doc.autoTable({
+            head: [tableColumn],
+            body: tableRows,
+            startY: 55,
+            theme: 'grid',
+        });
+
+        doc.save("products-inventory-report.pdf");
+    };
+
     const filteredProducts = products
         .filter(product => selectedCategory === 'All' || product.category === selectedCategory)
         .filter(product => product.title.toLowerCase().includes(searchQuery.toLowerCase()));
@@ -91,12 +140,20 @@ const AllProductsPage = () => {
                 <div className="container mx-auto p-4">
                     <div className="flex justify-between items-center mb-4">
                         <h2 className="text-xl font-bold">All Products</h2>
-                        <button
-                            className="bg-black text-white py-2 px-4 rounded-lg shadow-lg hover:bg-gray-800"
-                            onClick={() => navigate('/AddProduct')}
-                        >
-                            Create
-                        </button>
+                        <div>
+                            <button
+                                className="bg-black text-white py-2 px-4 rounded-lg shadow-lg hover:bg-gray-800 mr-2"
+                                onClick={() => navigate('/AddProduct')}
+                            >
+                                Create
+                            </button>
+                            <button
+                                className="bg-green-600 text-white py-2 px-4 rounded-lg shadow-lg hover:bg-green-700"
+                                onClick={generatePDF}
+                            >
+                                Export PDF
+                            </button>
+                        </div>
                     </div>
                     <div className="flex mb-4 space-x-4">
                         <div>
@@ -150,10 +207,10 @@ const AllProductsPage = () => {
                                 <td className="py-3 px-4">{product.price}</td>
                                 <td className="py-3 px-4">{product.quantity}</td>
                                 <td className="py-3 px-4">
-                                        <span
-                                            className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${product.quantity > 0 ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
-                                            {product.quantity > 0 ? 'Yes' : 'No'}
-                                        </span>
+                                    <span
+                                        className={`inline-block px-2 py-1 text-xs font-semibold rounded-full ${product.quantity > 0 ? 'bg-green-200 text-green-800' : 'bg-red-200 text-red-800'}`}>
+                                        {product.quantity > 0 ? 'Yes' : 'No'}
+                                    </span>
                                 </td>
                                 <td className="py-3 px-4">
                                     <div className="flex space-x-2">
@@ -162,21 +219,21 @@ const AllProductsPage = () => {
                                             title="View"
                                             className="text-blue-500 hover:text-blue-700"
                                         >
-                                            <FaEye />
+                                            <FaEye/>
                                         </button>
                                         <button
                                             onClick={() => navigate(`/update-item/${product.id}`)}
                                             title="Edit"
-                                            className="text-gray-600 hover:text-gray-800"
+                                            className="text-black hover:text-gray-700"
                                         >
-                                            <FaEdit />
+                                            <FaEdit/>
                                         </button>
                                         <button
                                             onClick={() => handleDelete(product.id)}
                                             title="Delete"
-                                            className="text-red-600 hover:text-red-800"
+                                            className="text-red-500 hover:text-red-700"
                                         >
-                                            <FaTrash />
+                                            <FaTrash/>
                                         </button>
                                     </div>
                                 </td>
@@ -184,43 +241,44 @@ const AllProductsPage = () => {
                         ))}
                         </tbody>
                     </table>
-                    <div className="flex justify-between items-center mt-4 text-gray-600">
-                        <span>Rows per page: 100</span>
-                        <span>1-{filteredProducts.length} of {filteredProducts.length}</span>
-                    </div>
 
-                    {/* Enhanced Modal for product details */}
-                    {showModal && selectedProduct && (
-                        <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-70 z-50">
-                            <div className="bg-white p-6 rounded-lg shadow-lg w-full max-w-lg relative">
+                    {showModal && (
+                        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
+                            <div className="bg-white rounded-lg p-6 shadow-lg w-3/4">
+                                <h3 className="text-lg font-bold mb-4">Product Details</h3>
+                                {selectedProduct && (
+                                    <>
+                                        <p>
+                                            <strong>ID:</strong> {selectedProduct.id}
+                                        </p>
+                                        <p>
+                                            <strong>Title:</strong> {selectedProduct.title}
+                                        </p>
+                                        <p>
+                                            <strong>Category:</strong> {selectedProduct.category}
+                                        </p>
+                                        <p>
+                                            <strong>Description:</strong> {selectedProduct.description}
+                                        </p>
+                                        <p>
+                                            <strong>Price (RS):</strong> {selectedProduct.price}
+                                        </p>
+                                        <p>
+                                            <strong>Quantity:</strong> {selectedProduct.quantity}
+                                        </p>
+                                        <img
+                                            src={selectedProduct.image ? `http://localhost:3001/uploads/${selectedProduct.image}` : 'default-image-url'}
+                                            alt={selectedProduct.title}
+                                            className="w-24 h-24 rounded-full object-cover mt-4"
+                                        />
+                                    </>
+                                )}
                                 <button
                                     onClick={handleCloseModal}
-                                    className="absolute top-2 right-2 text-gray-500 hover:text-gray-700"
+                                    className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-600"
                                 >
-                                    <svg className="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"
-                                         xmlns="http://www.w3.org/2000/svg">
-                                        <path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2"
-                                              d="M6 18L18 6M6 6l12 12"></path>
-                                    </svg>
+                                    Close
                                 </button>
-                                <h3 className="text-2xl font-semibold mb-4 border-b pb-2">Product Details</h3>
-                                <div className="flex mb-4">
-                                    <img
-                                        src={selectedProduct.image ? `http://localhost:3001/uploads/${selectedProduct.image}` : 'default-image-url'}
-                                        alt={selectedProduct.title}
-                                        className="w-40 h-40 rounded-lg object-cover shadow-md mr-4"
-                                    />
-                                    <div>
-                                        <h4 className="text-xl font-bold mb-2">{selectedProduct.title}</h4>
-                                        <p className="text-gray-600 mb-2">{selectedProduct.description}</p>
-                                        <p className="text-gray-600 font-semibold">Price: RS {selectedProduct.price}</p>
-                                        <p className="text-gray-600 font-semibold">Quantity: {selectedProduct.quantity}</p>
-                                        <p className="text-gray-600 font-semibold">Category: {selectedProduct.category}</p>
-                                        <p className={`font-semibold ${selectedProduct.quantity > 0 ? 'text-green-600' : 'text-red-600'}`}>
-                                            {selectedProduct.quantity > 0 ? 'In Stock' : 'Out of Stock'}
-                                        </p>
-                                    </div>
-                                </div>
                             </div>
                         </div>
                     )}

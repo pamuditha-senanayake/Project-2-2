@@ -86,7 +86,12 @@ router.post('/', upload.single('image'), async (req, res, next) => {
 router.put('/:id', upload.single('image'), async (req, res, next) => {
     try {
         const { title, price, category, description, quantity } = req.body;
-        const image = req.file ? req.file.filename : req.body.image; // Use the new file if uploaded, otherwise use existing image
+
+        // Fetch the existing product to retain the current image if no new one is uploaded
+        const currentProduct = await service.getProductById(req.params.id);
+
+        // Use the new file if uploaded, otherwise use the existing image
+        const image = req.file ? req.file.filename : currentProduct.image;
 
         const updatedProduct = await service.updateProduct(req.params.id, {
             title,
@@ -98,7 +103,7 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         });
 
         if (updatedProduct) {
-            res.send(updatedProduct); // Ensure the updated product details are sent back
+            res.send(updatedProduct);
         } else {
             res.status(404).json('No record with given id: ' + req.params.id);
         }
@@ -106,6 +111,7 @@ router.put('/:id', upload.single('image'), async (req, res, next) => {
         next(error);
     }
 });
+
 
 
 
