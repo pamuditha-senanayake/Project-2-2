@@ -45,6 +45,8 @@ const Layout = () => {
         const [categories, setCategories] = useState([]);
         const [message, setMessage] = useState("");
 
+        //dropdown category
+
         useEffect(() => {
             const fetchCategories = async () => {
                 try {
@@ -67,17 +69,18 @@ const Layout = () => {
             try {
                 const response = await axios.post("http://localhost:3001/service/services", formData);
                 if (response.data && response.data.duration) {
-                    // Ensure the response contains the duration
+
                     setMessage("Service added successfully!");
-                    // Show SweetAlert2 success message
+
                     Swal.fire({
                         title: "Success!",
                         text: "Service added successfully!",
                         icon: "success",
                         confirmButtonText: "OK"
+
                     }).then((result) => {
                         if (result.isConfirmed) {
-                            // Navigate after the user clicks "OK"
+
                             navigate('/adminservicview');
                         }
                     });
@@ -136,7 +139,7 @@ const Layout = () => {
                                         >
                                             <div
                                                 style={{
-                                                    background: "rgba(255, 255, 255, 0.6)",
+                                                    background: "rgba(10, 10, 10, 0.1)",
                                                     borderRadius: "10px",
                                                     boxShadow: "0 2px 20px rgba(0, 0, 0, 0.1)",
                                                     backdropFilter: "blur(7.2px)",
@@ -182,13 +185,16 @@ const Layout = () => {
                                                             <option value="" disabled>
                                                                 Select category
                                                             </option>
+
                                                             {categories.map((category) => (
                                                                 <option key={category.id} value={category.id}>
                                                                     {category.name}
                                                                 </option>
                                                             ))}
+
                                                         </select>
                                                     </div>
+
                                                     <div className="mb-6">
                                                         <label htmlFor="price"
                                                                className="block mb-2 text-2xl font-bold text-gray-900">
@@ -207,25 +213,19 @@ const Layout = () => {
                                                                 value={formData.price}
                                                                 onChange={handleChange}
                                                                 required
-                                                                // Disable the spinner arrows
-                                                                onWheel={(e) => e.target.blur()} // Prevent scrolling input
+                                                                onWheel={(e) => e.target.blur()}
                                                                 inputMode="numeric"
                                                             />
-
-                                                            <style jsx>{`
-                                                                /* Disable arrows in Firefox */
-                                                                input[type='number'] {
-                                                                    -moz-appearance: textfield;
-                                                                }
-
-                                                                /* Disable arrows in Chrome, Safari, Edge, Opera */
-                                                                input[type='number']::-webkit-outer-spin-button,
-                                                                input[type='number']::-webkit-inner-spin-button {
-                                                                    -webkit-appearance: none;
-                                                                    margin: 0;
-                                                                }
-                                                            `}</style>
-
+                                                                    <style jsx>{`
+                                                                        input[type='number'] {
+                                                                            -moz-appearance: textfield;
+                                                                        }
+                                                                        input[type='number']::-webkit-outer-spin-button,
+                                                                        input[type='number']::-webkit-inner-spin-button {
+                                                                            -webkit-appearance: none;
+                                                                            margin: 0;
+                                                                        }
+                                                                    `}</style>
                                                         </div>
                                                     </div>
 
@@ -238,7 +238,7 @@ const Layout = () => {
                                                             id="duration"
                                                             className="shadow-sm bg-gray-50 border h-10 border-gray-300 text-gray-900 text-sm rounded-lg block w-full p-2.5"
                                                             value={formData.duration}
-                                                            onChange={handleChange} // Directly using handleChange without modification
+                                                            onChange={handleChange}
                                                             required
                                                         >
                                                             <option value="" disabled>Select time taken</option>
@@ -251,6 +251,7 @@ const Layout = () => {
                                                             <option value={240 * 60}>4 hours</option>
                                                         </select>
                                                     </div>
+
                                                     <div className="mb-6">
                                                         <label htmlFor="description"
                                                                className="block mb-2 text-2xl font-bold text-gray-900">
@@ -265,9 +266,11 @@ const Layout = () => {
                                                             required
                                                         />
                                                     </div>
+
                                                     <button
                                                         type="submit"
-                                                        className="text-white bg-black hover:bg-pink-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5 text-center"
+                                                        className="text-white bg-black hover:bg-pink-800 focus:ring-4 focus:ring-blue-300 font-bold rounded-lg text-sm px-5 py-2.5
+                                                                    text-center icon-button transition duration-300 ease-in-out transform hover:scale-110"
                                                     >
                                                         Add Service
                                                     </button>
@@ -275,14 +278,12 @@ const Layout = () => {
                                             </div>
                                         </div>
                                     </div>
-                        </div>
                                 </div>
                             </div>
                         </div>
-                        );
-                        };
-
-                        return <AddServicePage/>;
-                        };
-
-                        export default Layout;
+                    </div>
+        );
+    };
+    return <AddServicePage/>;
+};
+export default Layout;
