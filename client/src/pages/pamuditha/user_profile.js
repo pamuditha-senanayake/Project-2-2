@@ -305,15 +305,27 @@ const UserProfile = () => {
                                     backgroundRepeat: 'no-repeat',
                                 }}
                             >
-                                <div className="mr-[100px]">
-                                    <img
-                                        src={profilePic ? `http://localhost:3001/uploads/${profilePic}` : homepic7}
-                                        alt="Profile"
-                                        className="w-24 h-24 rounded-full border-2 border-gray-300"
-                                    />
+                                <div className="flex flex-row">
+                                    <div className="mr-[100px]">
+                                        <img
+                                            src={profilePic ? `http://localhost:3001/uploads/${profilePic}` : homepic7}
+                                            alt="Profile"
+                                            className="w-24 h-24 rounded-full border-2 border-gray-300"
+                                        />
+                                    </div>
+
+                                    <div className="flex flex-col">
+                                        <input type="file" onChange={handleImageChange}/>
+                                        <button
+                                            className="text-black bg-pink-300 mt-3 hover:bg-pink-400 py-2 px-4 rounded-lg transition duration-300 ease-in-out"
+                                            onClick={handleUploadImage}
+                                        >
+                                            Upload Profile Picture
+                                        </button>
+                                    </div>
                                 </div>
-                                <input type="file" onChange={handleImageChange}/>
-                                <button onClick={handleUploadImage}>Upload Profile Picture</button>
+
+
                             </div>
                         </div>
 
