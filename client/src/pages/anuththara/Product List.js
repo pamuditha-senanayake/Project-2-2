@@ -14,7 +14,12 @@ const AllProductsPage = () => {
     const [searchQuery, setSearchQuery] = useState('');
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [showModal, setShowModal] = useState(false);
+    const [showOutOfStock, setShowOutOfStock] = useState(true); // Toggle state for out-of-stock products
     const navigate = useNavigate();
+
+    // Pagination State
+    const [currentPage, setCurrentPage] = useState(1);
+    const [productsPerPage] = useState(5);
 
     useEffect(() => {
         const getAllProducts = async () => {
@@ -113,9 +118,17 @@ const AllProductsPage = () => {
         doc.save("products-inventory-report.pdf");
     };
 
+    // Filtering products based on category, search query, and out-of-stock toggle
     const filteredProducts = products
         .filter(product => selectedCategory === 'All' || product.category === selectedCategory)
-        .filter(product => product.title.toLowerCase().includes(searchQuery.toLowerCase()));
+        .filter(product => product.title.toLowerCase().includes(searchQuery.toLowerCase()))
+        .filter(product => showOutOfStock || product.quantity == 0); // New condition to hide/show out-of-stock products
+
+    // Pagination Logic
+    const totalPages = Math.ceil(filteredProducts.length / productsPerPage);
+    const indexOfLastProduct = currentPage * productsPerPage;
+    const indexOfFirstProduct = indexOfLastProduct - productsPerPage;
+    const currentProducts = filteredProducts.slice(indexOfFirstProduct, indexOfLastProduct);
 
     if (loading) return <div>Loading...</div>;
 
@@ -179,7 +192,17 @@ const AllProductsPage = () => {
                                 placeholder="Search products..."
                             />
                         </div>
+                        <div>
+                            <label className="mr-2 text-gray-700">Show Out of Stock:</label>
+                            <input
+                                type="checkbox"
+                                checked={!showOutOfStock}
+                                onChange={() => setShowOutOfStock(!showOutOfStock)}
+                                className="py-2 px-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                            />
+                        </div>
                     </div>
+
                     <table className="min-w-full bg-white border border-gray-200 shadow-md rounded-lg">
                         <thead className="bg-gray-100">
                         <tr>
@@ -193,7 +216,7 @@ const AllProductsPage = () => {
                         </tr>
                         </thead>
                         <tbody>
-                        {filteredProducts.map((product) => (
+                        {currentProducts.map((product) => (
                             <tr key={product.id} className="border-b hover:bg-gray-50">
                                 <td className="py-3 px-4">{product.id}</td>
                                 <td className="py-3 px-4">
@@ -242,47 +265,48 @@ const AllProductsPage = () => {
                         </tbody>
                     </table>
 
-                    {showModal && (
-                        <div className="fixed inset-0 flex items-center justify-center z-50 bg-gray-900 bg-opacity-50">
-                            <div className="bg-white rounded-lg p-6 shadow-lg w-3/4">
-                                <h3 className="text-lg font-bold mb-4">Product Details</h3>
-                                {selectedProduct && (
-                                    <>
-                                        <p>
-                                            <strong>ID:</strong> {selectedProduct.id}
-                                        </p>
-                                        <p>
-                                            <strong>Title:</strong> {selectedProduct.title}
-                                        </p>
-                                        <p>
-                                            <strong>Category:</strong> {selectedProduct.category}
-                                        </p>
-                                        <p>
-                                            <strong>Description:</strong> {selectedProduct.description}
-                                        </p>
-                                        <p>
-                                            <strong>Price (RS):</strong> {selectedProduct.price}
-                                        </p>
-                                        <p>
-                                            <strong>Quantity:</strong> {selectedProduct.quantity}
-                                        </p>
-                                        <img
-                                            src={selectedProduct.image ? `http://localhost:3001/uploads/${selectedProduct.image}` : 'default-image-url'}
-                                            alt={selectedProduct.title}
-                                            className="w-24 h-24 rounded-full object-cover mt-4"
-                                        />
-                                    </>
-                                )}
-                                <button
-                                    onClick={handleCloseModal}
-                                    className="bg-blue-500 text-white py-2 px-4 rounded-lg mt-4 hover:bg-blue-600"
-                                >
-                                    Close
-                                </button>
-                            </div>
-                        </div>
-                    )}
+                    {/* Pagination Controls */}
+                    <div className="flex justify-between mt-4">
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.max(prev - 1, 1))}
+                            disabled={currentPage === 1}
+                            className="px-4 py-2 bg-black text-white rounded hover:bg-gray-700 disabled:opacity-50"
+                        >
+                            Previous
+                        </button>
+                        <span className="text-gray-700">Page {currentPage} of {totalPages}</span>
+                        <button
+                            onClick={() => setCurrentPage((prev) => Math.min(prev + 1, totalPages))}
+                            disabled={currentPage === totalPages}
+                            className="px-4 py-2 bg-black text-white rounded hover:bg-gray-700 disabled:opacity-50"
+                        >
+                            Next
+                        </button>
+                    </div>
                 </div>
+
+                {/* Modal for viewing product */}
+                {showModal && selectedProduct && (
+                    <div className="fixed inset-0 z-50 flex justify-center items-center bg-black bg-opacity-50">
+                        <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
+                            <h3 className="text-2xl font-bold mb-4">{selectedProduct.title}</h3>
+                            <img
+                                src={`http://localhost:3001/uploads/${selectedProduct.image}`}
+                                alt={selectedProduct.title}
+                                className="w-32 h-32 object-cover mb-4"
+                            />
+                            <p><strong>Price:</strong> RS {selectedProduct.price}</p>
+                            <p><strong>Quantity:</strong> {selectedProduct.quantity}</p>
+                            <p><strong>Description:</strong> {selectedProduct.description}</p>
+                            <button
+                                onClick={handleCloseModal}
+                                className="mt-4 px-4 py-2 bg-blue-500 text-white rounded-lg"
+                            >
+                                Close
+                            </button>
+                        </div>
+                    </div>
+                )}
             </div>
         </div>
     );
