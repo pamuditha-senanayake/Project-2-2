@@ -73,7 +73,7 @@ const Checkout = () => {
             }
         } catch (error) {
             setError("Checkout failed. Please try again.");
-            console.error('Error during checkout:', error);
+            console.error('Error during checkout:', error); // Debug log
         }
     };
 
