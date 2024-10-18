@@ -101,6 +101,11 @@ const LayoutWithAppointments = () => {
         return date.toLocaleDateString('en-CA'); // Format as YYYY-MM-DD
     };
 
+    // Convert binary data (payment slip) to Base64 URL
+    const getBase64ImageUrl = (binaryData) => {
+        return `data:image/png;base64,${binaryData}`; // Assuming the image is in PNG format
+    };
+
     return (
         <div className="flex h-screen">
             {/* Sidebar Section */}
@@ -156,6 +161,19 @@ const LayoutWithAppointments = () => {
                                     <div>Professional: {app.professional_name}</div>
                                     <div>Date: {formatDate(app.appointment_date)}</div>
                                     <div>Time: {app.time_numbers.map(index => timeslots[index] || 'Unknown').join(', ')}</div>
+                                    <div>
+                                        {/* Render payment slip as an image */}
+                                        Payment Slip:
+                                        {app.payment_slip ? (
+                                            <img
+                                                src={getBase64ImageUrl(app.payment_slip)}
+                                                alt="Payment Slip"
+                                                className="w-24 h-24 object-cover"
+                                            />
+                                        ) : (
+                                            <span>No payment slip uploaded</span>
+                                        )}
+                                    </div>
                                 </div>
                                 <div className="space-x-4">
                                     {app.status === 'pending' || app.status === 'confirmed' ? (

@@ -46,7 +46,7 @@ const AddPayment = ({ userId }) => {
 
     // Navigate to wallet view
     const handleViewWallet = () => {
-        navigate(`/wallet/${userId}`);
+        navigate(`/wallet/${userId}`); // Pass userId as a query parameter
     };
 
     // Submit payment information

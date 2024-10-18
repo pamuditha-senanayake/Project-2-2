@@ -33,7 +33,7 @@ import productsRoutes from './controllers/products.controller.js';
 
 //dasun
 import addcard2 from './controllers/Addcard.js';
-
+import router from './controllers/appointmentPayment.controller.js';
 
 dotenv.config();
 
@@ -106,6 +106,7 @@ app.use('/uploads', express.static('uploads'));
 
 
 app.use('/card', addcard2);
+app.use('/api', router);
 
 
 app.get("/", (req, res) => {

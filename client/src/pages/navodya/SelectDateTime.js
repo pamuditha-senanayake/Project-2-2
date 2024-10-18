@@ -151,16 +151,17 @@ const SelectDateTime = () => {
                     )}
 
                     {/* Date Picker */}
-                    <div className="bg-white rounded-lg p-4 mb-4 max-w-auto mx-auto shadow-lg">
+                    <div className="bg-white rounded-lg p-4 mb-4 w-[300px] mx-auto shadow-lg">
                         <DatePicker
                             onChange={handleDateSelect}
                             dateFormat="MMMM d, yyyy"
                             minDate={new Date()}
                             inline
-                            calendarClassName="w-full max-w-xs text-sm"
+                            calendarClassName="w-full text-sm"
                             className="w-full bg-gray-200 p-2 rounded-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
                         />
                     </div>
+
 
                     {/* Timeslots */}
                     <div className="flex flex-col gap-4 items-center justify-center overflow-auto">
@@ -228,9 +229,16 @@ const SelectDateTime = () => {
                     </div>
                     <button
                         onClick={handleContinue}
-                        className="w-full mt-6 bg-black h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md hover:scale-105">
+                        disabled={selectedServices.length === 0} // Disable if no services are selected
+                        className={`w-full mt-6 h-[50px] flex items-center justify-center rounded-xl cursor-pointer relative overflow-hidden transition-all duration-500 ease-in-out shadow-md 
+                        ${selectedServices.length === 0 ? 'bg-gray-400 cursor-not-allowed' : 'bg-black hover:scale-105 hover:shadow-lg'} 
+                        before:absolute before:top-0 before:-left-full before:w-full before:h-full before:bg-gradient-to-r before:from-[#009b49] before:to-[rgb(105,184,141)] before:transition-all before:duration-500 before:ease-in-out before:z-[-1] before:rounded-xl hover:before:left-0 text-white
+                        `}
+                    >
                         <p className="text-white text-lg font-semibold">Continue</p>
                     </button>
+
+
                 </div>
             </div>
         </div>
