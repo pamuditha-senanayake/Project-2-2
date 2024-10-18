@@ -46,8 +46,12 @@ const AppointmentPayment = () => {
     }, [appointmentId]);
 
     const handlePay = () => {
-        navigate(`/addpayment/${appointmentId}`, {
-            state: {appointmentId}
+        // Show an alert message
+        window.alert("Appointment is successfully booked!");
+
+        // Navigate to the home page with appointmentId in the state
+        navigate(`/home`, {
+
         });
     };
 
