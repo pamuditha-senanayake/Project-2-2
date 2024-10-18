@@ -150,13 +150,10 @@ const Layout = () => {
                     text: 'Failed to update service.',
                     icon: 'error'
                 }).then(() => {
-                    // Optionally, refresh the page or perform any other action
-                    // window.location.reload(); // Uncomment if you want to refresh on error as well
+
                 });
             }
         };
-
-
 
         // Time taken mapping as an array for easier manipulation
         const durationOptions = [
@@ -220,8 +217,6 @@ const Layout = () => {
                 categoryName.includes(term)
             );
         });
-
-
 
         // report generation
 
@@ -342,7 +337,7 @@ const Layout = () => {
                                                 ) : service.duration.minutes ? (
                                                     <span>{service.duration.minutes} minute{service.duration.minutes > 1 ? 's' : ''}</span>
                                                 ) : (
-                                                    <span>45 minutes</span> // Optional: Show this if neither value exists
+                                                    <span>45 minutes</span>
                                                 )}
                                             </td>
                                             <td className="py-2 px-4">{getCategoryName(service.category_id)}</td>
