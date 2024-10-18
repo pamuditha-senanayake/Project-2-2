@@ -2,16 +2,19 @@ import Cookies from 'js-cookie';
 import React, {useState} from 'react';
 import {Link} from "react-router-dom";
 import logo from "../../images/logo.jpeg";
-import logo2 from "../../images/logow.png";
+
 import homepic from "../../images/home.jpg";
 import homepic2 from "../../images/c.jpg";
-import homepic3 from "../../images/a.jpg";
-import homepic4 from "../../images/5.jpg";
-import homepic5 from "../../images/d.jpg";
+import amali from "../../images/amali.jpg"
+import susila from "../../images/sumudu.webp";
+import muta from "../../images/muta.jpg";
+import buta from "../../images/buta.jpg";
+import piyath from "../../images/piyath.jpeg";
+import kota from "../../images/kota.jpg";
 import homepic6 from "../../images/e.jpg";
 import homepic7 from "../../images/f.jpg";
 import bride from "../../images/file.png";
-import star from "../../images/s.png";
+
 import {GoogleMap, LoadScript, Marker} from "@react-google-maps/api";
 import {useLogout} from './authUtils';
 import Navbar from './nav';
@@ -62,10 +65,12 @@ const PictureGrid = () => {
     const imageSrcs = [
         homepic,
         homepic2,
-        homepic3,
-        homepic4,
-        homepic2,
-        homepic3,
+
+
+        kota,
+        buta,
+        muta,
+        homepic2
     ];
 
     return (
@@ -102,7 +107,9 @@ const Card = () => {
                     "This is a testimonial text that highlights the service or product experience. It's an example of
                     how users might review or comment on the service."
                 </p>
+
             </div>
+
         </div>
     );
 };
@@ -112,17 +119,17 @@ export {Card};
 const InfoCards = () => {
     const cards = [
         {
-            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", // Removed the image source
+            imgSrc: susila, // Removed the image source
             heading: "Sophia Turner - Senior Hair Stylist",
             text: "Sophia has over 10 years of experience in hair styling and coloring. She specializes in balayage techniques and has a passion for creating stunning transformations. Sophia believes in personalized consultations to achieve the best results for her clients."
         },
         {
-            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", // Removed the image source
+            imgSrc: piyath, // Removed the image source
             heading: "James Smith - Barber and Grooming Expert",
             text: "James is a skilled barber with 7 years of experience in men’s grooming. He excels in modern haircuts and classic shaves, ensuring a refined and stylish look for every client. His friendly demeanor makes every visit enjoyable."
         },
         {
-            imgSrc: "data:image/gif;base64,R0lGODlhAQABAIAAAHd3dwAAACH5BAAAAAAALAAAAAABAAEAAAICRAEAOw==", // Removed the image source
+            imgSrc: amali, // Removed the image source
             heading: "Emily Johnson - Makeup Artist",
             text: "Emily is a certified makeup artist with 5 years of experience in bridal and special event makeup. She uses high-quality products to create beautiful, long-lasting looks that enhance her clients' natural beauty. Emily loves helping clients feel confident and radiant."
         }

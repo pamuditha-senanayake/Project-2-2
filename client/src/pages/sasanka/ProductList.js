@@ -3,6 +3,8 @@ import axios from 'axios';
 import { Modal, InputNumber, Tooltip } from 'antd';
 import 'antd/dist/reset.css'; // Ensure Ant Design styles are imported
 import Navbar from '../pamuditha/nav';
+import Banner from "../../images/Banner.jpg"; // Import the banner image
+import homepic6 from "../../images/e.jpg";
 
 const ProductList = () => {
     const [products, setProducts] = useState([]);
@@ -12,7 +14,8 @@ const ProductList = () => {
     const [selectedProduct, setSelectedProduct] = useState(null);
     const [quantity, setQuantity] = useState(1);
     const [searchTerm, setSearchTerm] = useState('');
-    const [userId, setUserId] = useState(); // Replace with actual logic to fetch or set user_id
+    const [categoryFilter, setCategoryFilter] = useState(''); // New state for category filter
+    const [cartCount, setCartCount] = useState(0); // State to track cart item count
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -32,7 +35,7 @@ const ProductList = () => {
 
     const handleAddToCart = (product) => {
         setSelectedProduct(product);
-        setQuantity(1);
+        setQuantity(1); // Reset quantity to 1 when selecting a new product
         setVisible(true);
     };
 
@@ -44,14 +47,14 @@ const ProductList = () => {
                     'Content-Type': 'application/json',
                 },
                 body: JSON.stringify({ itemId: selectedProduct.id, quantity }),
-                credentials: 'include',  // Include credentials (cookies)
+                credentials: 'include',
             });
 
             const data = await response.json();
 
             if (response.ok) {
                 console.log('Added/Updated item:', data);
-                // Close the modal after a successful request
+                setCartCount(prevCount => prevCount + quantity); // Update cart count
                 setVisible(false);
             } else {
                 console.error('Failed to add/update item:', data);
@@ -67,27 +70,43 @@ const ProductList = () => {
         setVisible(false);
     };
 
-    const filteredProducts = products.filter(product =>
-        product.title.toLowerCase().includes(searchTerm.toLowerCase())
-    );
+    const filteredProducts = products
+        .filter(product =>
+            product.title.toLowerCase().includes(searchTerm.toLowerCase()) &&
+            (categoryFilter ? product.category === categoryFilter : true)
+        );
 
     if (loading) return <p className="text-center mt-4 text-gray-600">Loading...</p>;
     if (error) return <p className="text-center mt-4 text-red-500">{error}</p>;
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 mt-[100px] px-6 md:p-10">
-            <Navbar/>
-            {/* Search Bar */}
-            <div className="flex justify-end mb-8">
+            <Navbar cartCount={cartCount} /> {/* Pass cartCount to Navbar */}
+            {/* Banner */}
+            <div className="mb-8">
+                <img src={Banner} alt="Banner" className="w-full h-60 object-cover rounded-lg shadow-lg" />
+            </div>
+
+            {/* Search and Category Filter */}
+            <div className="flex flex-col md:flex-row justify-between items-center mb-8">
                 <input
                     type="text"
                     value={searchTerm}
                     onChange={(e) => setSearchTerm(e.target.value)}
                     placeholder="Search products..."
                     aria-label="Search products"
-                    className="w-full md:w-80 p-4 text-gray-800 rounded-lg shadow-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
-                    style={{ fontSize: '1rem' }}
+                    className="w-full md:w-1/3 p-4 mb-4 md:mb-0 text-gray-800 rounded-lg shadow-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
                 />
+                <select
+                    value={categoryFilter}
+                    onChange={(e) => setCategoryFilter(e.target.value)}
+                    className="w-full md:w-1/4 p-4 text-gray-800 rounded-lg shadow-lg border border-gray-300 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-300"
+                >
+                    <option value="">All Categories</option>
+                    <option value="Beauty Product">Beauty Product</option>
+                    <option value="Hair Product">Hair Product</option>
+                    <option value="Skin Care Product">Skin Care Product</option>
+                </select>
             </div>
 
             {/* Product Grid */}
@@ -99,17 +118,13 @@ const ProductList = () => {
                             alt={product.title}
                             className="w-full h-48 object-cover rounded-t-lg mb-4"
                         />
-                        <div className="p-5">
+                        <div className="p-5 flex flex-col items-center">
                             <h3 className="text-lg font-semibold text-gray-800 mb-2">{product.title}</h3>
-                            <p className="text-pink-600 font-bold mb-3">${product.price}</p>
-                            <p className="text-gray-500 mb-3"><strong>Category:</strong> {product.category}</p>
-                            <p className="text-gray-600 mb-2">
-                                {product.description?.substring(0, 100)}{product.description?.length > 100 ? '...' : ''}
-                            </p>
+                            <p className="text-pink-600 font-bold mb-3">Rs.{product.price}</p>
                             <button
                                 onClick={() => handleAddToCart(product)}
                                 aria-label={`Add ${product.title} to cart`}
-                                className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors duration-300"
+                                className="w-full bg-pink-500 text-white py-2 rounded-lg hover:bg-pink-600 transition-colors duration-300 mt-auto"
                             >
                                 Add to Cart
                             </button>
@@ -137,16 +152,15 @@ const ProductList = () => {
                             key="submit"
                             onClick={handleOk}
                             className="bg-pink-500 text-white py-2 px-4 rounded-lg hover:bg-pink-600 transition-colors duration-300"
+                            disabled={quantity > selectedProduct.quantity} // Disable if quantity exceeds stock
                         >
                             Add to Cart
                         </button>,
                     ]}
                     style={{ top: 20 }}
                 >
-
                     <div className="flex flex-col sm:flex-row items-center">
                         <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
-
                             <img
                                 src={selectedProduct.image ? `http://localhost:3001/uploads/${selectedProduct.image}` : 'default-image-url'}
                                 alt={selectedProduct.title}
@@ -158,17 +172,17 @@ const ProductList = () => {
                                 <strong>Description:</strong> {selectedProduct.description || 'No description available.'}
                             </p>
                             <p className="text-gray-700 mb-2">
-                                <strong>Price:</strong> ${selectedProduct.price}
+                                <strong>Price:</strong> Rs.{selectedProduct.price}
                             </p>
                             <p className="text-gray-700 mb-4">
-                                <strong>In Stock:</strong> {selectedProduct.stock}
+                                <strong>In Stock:</strong> {selectedProduct.quantity}
                             </p>
                             <div className="flex items-center mb-4">
                                 <label className="mr-4 font-semibold text-gray-800">Quantity:</label>
-                                <Tooltip title={`Total: $${(quantity * selectedProduct.price).toFixed(2)}`}>
+                                <Tooltip title={`Total: Rs.${(quantity * selectedProduct.price).toFixed(2)}`}>
                                     <InputNumber
                                         min={1}
-                                        max={selectedProduct.stock}
+                                        max={selectedProduct.quantity} // Limit max quantity to stock
                                         value={quantity}
                                         onChange={(value) => setQuantity(value)}
                                         className="w-24"

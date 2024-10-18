@@ -150,6 +150,7 @@ const EditServicePage = () => {
                                     <option value="45 minutes">45 minutes</option>
                                     <option value="1 hour">1 hour</option>
                                     <option value="2 hours">2 hours</option>
+                                    <option value="50 minutes">50 minutess</option>
                                     <option value="More than 2 hours">More than 2 hours</option>
                                 </select>
                             </div>

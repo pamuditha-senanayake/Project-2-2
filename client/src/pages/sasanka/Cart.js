@@ -1,6 +1,8 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import Navbar from '../pamuditha/nav';
+import Swal from 'sweetalert2';
+
 
 
 
@@ -60,9 +62,15 @@ const ShoppingCart = () => {
     const handleUpdateQuantity = async (cartItemId, newQuantity) => {
         try {
             if (newQuantity < 1) {
-                alert("Quantity must be at least 1.");
+                Swal.fire({
+                    title: "Invalid Quantity",
+                    text: "Quantity must be at least 1.",
+                    icon: "error",
+                    confirmButtonText: "OK"
+                });
                 return;
             }
+
 
             const response = await fetch(`http://localhost:3001/api/cart/update/${cartItemId}`, {
                 method: "PUT",
@@ -92,20 +100,43 @@ const ShoppingCart = () => {
     };
 
     const handleRemoveItem = async (cartItemId) => {
-        try {
-            const confirmRemove = window.confirm("Are you sure you want to remove this item?");
-            if (!confirmRemove) return;
+        // Show confirmation popup
+        const result = await Swal.fire({
+            title: "Are you sure?",
+            text: "You won't be able to revert this!",
+            icon: "warning",
+            showCancelButton: true,
+            confirmButtonColor: '#3085d6',
+            cancelButtonColor: '#d33',
+            confirmButtonText: 'Yes, remove it!',
+            cancelButtonText: 'Cancel'
+        });
 
-            await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
-                method: "DELETE",
-                credentials: 'include',
-            });
-            setCart(cart.filter(item => item.cart_id !== cartItemId));
-        } catch (error) {
-            console.error("Error removing item:", error);
-            setError('Failed to remove item.');
+        if (result.isConfirmed) {
+            try {
+                await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
+                    method: "DELETE",
+                    credentials: 'include',
+                });
+                // Update the state to remove the deleted cart item
+                setCart(cart.filter(item => item.cart_id !== cartItemId));
+                // Show success popup
+                Swal.fire({
+                    title: 'Removed!',
+                    text: 'Your item has been removed from the cart.',
+                    icon: 'success'
+                });
+            } catch (error) {
+                console.error("Error removing item:", error);
+                Swal.fire({
+                    title: 'Error!',
+                    text: 'Failed to remove item.',
+                    icon: 'error'
+                });
+            }
         }
     };
+
 
     const totalCost = cart.reduce((acc, item) => acc + (item.price * item.quantity), 0);
 
@@ -114,16 +145,21 @@ const ShoppingCart = () => {
     };
 
     return (
+
         <div
+
             className="flex flex-col w-full min-h-screen bg-gray-100 p-6 mt-[100px] md:p-10"
             style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#f7fafc', padding: '20px' }}
+
         >
             <Navbar />
             {loading && <p style={{ color: '#718096', textAlign: 'center', marginBottom: '16px' }}>Loading your cart...</p>}
             {error && <p style={{ color: '#f56565', textAlign: 'center', marginBottom: '16px' }}>{error}</p>}
             {!loading && !error && (
                 <div className="flex flex-col md:flex-row w-full mt-4">
+
                     <div
+
                         className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300"
                         style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}
                     >
@@ -141,6 +177,7 @@ const ShoppingCart = () => {
                                 style={{ width: '100%', backgroundColor: '#f7fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}
                             >
                                 <thead>
+
                                 <tr style={{ backgroundColor: '#edf2f7', borderBottom: '1px solid #e2e8f0' }}>
                                     <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Product</th>
                                     <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Quantity</th>
@@ -156,6 +193,7 @@ const ShoppingCart = () => {
                                     }}>
                                         <td style={{padding: '16px', display: 'flex', alignItems: 'center'}}>
                                             <img
+
                                                 src={item.product_image ? `http://localhost:3001/uploads/${item.product_image}` : 'default-image-url'}
                                                 alt={item.product_title}
                                                 style={{
@@ -175,34 +213,38 @@ const ShoppingCart = () => {
                                         <td style={{padding: '16px'}}>
                                             <div style={{display: 'flex', alignItems: 'center', gap: '8px'}}>
                                                 <button
+                                                    className="flex items-center bg-pink-300 text-white font-bold px-3 py-2 rounded-lg shadow-md cursor-pointer hover:bg-pink-700 transition duration-300 ease-in-out transform hover:scale-110"
                                                     aria-label="Decrease quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity - 1)}
-                                                    style={{
-                                                        backgroundColor: '#4299e1',
-                                                        color: '#fff',
-                                                        fontWeight: '700',
-                                                        padding: '8px 16px',
-                                                        borderRadius: '8px',
-                                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                                                        cursor: 'pointer',
-                                                    }}
+                                                    // style={{
+                                                    //     backgroundColor: '#edb9e8',
+                                                    //     color: '#fff',
+                                                    //     fontWeight: '700',
+                                                    //     padding: '8px 16px',
+                                                    //     borderRadius: '8px',
+                                                    //     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                    //     cursor: 'pointer',
+                                                    // }}
                                                 >
                                                     -
                                                 </button>
                                                 <span
                                                     style={{fontSize: '18px', fontWeight: '600'}}>{item.quantity}</span>
                                                 <button
+                                                    className="flex items-center bg-pink-300 text-white font-bold px-3 py-2 rounded-lg shadow-md cursor-pointer hover:bg-pink-700 transition duration-300 ease-in-out transform hover:scale-110"
+
                                                     aria-label="Increase quantity"
                                                     onClick={() => handleUpdateQuantity(item.cart_id, item.quantity + 1)}
-                                                    style={{
-                                                        backgroundColor: '#4299e1',
-                                                        color: '#fff',
-                                                        fontWeight: '700',
-                                                        padding: '8px 16px',
-                                                        borderRadius: '8px',
-                                                        boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                                                        cursor: 'pointer',
-                                                    }}
+                                                    // style={{
+                                                    //     backgroundColor: '#edb9e8',
+                                                    //     color: '#fff',
+                                                    //     fontWeight: '700',
+                                                    //     padding: '8px 16px',
+                                                    //     borderRadius: '8px',
+                                                    //     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                    //     cursor: 'pointer',
+                                                    //
+                                                    // }}
                                                 >
                                                     +
                                                 </button>
@@ -211,19 +253,22 @@ const ShoppingCart = () => {
                                         <td style={{
                                             padding: '16px',
                                             color: '#1a202c'
-                                        }}>${(item.price * item.quantity).toFixed(2)}</td>
+                                        }}>Rs.{(item.price * item.quantity).toFixed(2)}</td>
                                         <td style={{padding: '16px'}}>
                                             <button
+
+                                                className="flex items-center bg-pink-800 text-white font-bold px-3 py-2 rounded-lg shadow-md cursor-pointer hover:bg-pink-500 transition duration-300 ease-in-out transform hover:scale-110"
+
                                                 onClick={() => handleRemoveItem(item.cart_id)}
-                                                style={{
-                                                    backgroundColor: '#f56565',
-                                                    color: '#fff',
-                                                    fontWeight: '700',
-                                                    padding: '8px 16px',
-                                                    borderRadius: '8px',
-                                                    boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
-                                                    cursor: 'pointer',
-                                                }}
+                                                // style={{
+                                                //     backgroundColor: '#ad4982',
+                                                //     color: '#fff',
+                                                //     fontWeight: '700',
+                                                //     padding: '8px 16px',
+                                                //     borderRadius: '8px',
+                                                //     boxShadow: '0 2px 4px rgba(0, 0, 0, 0.1)',
+                                                //     cursor: 'pointer',
+                                                // }}
                                             >
                                                 Remove
                                             </button>
@@ -254,21 +299,23 @@ const ShoppingCart = () => {
                         </h2>
                         <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: '500', color: '#1a202c' }}>
                             <p>Total Cost</p>
-                            <p>${totalCost.toFixed(2)}</p>
+                            <p>Rs.{totalCost.toFixed(2)}</p>
                         </div>
                         <button
+                            className="w-full bg-black text-white py-3 rounded-lg font-semibold cursor-pointer shadow-md transition-transform duration-200 transform hover:scale-105"
+
                             onClick={handleCheckout}
-                            style={{
-                                width: '100%',
-                                backgroundColor: '#000',
-                                color: '#fff',
-                                padding: '12px 0',
-                                borderRadius: '16px',
-                                fontWeight: '600',
-                                cursor: 'pointer',
-                                boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
-                                transition: 'background-color 0.2s',
-                            }}
+                            // style={{
+                            //     width: '100%',
+                            //     backgroundColor: '#000',
+                            //     color: '#fff',
+                            //     padding: '12px 0',
+                            //     borderRadius: '16px',
+                            //     fontWeight: '600',
+                            //     cursor: 'pointer',
+                            //     boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                            //     transition: 'background-color 0.2s',
+                            // }}
                             onMouseOver={(e) => (e.target.style.backgroundColor = '#333')}
                             onMouseOut={(e) => (e.target.style.backgroundColor = '#000')}
                         >
