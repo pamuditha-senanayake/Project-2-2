@@ -2,30 +2,31 @@ import React, { useEffect, useState } from 'react';
 import Sidebar from '../com/admindash'; // Import your Sidebar component
 import homepic7 from "../../images/f.jpg";
 import axios from "axios";
-import { AiOutlineUnorderedList, AiOutlineMoneyCollect, AiOutlineStock, AiOutlineBell } from 'react-icons/ai'; // Importing icons from react-icons
+import { AiOutlineUnorderedList, AiOutlineMoneyCollect, AiOutlineStock, AiOutlineBell } from 'react-icons/ai';
+import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid, ResponsiveContainer, LabelList } from 'recharts'; // Updated Recharts import
 
 const AllProductsPage = () => {
     const [loading, setLoading] = useState(true);
     const [totalProducts, setTotalProducts] = useState(0);
     const [totalStoreValue, setTotalStoreValue] = useState(0);
     const [outOfStock, setOutOfStock] = useState(0);
-    const [lowStockProducts, setLowStockProducts] = useState([]); // State for low stock products
-    const [showAlerts, setShowAlerts] = useState(false); // Toggle for alert visibility
+    const [lowStockProducts, setLowStockProducts] = useState([]);
+    const [showAlerts, setShowAlerts] = useState(false);
+    const [products, setProducts] = useState([]);
 
     useEffect(() => {
         const fetchData = async () => {
             try {
                 const response = await axios.get('http://localhost:3001/api/products');
-                const products = response.data;
+                const fetchedProducts = response.data;
 
-                setTotalProducts(products.length);
-                setTotalStoreValue(products.reduce((total, product) => total + (product.price * product.quantity), 0));
-                setOutOfStock(products.filter(product => product.quantity === 0).length);
+                setProducts(fetchedProducts);
+                setTotalProducts(fetchedProducts.length);
+                setTotalStoreValue(fetchedProducts.reduce((total, product) => total + (product.price * product.quantity), 0));
+                setOutOfStock(fetchedProducts.filter(product => product.quantity === 0).length);
 
-                // Check for low stock products (quantity <= 5)
-                const lowStock = products.filter(product => product.quantity <= 5);
+                const lowStock = fetchedProducts.filter(product => product.quantity <= 5);
                 setLowStockProducts(lowStock);
-
                 setLoading(false);
             } catch (error) {
                 console.error('Error fetching data:', error);
@@ -36,7 +37,18 @@ const AllProductsPage = () => {
         fetchData();
     }, []);
 
-    if (loading) return <div className="flex items-center justify-center h-screen text-xl font-semibold">Loading...</div>;
+    if (loading) {
+        return <div className="flex items-center justify-center h-screen text-xl font-semibold">Loading...</div>;
+    }
+
+    // Prepare data for the bar chart (Top 5 highest value products)
+    const chartData = products
+        .map(product => ({
+            name: product.title,
+            totalValue: product.price * product.quantity,
+        }))
+        .sort((a, b) => b.totalValue - a.totalValue)
+        .slice(0, 5); // Get top 5 products by total value
 
     return (
         <div className="flex h-screen bg-gray-50" style={{ fontFamily: 'Poppins, sans-serif' }}>
@@ -44,7 +56,7 @@ const AllProductsPage = () => {
                 <Sidebar />
             </div>
             <div className="w-[80%] p-8 overflow-y-auto relative">
-                <h2 className="text-4xl font-bold mb-8 text-gray-800 text-center julius-sans-one-regular">Inventory Overview</h2>
+                <h2 className="text-4xl font-bold mb-8 text-gray-800 text-center font-serif">Inventory Overview</h2>
 
                 {/* Alert Icon Button */}
                 <div className="absolute top-6 right-10">
@@ -89,6 +101,29 @@ const AllProductsPage = () => {
                         <h3 className="font-semibold text-xl text-gray-700">Out of Stock</h3>
                         <p className="text-3xl text-gray-800">{outOfStock}</p>
                     </div>
+                </div>
+
+                {/* Bar Chart for Top 5 Products by Total Value */}
+                <div className="mt-10">
+                    <h3 className="text-2xl font-bold mb-4 text-center">Top 5 Products by Total Value</h3>
+                    <ResponsiveContainer width="100%" height={400}>
+                        <BarChart data={chartData}>
+                            <CartesianGrid strokeDasharray="3 3" />
+                            <XAxis
+                                dataKey="name"
+                                interval={0}
+                                angle={-60}  // Adjusted tilt angle for better visibility
+                                textAnchor="end"
+                                dx={-10}  // Adjusted horizontal position
+                                dy={10}   // Adjusted vertical position
+                            />
+                            <YAxis />
+                            <Tooltip />
+                            <Bar dataKey="totalValue" fill="#8884d8">
+                                <LabelList dataKey="totalValue" position="top" />
+                            </Bar>
+                        </BarChart>
+                    </ResponsiveContainer>
                 </div>
             </div>
         </div>

@@ -152,7 +152,7 @@ const OrdersLayout = () => {
 
                     <button
                         onClick={generateReport}
-                        className="mb-4 bg-green-500 text-white px-4 py-2 rounded hover:bg-green-700"
+                        className="mb-4 bg-black text-white px-4 py-2 rounded hover:bg-pink-700"
                     >
                         Generate Report
                     </button>
