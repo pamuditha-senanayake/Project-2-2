@@ -73,8 +73,9 @@ const Sidebar = () => {
             title: 'Service/Category',
             links: [
                 {text: 'Add New Service', url: '/addservice'},
-                {text: 'Add New Category', url: '/addcategory'},
                 {text: 'Services', url: '/adminservicview'},
+                {text: 'Manage Categories', url: '/addcategory'},
+
 
 
             ],
