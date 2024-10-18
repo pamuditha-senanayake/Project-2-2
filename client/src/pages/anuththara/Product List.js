@@ -168,9 +168,9 @@ const AllProductsPage = () => {
                             </button>
                         </div>
                     </div>
-                    <div className="flex mb-4 space-x-4">
-                        <div>
-                            <label className="mr-2 text-gray-700">Filter by Category:</label>
+                    <div className="flex items-center space-x-4 mb-4">
+                        <div className="flex items-center space-x-2">
+                            <label className="text-gray-700">Filter by Category:</label>
                             <select
                                 value={selectedCategory}
                                 onChange={handleCategoryChange}
@@ -182,8 +182,9 @@ const AllProductsPage = () => {
                                 <option value="Skin Care Product">Skin Care Product</option>
                             </select>
                         </div>
-                        <div>
-                            <label className="mr-2 text-gray-700">Search by Title:</label>
+
+                        <div className="flex items-center space-x-2">
+                            <label className="text-gray-700">Search by Title:</label>
                             <input
                                 type="text"
                                 value={searchQuery}
@@ -192,13 +193,14 @@ const AllProductsPage = () => {
                                 placeholder="Search products..."
                             />
                         </div>
-                        <div>
-                            <label className="mr-2 text-gray-700">Show Out of Stock:</label>
+
+                        <div className="flex items-center space-x-2">
+                            <label className="text-gray-700">Show Out of Stock:</label>
                             <input
                                 type="checkbox"
                                 checked={!showOutOfStock}
                                 onChange={() => setShowOutOfStock(!showOutOfStock)}
-                                className="py-2 px-4 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
+                                className="h-5 w-5 border rounded-lg shadow-sm focus:outline-none focus:ring-2 focus:ring-blue-500"
                             />
                         </div>
                     </div>
