@@ -185,6 +185,14 @@ const UserProfile = () => {
 
     const handleButtonClick = (buttonName) => {
         setActiveButton(buttonName);
+
+        if (buttonName === 'profile') {
+            navigate('/userp'); // Adjust with your actual route
+        } else if (buttonName === 'appointments') {
+            navigate('/myappointment2'); // Adjust with your actual route
+        } else if (buttonName === 'payment') {
+            navigate('/wallet2'); // Adjust with your actual route
+        }
     };
 
     // Handle profile picture upload

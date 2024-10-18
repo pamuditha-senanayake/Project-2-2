@@ -79,10 +79,10 @@ const ResetPassword = () => {
         >
             <Navigation/>
             <div className="flex items-center justify-center w-full h-screen mt-[20px]">
-                <div className="flex flex-col w-[50%] h-[50%] border-2 rounded-2xl py-3 px-3 bg-pink-300">
-                    <h2 className="text-3xl font-bold mb-4">Reset Password</h2>
+                <div className="flex flex-col w-[35%] h-[50%] border-2 rounded-2xl py-3 px-3 bg-white">
+                    <h2 className="text-3xl mb-4">Reset Password</h2>
                     <form onSubmit={handlePasswordReset}>
-                        <label htmlFor="newPassword" className="block font-bold mb-2">New Password</label>
+                        <label htmlFor="newPassword" className="block mb-2">New Password</label>
                         <input
                             type="password"
                             id="newPassword"
@@ -92,7 +92,7 @@ const ResetPassword = () => {
                             required
                         />
 
-                        <label htmlFor="confirmPassword" className="block font-bold mb-2 mt-4">Confirm Password</label>
+                        <label htmlFor="confirmPassword" className="block mb-2 mt-4">Confirm Password</label>
                         <input
                             type="password"
                             id="confirmPassword"
@@ -104,7 +104,7 @@ const ResetPassword = () => {
 
                         <button
                             type="submit"
-                            className="text-black w-full bg-blue-600 hover:bg-blue-700 font-bold py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out mt-4"
+                            className="text-black w-full bg-pink-300 hover:bg-pink-500 py-2 px-4 rounded-lg shadow-lg transition duration-300 ease-in-out mt-4"
                         >
                             Reset Password
                         </button>
