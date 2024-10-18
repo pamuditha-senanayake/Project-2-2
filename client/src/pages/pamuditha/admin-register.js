@@ -196,20 +196,20 @@ const Register = () => {
                                 Register
                             </button>
                         </form>
-                        <div className="mt-6 flex items-center justify-center">
-                            <button
-                                type="button"
-                                onClick={() => window.location.href = 'http://localhost:3001/auth/google'}
-                                className="flex items-center justify-center w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-                            >
-                                <img
-                                    src={google}
-                                    alt="Google"
-                                    className="w-5 h-5 mr-2"
-                                />
-                                Sign up with Google
-                            </button>
-                        </div>
+                        {/*<div className="mt-6 flex items-center justify-center">*/}
+                        {/*    <button*/}
+                        {/*        type="button"*/}
+                        {/*        onClick={() => window.location.href = 'http://localhost:3001/auth/google'}*/}
+                        {/*        className="flex items-center justify-center w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"*/}
+                        {/*    >*/}
+                        {/*        <img*/}
+                        {/*            src={google}*/}
+                        {/*            alt="Google"*/}
+                        {/*            className="w-5 h-5 mr-2"*/}
+                        {/*        />*/}
+                        {/*        Sign up with Google*/}
+                        {/*    </button>*/}
+                        {/*</div>*/}
                     </div>
                 </div>
             </div>
