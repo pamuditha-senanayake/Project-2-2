@@ -52,6 +52,7 @@ import AddPayment from './pages/dasun/AddPayment';
 import UpdateCard from './pages/dasun/UpdateCard';
 import DeleteCard from './pages/dasun/DeleteCard';
 import Wallet from './pages/dasun/Wallet';
+import Wallet2 from './pages/dasun/Wallet2';
 import AddCard from './pages/dasun/addcard';
 import ViewCard from './pages/dasun/viewcard';
 import AppointmentPayment from "./pages/dasun/AppointmentPayment";
@@ -122,7 +123,8 @@ const AnimatedRoutes = () => {
                         <Route path="/addpayment" element={<AddPayment/>}/>
                         <Route path="/upcard" element={<UpdateCard/>}/>
                         <Route path="/deletecard" element={<DeleteCard/>}/>
-                        <Route path="/wallet/:userId" element={<Wallet/>}/>
+                        <Route path="/wallet" element={<Wallet/>}/>
+                        <Route path="/wallet2" element={<Wallet2/>}/>
                         <Route path="/addcard" element={<AddCard/>}/>
                         <Route path="/viewcard" element={<ViewCard/>}/>
                         <Route path="/deletecd" element={<DeleteCard/>}/>

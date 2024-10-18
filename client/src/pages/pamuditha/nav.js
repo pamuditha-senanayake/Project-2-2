@@ -98,7 +98,7 @@ function Navbar() {
                                         {cookieExists ? (
                                             <>
                                                 <a className="dropdown-item julius-sans-one-regular"
-                                                   href="/userp">Settings</a>
+                                                   href="/userp">Profile</a>
 
                                                 <a className="dropdown-item julius-sans-one-regular"
                                                    href="/inq">Support</a>
