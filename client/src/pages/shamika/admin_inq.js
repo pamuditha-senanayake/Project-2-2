@@ -14,7 +14,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -39,7 +39,7 @@ const Layout = () => {
 
     const fetchInquiries = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/user/inquiries/viewall', {
+            const response = await fetch('https://servertest-isos.onrender.com/api/user/inquiries/viewall', {
                 credentials: 'include'
             });
             console.log('Inquiries Response:', response); // Log response
@@ -54,7 +54,7 @@ const Layout = () => {
     const handleResponse = async (inquiry) => {
         // Handle sending the response
         try {
-            const response = await fetch(`http://localhost:3001/api/user/inquiries/${inquiry.id}/respond`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/inquiries/${inquiry.id}/respond`, {
                 method: 'POST',
                 credentials: 'include',
                 headers: {

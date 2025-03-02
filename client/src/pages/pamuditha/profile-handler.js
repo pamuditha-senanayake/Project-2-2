@@ -19,7 +19,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/profile', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/profile', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -59,7 +59,7 @@ const UserProfile = () => {
 
     const handleUpdate = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/user/update/${userData.id}`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/update/${userData.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -101,7 +101,7 @@ const UserProfile = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await fetch(`http://localhost:3001/api/user/delete/${userData.id}`, {
+                    const response = await fetch(`https://servertest-isos.onrender.com/api/user/delete/${userData.id}`, {
                         method: 'DELETE',
                         headers: {
                             'Content-Type': 'application/json',

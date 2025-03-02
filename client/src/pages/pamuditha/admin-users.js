@@ -24,7 +24,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -51,7 +51,7 @@ const Layout = () => {
         const fetchUsers = async () => {
             console.log('Fetching user data...'); // Debug log before fetching data
             try {
-                const response = await fetch('http://localhost:3001/api/user', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user', {
                     credentials: 'include' // Include credentials with the request
                 });
                 console.log('Response status:', response.status); // Debug log for response status
@@ -83,7 +83,7 @@ const Layout = () => {
         }).then(async (result) => {
             if (result.isConfirmed) {
                 try {
-                    const response = await fetch(`http://localhost:3001/api/user/delete/${id}`, {
+                    const response = await fetch(`https://servertest-isos.onrender.com/api/user/delete/${id}`, {
                         method: 'DELETE',
                         credentials: 'include'
                     });
@@ -134,7 +134,7 @@ const Layout = () => {
         if (!editUser) return;
 
         try {
-            const response = await fetch(`http://localhost:3001/api/user/update2/${editUser.id}`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/update2/${editUser.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

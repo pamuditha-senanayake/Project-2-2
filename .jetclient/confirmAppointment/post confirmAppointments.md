@@ -1,7 +1,7 @@
 ```toml
 name = 'post confirmAppointments'
 method = 'POST'
-url = 'http://localhost:3001/api/confirm/'
+url = 'https://servertest-isos.onrender.com/api/confirm/'
 sortWeight = 1000000
 id = 'a408b69d-db9e-4ab1-87f3-d3ad41700a0e'
 

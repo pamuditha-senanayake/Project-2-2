@@ -1,8 +1,8 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash'; // Import your Sidebar component
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import homepic7 from "../../images/f.jpg";
-import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
+import {FaEdit, FaEye, FaTrash} from "react-icons/fa";
 import axios from "axios";
 import jsPDF from 'jspdf'; // Import jsPDF
 import 'jspdf-autotable'; // Import jspdf-autotable for table export
@@ -24,7 +24,7 @@ const AllProductsPage = () => {
     useEffect(() => {
         const getAllProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/products');
+                const response = await axios.get('https://servertest-isos.onrender.com/api/products');
                 setProducts(response.data);
                 setLoading(false);
             } catch (error) {
@@ -39,7 +39,7 @@ const AllProductsPage = () => {
     const handleDelete = async (id) => {
         if (window.confirm('Are you sure you want to delete this product?')) {
             try {
-                await axios.delete(`http://localhost:3001/api/products/${id}`);
+                await axios.delete(`https://servertest-isos.onrender.com/api/products/${id}`);
                 setProducts(products.filter((product) => product.id !== id));
                 alert('Product deleted successfully');
             } catch (error) {
@@ -58,7 +58,7 @@ const AllProductsPage = () => {
 
     const handleViewProduct = async (id) => {
         try {
-            const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+            const response = await axios.get(`https://servertest-isos.onrender.com/api/products/${id}`);
             setSelectedProduct(response.data);
             setShowModal(true);
         } catch (error) {
@@ -141,7 +141,7 @@ const AllProductsPage = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-                <Sidebar />
+                <Sidebar/>
             </div>
             <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular"
                  style={{
@@ -223,7 +223,7 @@ const AllProductsPage = () => {
                                 <td className="py-3 px-4">{product.id}</td>
                                 <td className="py-3 px-4">
                                     <img
-                                        src={product.image ? `http://localhost:3001/uploads/${product.image}` : 'default-image-url'}
+                                        src={product.image ? `https://servertest-isos.onrender.com/uploads/${product.image}` : 'default-image-url'}
                                         alt={product.title}
                                         className="w-12 h-12 rounded-full object-cover"
                                     />
@@ -293,7 +293,7 @@ const AllProductsPage = () => {
                         <div className="bg-white p-8 rounded-lg shadow-lg max-w-md w-full">
                             <h3 className="text-2xl font-bold mb-4">{selectedProduct.title}</h3>
                             <img
-                                src={`http://localhost:3001/uploads/${selectedProduct.image}`}
+                                src={`https://servertest-isos.onrender.com/uploads/${selectedProduct.image}`}
                                 alt={selectedProduct.title}
                                 className="w-32 h-32 object-cover mb-4"
                             />

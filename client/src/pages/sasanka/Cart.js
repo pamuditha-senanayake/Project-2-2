@@ -1,9 +1,7 @@
-import React, { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import React, {useState, useEffect} from "react";
+import {useNavigate} from "react-router-dom";
 import Navbar from '../pamuditha/nav';
 import Swal from 'sweetalert2';
-
-
 
 
 const ShoppingCart = () => {
@@ -16,7 +14,7 @@ const ShoppingCart = () => {
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/customer', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/customer', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -42,7 +40,7 @@ const ShoppingCart = () => {
         // Fetch the user's cart
         const fetchCart = async () => {
             try {
-                const response = await fetch(`http://localhost:3001/api/user/cartget`, {
+                const response = await fetch(`https://servertest-isos.onrender.com/api/user/cartget`, {
                     credentials: 'include',
                 });
                 if (!response.ok) throw new Error('Network response was not ok');
@@ -72,12 +70,12 @@ const ShoppingCart = () => {
             }
 
 
-            const response = await fetch(`http://localhost:3001/api/cart/update/${cartItemId}`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/cart/update/${cartItemId}`, {
                 method: "PUT",
                 headers: {
                     "Content-Type": "application/json",
                 },
-                body: JSON.stringify({ quantity: newQuantity }),
+                body: JSON.stringify({quantity: newQuantity}),
                 credentials: "include", // Ensure authentication is included
             });
 
@@ -91,7 +89,7 @@ const ShoppingCart = () => {
             // Update the cart state with the new quantity
             setCart((prevCart) =>
                 prevCart.map((item) =>
-                    item.cart_id === cartItemId ? { ...item, quantity: newQuantity } : item
+                    item.cart_id === cartItemId ? {...item, quantity: newQuantity} : item
                 )
             );
         } catch (error) {
@@ -114,7 +112,7 @@ const ShoppingCart = () => {
 
         if (result.isConfirmed) {
             try {
-                await fetch(`http://localhost:3001/api/user/remove/${cartItemId}`, {
+                await fetch(`https://servertest-isos.onrender.com/api/user/remove/${cartItemId}`, {
                     method: "DELETE",
                     credentials: 'include',
                 });
@@ -149,40 +147,75 @@ const ShoppingCart = () => {
         <div
 
             className="flex flex-col w-full min-h-screen bg-gray-100 p-6 mt-[100px] md:p-10"
-            style={{ fontFamily: 'Roboto, sans-serif', backgroundColor: '#f7fafc', padding: '20px' }}
+            style={{fontFamily: 'Roboto, sans-serif', backgroundColor: '#f7fafc', padding: '20px'}}
 
         >
-            <Navbar />
-            {loading && <p style={{ color: '#718096', textAlign: 'center', marginBottom: '16px' }}>Loading your cart...</p>}
-            {error && <p style={{ color: '#f56565', textAlign: 'center', marginBottom: '16px' }}>{error}</p>}
+            <Navbar/>
+            {loading &&
+                <p style={{color: '#718096', textAlign: 'center', marginBottom: '16px'}}>Loading your cart...</p>}
+            {error && <p style={{color: '#f56565', textAlign: 'center', marginBottom: '16px'}}>{error}</p>}
             {!loading && !error && (
                 <div className="flex flex-col md:flex-row w-full mt-4">
 
                     <div
 
                         className="w-full md:w-2/3 bg-white p-6 rounded-lg shadow-lg border border-gray-300"
-                        style={{ backgroundColor: '#fff', padding: '24px', borderRadius: '12px', boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)' }}
+                        style={{
+                            backgroundColor: '#fff',
+                            padding: '24px',
+                            borderRadius: '12px',
+                            boxShadow: '0 4px 12px rgba(0, 0, 0, 0.1)'
+                        }}
                     >
                         <h2
                             className="text-3xl font-semibold mb-6 text-gray-800"
-                            style={{ fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c' }}
+                            style={{fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c'}}
                         >
                             Shopping Cart
                         </h2>
                         {cart.length === 0 ? (
-                            <p style={{ color: '#718096', textAlign: 'center' }}>Your cart is empty.</p>
+                            <p style={{color: '#718096', textAlign: 'center'}}>Your cart is empty.</p>
                         ) : (
                             <table
                                 className="w-full bg-gray-50 border border-gray-200 rounded-lg"
-                                style={{ width: '100%', backgroundColor: '#f7fafc', borderRadius: '8px', border: '1px solid #e2e8f0' }}
+                                style={{
+                                    width: '100%',
+                                    backgroundColor: '#f7fafc',
+                                    borderRadius: '8px',
+                                    border: '1px solid #e2e8f0'
+                                }}
                             >
                                 <thead>
 
-                                <tr style={{ backgroundColor: '#edf2f7', borderBottom: '1px solid #e2e8f0' }}>
-                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Product</th>
-                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Quantity</th>
-                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Price</th>
-                                    <th style={{ padding: '16px', textAlign: 'left', fontWeight: '500', color: '#4a5568' }}>Actions</th>
+                                <tr style={{backgroundColor: '#edf2f7', borderBottom: '1px solid #e2e8f0'}}>
+                                    <th style={{
+                                        padding: '16px',
+                                        textAlign: 'left',
+                                        fontWeight: '500',
+                                        color: '#4a5568'
+                                    }}>Product
+                                    </th>
+                                    <th style={{
+                                        padding: '16px',
+                                        textAlign: 'left',
+                                        fontWeight: '500',
+                                        color: '#4a5568'
+                                    }}>Quantity
+                                    </th>
+                                    <th style={{
+                                        padding: '16px',
+                                        textAlign: 'left',
+                                        fontWeight: '500',
+                                        color: '#4a5568'
+                                    }}>Price
+                                    </th>
+                                    <th style={{
+                                        padding: '16px',
+                                        textAlign: 'left',
+                                        fontWeight: '500',
+                                        color: '#4a5568'
+                                    }}>Actions
+                                    </th>
                                 </tr>
                                 </thead>
                                 <tbody>
@@ -194,7 +227,7 @@ const ShoppingCart = () => {
                                         <td style={{padding: '16px', display: 'flex', alignItems: 'center'}}>
                                             <img
 
-                                                src={item.product_image ? `http://localhost:3001/uploads/${item.product_image}` : 'default-image-url'}
+                                                src={item.product_image ? `https://servertest-isos.onrender.com/uploads/${item.product_image}` : 'default-image-url'}
                                                 alt={item.product_title}
                                                 style={{
                                                     width: '96px',
@@ -293,11 +326,18 @@ const ShoppingCart = () => {
                     >
                         <h2
                             className="text-3xl font-semibold mb-6 text-gray-800"
-                            style={{fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c' }}
+                            style={{fontSize: '28px', fontWeight: '600', marginBottom: '24px', color: '#1a202c'}}
                         >
                             Cart Summary
                         </h2>
-                        <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '16px', fontSize: '18px', fontWeight: '500', color: '#1a202c' }}>
+                        <div style={{
+                            display: 'flex',
+                            justifyContent: 'space-between',
+                            marginBottom: '16px',
+                            fontSize: '18px',
+                            fontWeight: '500',
+                            color: '#1a202c'
+                        }}>
                             <p>Total Cost</p>
                             <p>Rs.{totalCost.toFixed(2)}</p>
                         </div>

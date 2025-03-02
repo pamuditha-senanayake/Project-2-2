@@ -26,7 +26,7 @@ const AppointmentPayment = () => {
 
     useEffect(() => {
         const getAppointmentStatus = async () => {
-            fetch(`http://localhost:3001/api/user/status/${appointmentId}`, {credentials: 'include'})
+            fetch(`https://servertest-isos.onrender.com/api/user/status/${appointmentId}`, {credentials: 'include'})
                 .then((response) => response.json())
                 .then((data) => {
                     setAppointmentStatus(data.status);
@@ -50,9 +50,7 @@ const AppointmentPayment = () => {
         window.alert("Appointment is successfully booked!");
 
         // Navigate to the home page with appointmentId in the state
-        navigate(`/home`, {
-
-        });
+        navigate(`/home`, {});
     };
 
     const handleSlipUpload = (event) => {
@@ -72,7 +70,7 @@ const AppointmentPayment = () => {
         formData.append("slip", slip);
 
         try {
-            const response = await fetch(`http://localhost:3001/api/user/upload-slip/${appointmentId}`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/upload-slip/${appointmentId}`, {
                 method: "POST",
                 body: formData,
                 credentials: 'include',
@@ -92,7 +90,7 @@ const AppointmentPayment = () => {
     const handleDelete = async (appointmentId) => {
         if (appointmentStatus === "pending") {
             try {
-                const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
+                const response = await fetch(`https://servertest-isos.onrender.com/api/user/delete?appointmentId=${appointmentId}`, {
                     method: 'DELETE',
                     credentials: 'include',
                 });

@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import homepic6 from "../../images/e.jpg";
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -18,7 +18,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/user/admin', {
+                const response = await axios.get('https://servertest-isos.onrender.com/api/user/admin', {
                     withCredentials: true // Include credentials with the request
                 });
 
@@ -44,7 +44,7 @@ const Layout = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/service/categories', {
+                const response = await axios.get('https://servertest-isos.onrender.com/service/categories', {
                     withCredentials: true
                 });
                 setCategories(response.data);
@@ -73,7 +73,7 @@ const Layout = () => {
     // Delete category function
     const deleteCategory = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/service/categories/${id}`, {
+            await axios.delete(`https://servertest-isos.onrender.com/service/categories/${id}`, {
                 withCredentials: true
             });
             setCategories(categories.filter(category => category.id !== id)); // Update state to remove deleted category
@@ -131,7 +131,7 @@ const Layout = () => {
                 name: categoryName.trim()
             };
 
-            const response = await axios.post("http://localhost:3001/service/categories", newCategory, {
+            const response = await axios.post("https://servertest-isos.onrender.com/service/categories", newCategory, {
                 withCredentials: true
             });
 
@@ -185,7 +185,7 @@ const Layout = () => {
         <div className="flex h-screen">
 
             <div className="w-[20%] h-full text-white">
-                <Sidebar />
+                <Sidebar/>
             </div>
 
 

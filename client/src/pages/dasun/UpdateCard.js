@@ -11,7 +11,7 @@ const UpdateCard = ({cardData, onClose, onUpdate}) => {
 
     const updateCard = async (id, updatedDetails) => {
         try {
-            await axios.put(`http://localhost:3001/api/user/update/${id}`, updatedDetails, {
+            await axios.put(`https://servertest-isos.onrender.com/api/user/update/${id}`, updatedDetails, {
                 withCredentials: true, // Include credentials if required
             });
             onUpdate(); // Call the onUpdate prop to refresh the card list

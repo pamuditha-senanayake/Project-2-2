@@ -1,9 +1,9 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
+import React, {useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import axios from 'axios';
 import homepic6 from "../../images/e.jpg";
 
-const AddPayment = ({ userId }) => {
+const AddPayment = ({userId}) => {
     const navigate = useNavigate();
     const [cardData, setCardData] = useState({
         cardType: 'Master',
@@ -33,14 +33,14 @@ const AddPayment = ({ userId }) => {
 
     // Handle input changes and validate
     const handleChange = (e) => {
-        const { name, value } = e.target;
-        setCardData({ ...cardData, [name]: value });
+        const {name, value} = e.target;
+        setCardData({...cardData, [name]: value});
 
         // Validate based on input field
         if (name === 'cardNo') {
-            setErrors({ ...errors, cardNo: validateCardNo(value) });
+            setErrors({...errors, cardNo: validateCardNo(value)});
         } else if (name === 'cvcNo') {
-            setErrors({ ...errors, cvcNo: validateCVC(value) });
+            setErrors({...errors, cvcNo: validateCVC(value)});
         }
     };
 
@@ -59,7 +59,7 @@ const AddPayment = ({ userId }) => {
         }
 
         try {
-            const response = await axios.post('http://localhost:3001/api/user/adddd', cardData, { withCredentials: true });
+            const response = await axios.post('https://servertest-isos.onrender.com/api/user/adddd', cardData, {withCredentials: true});
             console.log('Card added successfully:', response.data);
             setShowSuccess(true);
         } catch (error) {
@@ -92,7 +92,8 @@ const AddPayment = ({ userId }) => {
                 <form onSubmit={handleSubmit} className="flex flex-col space-y-4">
                     {/* Card Type Selection */}
                     <div className="flex flex-col">
-                        <label htmlFor="cardType" className="mb-2 text-sm font-semibold text-gray-600">Card Type:</label>
+                        <label htmlFor="cardType" className="mb-2 text-sm font-semibold text-gray-600">Card
+                            Type:</label>
                         <select
                             id="cardType"
                             name="cardType"
@@ -109,7 +110,8 @@ const AddPayment = ({ userId }) => {
 
                     {/* Cardholder's Name */}
                     <div className="flex flex-col">
-                        <label htmlFor="cardHolderName" className="mb-2 text-sm font-semibold text-gray-600">Cardholder's Name:</label>
+                        <label htmlFor="cardHolderName" className="mb-2 text-sm font-semibold text-gray-600">Cardholder's
+                            Name:</label>
                         <input
                             type="text"
                             id="cardHolderName"
@@ -123,7 +125,8 @@ const AddPayment = ({ userId }) => {
 
                     {/* Card Number */}
                     <div className="flex flex-col">
-                        <label htmlFor="cardNo" className="mb-2 text-sm font-semibold text-gray-600">Card Number:</label>
+                        <label htmlFor="cardNo" className="mb-2 text-sm font-semibold text-gray-600">Card
+                            Number:</label>
                         <input
                             type="text"
                             id="cardNo"
@@ -138,7 +141,8 @@ const AddPayment = ({ userId }) => {
 
                     {/* Expiry Date */}
                     <div className="flex flex-col">
-                        <label htmlFor="expiryDate" className="mb-2 text-sm font-semibold text-gray-600">Expiry Date:</label>
+                        <label htmlFor="expiryDate" className="mb-2 text-sm font-semibold text-gray-600">Expiry
+                            Date:</label>
                         <input
                             type="date"
                             id="expiryDate"

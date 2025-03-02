@@ -1,7 +1,7 @@
 ```toml
 name = 'Add Employee'
 method = 'POST'
-url = 'http://localhost:3000/api/employees/'
+url = 'https://pamoo.netlify.app/api/employees/'
 sortWeight = 1250000
 id = '34d6c866-188b-4af8-bdc5-465d6d0be687'
 

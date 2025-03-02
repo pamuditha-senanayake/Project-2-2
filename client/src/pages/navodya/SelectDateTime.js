@@ -114,7 +114,7 @@ const SelectDateTime = () => {
 
         if (selectedProfessional && date) {
             try {
-                const response = await axios.get(`http://localhost:3001/api/appointmentservice/unavailable/` + selectedProfessional.id + '/' + formattedDate);
+                const response = await axios.get(`https://servertest-isos.onrender.com/api/appointmentservice/unavailable/` + selectedProfessional.id + '/' + formattedDate);
                 const bookedTimeSlots = response.data;
                 setUnavailableTimeSlots(bookedTimeSlots);
             } catch (error) {

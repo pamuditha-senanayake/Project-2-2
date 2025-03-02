@@ -8,7 +8,7 @@ const navigate = useNavigate();
 useEffect(() => {
     const checkUser = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/user/verify', {
+            const response = await fetch('https://servertest-isos.onrender.com/api/user/verify', {
                 credentials: 'include' // Include credentials with the request
             });
 
@@ -38,7 +38,7 @@ useEffect(() => {
 useEffect(() => {
     const checkAdmin = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/user/admin', {
+            const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                 credentials: 'include' // Include credentials with the request
             });
 

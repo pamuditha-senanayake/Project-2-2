@@ -20,7 +20,7 @@ const EditServicePage = () => {
     useEffect(() => {
         const fetchService = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/services/${id}`);
+                const response = await axios.get(`https://servertest-isos.onrender.com/api/services/${id}`);
                 setService(response.data);
                 setFormData({
                     name: response.data.name,
@@ -36,7 +36,7 @@ const EditServicePage = () => {
 
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/api/categories');
+                const response = await axios.get('https://servertest-isos.onrender.com/api/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error('Error fetching categories:', error);
@@ -55,7 +55,7 @@ const EditServicePage = () => {
     const handleSubmit = async (e) => {
         e.preventDefault();
         try {
-            await axios.put(`http://localhost:3001/api/services/${id}`, formData);
+            await axios.put(`https://servertest-isos.onrender.com/api/services/${id}`, formData);
             navigate('/admin/services');
         } catch (error) {
             console.error('Error updating service:', error);

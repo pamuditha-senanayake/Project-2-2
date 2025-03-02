@@ -1,9 +1,9 @@
-import React, { useEffect, useState, useMemo } from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import Sidebar from '../com/admindash';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from "axios";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEdit, faTrash, faFilePdf} from '@fortawesome/free-solid-svg-icons';
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
@@ -22,7 +22,7 @@ const Layout = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/service/categories");
+                const response = await axios.get("https://servertest-isos.onrender.com/service/categories");
                 setCategories(response.data);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -39,7 +39,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include'
                 });
 
@@ -64,7 +64,7 @@ const Layout = () => {
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/service/services");
+                const response = await axios.get("https://servertest-isos.onrender.com/service/services");
                 console.log("Fetched services:", response.data);
                 setServices(response.data);
             } catch (err) {
@@ -96,7 +96,7 @@ const Layout = () => {
 
         if (result.isConfirmed) {
             try {
-                await axios.delete(`http://localhost:3001/service/services/${id}`);
+                await axios.delete(`https://servertest-isos.onrender.com/service/services/${id}`);
                 // Update the state to remove the deleted service
                 setServices(services.filter(service => service.id !== id));
                 // Show success popup
@@ -118,7 +118,7 @@ const Layout = () => {
 
     const handleUpdateService = async () => {
         try {
-            await axios.put(`http://localhost:3001/service/services/${selectedService.id}`, selectedService);
+            await axios.put(`https://servertest-isos.onrender.com/service/services/${selectedService.id}`, selectedService);
             setServices(services.map(service =>
                 service.id === selectedService.id ? selectedService : service
             ));
@@ -135,25 +135,25 @@ const Layout = () => {
 
     // Time taken mapping as an array for easier manipulation
     const durationOptions = [
-        { label: "15 minutes", interval: '15 minutes' },
-        { label: "30 minutes", interval: '30 minutes' },
-        { label: "45 minutes", interval: '45 minutes' },
-        { label: "1 hour", interval: '1 hour' },
-        { label: "2 hours", interval: '2 hours' },
-        { label: "3 hours", interval: '3 hours' },
-        { label: "4 hours", interval: '4 hours' },
+        {label: "15 minutes", interval: '15 minutes'},
+        {label: "30 minutes", interval: '30 minutes'},
+        {label: "45 minutes", interval: '45 minutes'},
+        {label: "1 hour", interval: '1 hour'},
+        {label: "2 hours", interval: '2 hours'},
+        {label: "3 hours", interval: '3 hours'},
+        {label: "4 hours", interval: '4 hours'},
     ];
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
 
         if (name === "duration") {
             // Find the interval string corresponding to the selected label
             const selectedOption = durationOptions.find(option => option.label === value);
             const interval = selectedOption ? selectedOption.interval : '0 minutes'; // Default to '0 minutes' if not found
-            setSelectedService({ ...selectedService, duration: interval });
+            setSelectedService({...selectedService, duration: interval});
         } else {
-            setSelectedService({ ...selectedService, [name]: value });
+            setSelectedService({...selectedService, [name]: value});
         }
     };
 
@@ -232,10 +232,10 @@ const Layout = () => {
             startY: 35,
             head: [tableColumn],
             body: tableRows,
-            styles: { font: "helvetica", fontSize: 10 },
-            headStyles: { fillColor: [22, 160, 133] },
-            alternateRowStyles: { fillColor: [238, 238, 238] },
-            margin: { left: 14, right: 14 },
+            styles: {font: "helvetica", fontSize: 10},
+            headStyles: {fillColor: [22, 160, 133]},
+            alternateRowStyles: {fillColor: [238, 238, 238]},
+            margin: {left: 14, right: 14},
             tableLineColor: [44, 62, 80],
             tableLineWidth: 0.1
         });
@@ -246,7 +246,7 @@ const Layout = () => {
 
     return (
         <div className="flex">
-            <Sidebar />
+            <Sidebar/>
             <div className="flex-1 p-4">
                 <h1 className="text-2xl font-bold mb-4">Services</h1>
 
@@ -262,7 +262,7 @@ const Layout = () => {
                         onClick={generatePDF}
                         className="bg-green-500 text-white rounded-r px-4 py-2"
                     >
-                        <FontAwesomeIcon icon={faFilePdf} /> Export to PDF
+                        <FontAwesomeIcon icon={faFilePdf}/> Export to PDF
                     </button>
                 </div>
 
@@ -291,20 +291,22 @@ const Layout = () => {
                                         onClick={() => handleEditClick(service)}
                                         className="text-blue-500 mr-2"
                                     >
-                                        <FontAwesomeIcon icon={faEdit} />
+                                        <FontAwesomeIcon icon={faEdit}/>
                                     </button>
                                     <button
                                         onClick={() => handleDeleteClick(service.id)}
                                         className="text-red-500"
                                     >
-                                        <FontAwesomeIcon icon={faTrash} />
+                                        <FontAwesomeIcon icon={faTrash}/>
                                     </button>
                                 </td>
                             </tr>
                         ))
                     ) : (
                         <tr>
-                            <td colSpan="6" className="border border-gray-300 px-4 py-2 text-center">No services found.</td>
+                            <td colSpan="6" className="border border-gray-300 px-4 py-2 text-center">No services
+                                found.
+                            </td>
                         </tr>
                     )}
                     </tbody>

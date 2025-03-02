@@ -8,7 +8,7 @@ function App() {
 
     // Fetch hours data on component mount
     useEffect(() => {
-        fetch('http://localhost:3001/api/crud/view', {credentials: 'include'})
+        fetch('https://servertest-isos.onrender.com/api/crud/view', {credentials: 'include'})
             .then((response) => response.json())
             .then((data) => {
                 console.log('Fetched data:', data); // Debug log
@@ -25,7 +25,7 @@ function App() {
     // Handle form submission for adding new hours
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch('http://localhost:3001/api/crud', {
+        fetch('https://servertest-isos.onrender.com/api/crud', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -49,7 +49,7 @@ function App() {
 
     // Handle deleting an entry
     const handleDelete = (id) => {
-        fetch(`http://localhost:3001/api/crud/delete/${id}`, {
+        fetch(`https://servertest-isos.onrender.com/api/crud/delete/${id}`, {
             method: 'DELETE',
             credentials: 'include',
         })

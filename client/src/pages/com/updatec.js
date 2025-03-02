@@ -9,7 +9,7 @@ function UpdateRecord() {
 
     useEffect(() => {
         // Fetch the specific record by ID
-        fetch(`http://localhost:3001/api/crud/fetch/${id}`, {credentials: 'include'})
+        fetch(`https://servertest-isos.onrender.com/api/crud/fetch/${id}`, {credentials: 'include'})
             .then((response) => response.json())
             .then((data) => {
                 if (data.hour) {
@@ -22,7 +22,7 @@ function UpdateRecord() {
 
     const handleUpdate = (e) => {
         e.preventDefault();
-        fetch(`http://localhost:3001/api/crud/update/${id}`, {
+        fetch(`https://servertest-isos.onrender.com/api/crud/update/${id}`, {
             method: 'PUT',
             headers: {
                 'Content-Type': 'application/json',

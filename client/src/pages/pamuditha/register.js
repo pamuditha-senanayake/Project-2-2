@@ -62,7 +62,7 @@ const Register = () => {
 
         if (validate()) {
             try {
-                const response = await fetch('http://localhost:3001/register', {
+                const response = await fetch('https://servertest-isos.onrender.com/register', {
                     method: 'POST',
                     headers: {
                         'Content-Type': 'application/json',
@@ -199,7 +199,7 @@ const Register = () => {
                         <div className="mt-6 flex items-center justify-center">
                             <button
                                 type="button"
-                                onClick={() => window.location.href = 'http://localhost:3001/auth/google'}
+                                onClick={() => window.location.href = 'https://servertest-isos.onrender.com/auth/google'}
                                 className="flex items-center justify-center w-full py-2 px-4 border border-gray-300 rounded-md shadow-sm bg-white text-gray-700 hover:bg-gray-50 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
                                 <img
