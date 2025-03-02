@@ -1,10 +1,9 @@
-
-import React, { useEffect, useState, useMemo } from 'react';
+import React, {useEffect, useState, useMemo} from 'react';
 import Sidebar from '../com/admindash';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from "axios";
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { faEdit, faTrash, faFilePdf } from '@fortawesome/free-solid-svg-icons';
+import {FontAwesomeIcon} from '@fortawesome/react-fontawesome';
+import {faEdit, faTrash, faFilePdf} from '@fortawesome/free-solid-svg-icons';
 import homepic6 from "../../images/e.jpg";
 import Swal from 'sweetalert2';
 import jsPDF from 'jspdf';
@@ -19,7 +18,7 @@ const Layout = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/service/categories");
+                const response = await axios.get("https://servertest-isos.onrender.com/service/categories");
                 setCategories(response.data);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -36,7 +35,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include'
                 });
 
@@ -69,7 +68,7 @@ const Layout = () => {
         useEffect(() => {
             const fetchServices = async () => {
                 try {
-                    const response = await axios.get("http://localhost:3001/service/services");
+                    const response = await axios.get("https://servertest-isos.onrender.com/service/services");
                     console.log("Fetched services:", response.data);
                     setServices(response.data);
                 } catch (err) {
@@ -101,7 +100,7 @@ const Layout = () => {
 
             if (result.isConfirmed) {
                 try {
-                    await axios.delete(`http://localhost:3001/service/services/${id}`);
+                    await axios.delete(`https://servertest-isos.onrender.com/service/services/${id}`);
                     // Update the state to remove the deleted service
                     setServices(services.filter(service => service.id !== id));
                     // Show success popup
@@ -123,7 +122,7 @@ const Layout = () => {
 
         const handleUpdateService = async () => {
             try {
-                await axios.put(`http://localhost:3001/service/services/${selectedService.id}`, selectedService);
+                await axios.put(`https://servertest-isos.onrender.com/service/services/${selectedService.id}`, selectedService);
 
                 // Update the state to reflect the updated service
                 setServices(services.map(service =>
@@ -157,26 +156,26 @@ const Layout = () => {
 
         // Time taken mapping as an array for easier manipulation
         const durationOptions = [
-            { label: "15 minutes", interval: '15 minutes' },
-            { label: "30 minutes", interval: '30 minutes' },
-            { label: "45 minutes", interval: '45 minutes' },
-            { label: "1 hour", interval: '1 hour' },
-            { label: "2 hours", interval: '2 hours' },
-            { label: "3 hours", interval: '3 hours' },
-            { label: "4 hours", interval: '4 hours' },
+            {label: "15 minutes", interval: '15 minutes'},
+            {label: "30 minutes", interval: '30 minutes'},
+            {label: "45 minutes", interval: '45 minutes'},
+            {label: "1 hour", interval: '1 hour'},
+            {label: "2 hours", interval: '2 hours'},
+            {label: "3 hours", interval: '3 hours'},
+            {label: "4 hours", interval: '4 hours'},
 
         ];
 
         const handleChange = (e) => {
-            const { name, value } = e.target;
+            const {name, value} = e.target;
 
             if (name === "duration") {
                 // Find the interval string corresponding to the selected label
                 const selectedOption = durationOptions.find(option => option.label === value);
                 const interval = selectedOption ? selectedOption.interval : '0 minutes'; // Default to '0 minutes' if not found
-                setSelectedService({ ...selectedService, duration: interval });
+                setSelectedService({...selectedService, duration: interval});
             } else {
-                setSelectedService({ ...selectedService, [name]: value });
+                setSelectedService({...selectedService, [name]: value});
             }
         };
 
@@ -252,10 +251,10 @@ const Layout = () => {
                 startY: 35,
                 head: [tableColumn],
                 body: tableRows,
-                styles: { font: "helvetica", fontSize: 10 },
-                headStyles: { fillColor: [22, 160, 133] },
-                alternateRowStyles: { fillColor: [238, 238, 238] },
-                margin: { left: 14, right: 14 },
+                styles: {font: "helvetica", fontSize: 10},
+                headStyles: {fillColor: [22, 160, 133]},
+                alternateRowStyles: {fillColor: [238, 238, 238]},
+                margin: {left: 14, right: 14},
                 tableLineColor: [44, 62, 80],
                 tableLineWidth: 0.1
             });
@@ -264,11 +263,10 @@ const Layout = () => {
         };
 
 
-
         return (
             <div className="flex h-screen">
                 <div className="w-[20%] h-full text-white">
-                    <Sidebar />
+                    <Sidebar/>
                 </div>
                 <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular overflow-auto">
                     <div className="flex h-screen">

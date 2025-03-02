@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import af from "../../images/bcimage.avif";
 import Swal from 'sweetalert2';
 import axios from 'axios';
-import { faTrash } from "@fortawesome/free-solid-svg-icons";
-import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import {faTrash} from "@fortawesome/free-solid-svg-icons";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 
 const Layout = () => {
     const navigate = useNavigate();
@@ -15,7 +15,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -40,7 +40,7 @@ const Layout = () => {
     useEffect(() => {
         const fetchCategories = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/service/categories');
+                const response = await axios.get('https://servertest-isos.onrender.com/service/categories');
                 setCategories(response.data);
             } catch (error) {
                 console.error("Error fetching categories:", error);
@@ -52,7 +52,7 @@ const Layout = () => {
 
     const deleteCategory = async (id) => {
         try {
-            await axios.delete(`http://localhost:3001/service/categories/${id}`);
+            await axios.delete(`https://servertest-isos.onrender.com/service/categories/${id}`);
             setCategories(categories.filter(category => category.id !== id)); // Update state to remove deleted category
             Swal.fire({
                 title: 'Deleted!',
@@ -95,7 +95,7 @@ const Layout = () => {
     return (
         <div className="flex h-screen">
             <div className="w-[20%] h-full text-white">
-                <Sidebar />
+                <Sidebar/>
             </div>
             <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular">
                 <div className="flex h-screen">
@@ -119,7 +119,8 @@ const Layout = () => {
                                 onChange={(e) => setSearchTerm(e.target.value)}
                                 className="border border-gray-300 px-4 py-2 mb-4 rounded"
                             />
-                            <table className="min-w-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
+                            <table
+                                className="min-w-full bg-white border border-gray-200 font-sans rounded-lg shadow-md">
                                 <thead className="bg-gray-100 border-b border-gray-200">
                                 <tr>
                                     <th className="py-2 px-4 text-left font-sans text-gray-600">Category ID</th>
@@ -137,7 +138,7 @@ const Layout = () => {
                                                 onClick={() => handleDeleteClick(category.id)} // Use handleDeleteClick instead
                                                 className="bg-black text-white py-1 px-4 rounded hover:bg-pink-700"
                                             >
-                                                <FontAwesomeIcon icon={faTrash} />
+                                                <FontAwesomeIcon icon={faTrash}/>
                                             </button>
                                         </td>
                                     </tr>

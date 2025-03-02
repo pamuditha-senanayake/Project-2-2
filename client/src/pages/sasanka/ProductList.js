@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
+import React, {useState, useEffect} from 'react';
 import axios from 'axios';
-import { Modal, InputNumber, Tooltip } from 'antd';
+import {Modal, InputNumber, Tooltip} from 'antd';
 import 'antd/dist/reset.css'; // Ensure Ant Design styles are imported
 import Navbar from '../pamuditha/nav';
 import Banner from "../../images/Banner.jpg"; // Import the banner image
@@ -20,7 +20,7 @@ const ProductList = () => {
     useEffect(() => {
         const fetchProducts = async () => {
             try {
-                const response = await axios.get('http://localhost:3001/products');
+                const response = await axios.get('https://servertest-isos.onrender.com/products');
                 setProducts(response.data);
                 setLoading(false);
             } catch (error) {
@@ -41,12 +41,12 @@ const ProductList = () => {
 
     const handleOk = async () => {
         try {
-            const response = await fetch('http://localhost:3001/api/user/cartadd', {
+            const response = await fetch('https://servertest-isos.onrender.com/api/user/cartadd', {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ itemId: selectedProduct.id, quantity }),
+                body: JSON.stringify({itemId: selectedProduct.id, quantity}),
                 credentials: 'include',
             });
 
@@ -81,10 +81,10 @@ const ProductList = () => {
 
     return (
         <div className="flex flex-col w-full min-h-screen bg-gray-100 mt-[100px] px-6 md:p-10">
-            <Navbar cartCount={cartCount} /> {/* Pass cartCount to Navbar */}
+            <Navbar cartCount={cartCount}/> {/* Pass cartCount to Navbar */}
             {/* Banner */}
             <div className="mb-8">
-                <img src={Banner} alt="Banner" className="w-full h-60 object-cover rounded-lg shadow-lg" />
+                <img src={Banner} alt="Banner" className="w-full h-60 object-cover rounded-lg shadow-lg"/>
             </div>
 
             {/* Search and Category Filter */}
@@ -112,9 +112,10 @@ const ProductList = () => {
             {/* Product Grid */}
             <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-8">
                 {filteredProducts.map((product) => (
-                    <div key={product.id} className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105">
+                    <div key={product.id}
+                         className="bg-white rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden transform hover:scale-105">
                         <img
-                            src={product.image ? `http://localhost:3001/uploads/${product.image}` : 'default-image-url'}
+                            src={product.image ? `https://servertest-isos.onrender.com/uploads/${product.image}` : 'default-image-url'}
                             alt={product.title}
                             className="w-full h-48 object-cover rounded-t-lg mb-4"
                         />
@@ -157,12 +158,12 @@ const ProductList = () => {
                             Add to Cart
                         </button>,
                     ]}
-                    style={{ top: 20 }}
+                    style={{top: 20}}
                 >
                     <div className="flex flex-col sm:flex-row items-center">
                         <div className="flex-shrink-0 mb-4 sm:mb-0 sm:mr-6">
                             <img
-                                src={selectedProduct.image ? `http://localhost:3001/uploads/${selectedProduct.image}` : 'default-image-url'}
+                                src={selectedProduct.image ? `https://servertest-isos.onrender.com/uploads/${selectedProduct.image}` : 'default-image-url'}
                                 alt={selectedProduct.title}
                                 className="w-32 h-32 object-cover rounded-lg shadow-md"
                             />

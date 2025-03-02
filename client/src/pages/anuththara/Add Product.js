@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash'; // Import your Sidebar component
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import homepic7 from "../../images/f.jpg";
 import axios from "axios";
 
@@ -19,7 +19,7 @@ const AddItem = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -57,8 +57,8 @@ const AddItem = () => {
         setLoading(true);
 
         try {
-            await axios.post('http://localhost:3001/api/products', formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            await axios.post('https://servertest-isos.onrender.com/api/products', formData, {
+                headers: {'Content-Type': 'multipart/form-data'},
             });
 
             alert('Product added successfully!');
@@ -100,7 +100,7 @@ const AddItem = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-                <Sidebar />
+                <Sidebar/>
             </div>
 
             {/* Main Content */}

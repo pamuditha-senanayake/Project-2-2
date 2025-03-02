@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash'; // Import your Sidebar component
-import { useNavigate, useParams } from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import homepic7 from "../../images/f.jpg";
 import axios from "axios";
 
 const UpdateProduct = () => {
-    const { id } = useParams(); // Get the product ID from URL parameters
+    const {id} = useParams(); // Get the product ID from URL parameters
     const navigate = useNavigate();
 
     const [title, setTitle] = useState('');
@@ -22,7 +22,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         const fetchProduct = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+                const response = await axios.get(`https://servertest-isos.onrender.com/api/products/${id}`);
                 const product = response.data;
                 setTitle(product.title);
                 setPrice(product.price);
@@ -30,7 +30,7 @@ const UpdateProduct = () => {
                 setDescription(product.description);
                 setQuantity(product.quantity);
                 setExistingImage(product.image);
-                setImagePreview(`http://localhost:3001/uploads/${product.image}`); // Set existing image preview
+                setImagePreview(`https://servertest-isos.onrender.com/uploads/${product.image}`); // Set existing image preview
             } catch (error) {
                 console.error('Error fetching product:', error);
             }
@@ -67,8 +67,8 @@ const UpdateProduct = () => {
         setLoading(true);
 
         try {
-            await axios.put(`http://localhost:3001/api/products/${id}`, formData, {
-                headers: { 'Content-Type': 'multipart/form-data' },
+            await axios.put(`https://servertest-isos.onrender.com/api/products/${id}`, formData, {
+                headers: {'Content-Type': 'multipart/form-data'},
             });
 
             alert('Product updated successfully!');
@@ -85,7 +85,7 @@ const UpdateProduct = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -116,7 +116,7 @@ const UpdateProduct = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-                <Sidebar />
+                <Sidebar/>
             </div>
             <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular"
                  style={{

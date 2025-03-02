@@ -28,7 +28,7 @@ const Layout = () => {
 
     useEffect(() => {
         const fetchUsers = async () => {
-            const response = await fetch('http://localhost:3001/api/user', {
+            const response = await fetch('https://servertest-isos.onrender.com/api/user', {
                 credentials: 'include',
             });
             const data = await response.json();
@@ -88,7 +88,7 @@ const Layout = () => {
 
     const fetchGrowthPrediction = async () => {
         try {
-            const response = await fetch('http://localhost:3001/predict-registrations', {
+            const response = await fetch('https://servertest-isos.onrender.com/predict-registrations', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

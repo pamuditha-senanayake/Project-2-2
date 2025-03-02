@@ -41,7 +41,7 @@ const app = express();
 const port = 3001;
 
 app.use(cors({
-    origin: ['http://localhost:3000', 'http://localhost:3001'],
+    origin: ['https://pamoo.netlify.app', 'https://servertest-isos.onrender.com'],
     credentials: true
 }));
 
@@ -109,7 +109,7 @@ app.use('/card', addcard2);
 
 
 app.get("/", (req, res) => {
-    res.redirect("http://localhost:3000/home");
+    res.redirect("https://pamoo.netlify.app/home");
 });
 
 

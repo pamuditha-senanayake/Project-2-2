@@ -27,7 +27,7 @@ const UserProfile = () => {
     useEffect(() => {
         const fetchUserData = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/profile', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/profile', {
                     method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
@@ -60,7 +60,7 @@ const UserProfile = () => {
 
         const fetchProfilePicture = async (userId) => {
             try {
-                const response = await fetch(`http://localhost:3001/api/user/profile2`, { // Adjust this endpoint as needed
+                const response = await fetch(`https://servertest-isos.onrender.com/api/user/profile2`, { // Adjust this endpoint as needed
                     method: 'GET',
                     credentials: 'include',
                 });
@@ -91,7 +91,7 @@ const UserProfile = () => {
     const handleUpdate = async () => {
         try {
             const response = await fetch(
-                `http://localhost:3001/api/user/update/${userData.id}`,
+                `https://servertest-isos.onrender.com/api/user/update/${userData.id}`,
                 {
                     method: 'PUT',
                     headers: {
@@ -138,7 +138,7 @@ const UserProfile = () => {
                 if (result.isConfirmed) {
                     try {
                         const response = await fetch(
-                            `http://localhost:3001/api/user/delete/${userData.id}`,
+                            `https://servertest-isos.onrender.com/api/user/delete/${userData.id}`,
                             {
                                 method: 'DELETE',
                                 headers: {
@@ -214,7 +214,7 @@ const UserProfile = () => {
             const formData = new FormData();
             formData.append('image', imageBlob);
 
-            const response = await fetch('http://localhost:3001/api/user/upload-profile-image', {
+            const response = await fetch('https://servertest-isos.onrender.com/api/user/upload-profile-image', {
                 method: 'POST',
                 body: formData,
                 credentials: 'include', // Include credentials for authentication
@@ -316,7 +316,7 @@ const UserProfile = () => {
                                 <div className="flex flex-row">
                                     <div className="mr-[100px]">
                                         <img
-                                            src={profilePic ? `http://localhost:3001/uploads/${profilePic}` : homepic7}
+                                            src={profilePic ? `https://servertest-isos.onrender.com/uploads/${profilePic}` : homepic7}
                                             alt="Profile"
                                             className="w-24 h-24 rounded-full border-2 border-gray-300"
                                         />

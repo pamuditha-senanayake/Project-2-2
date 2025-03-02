@@ -1,15 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { useParams } from 'react-router-dom';
+import React, {useEffect, useState} from 'react';
+import {useParams} from 'react-router-dom';
 import axios from 'axios';
 
 const ProductDetailPage = () => {
-    const { id } = useParams(); // Get product ID from URL
+    const {id} = useParams(); // Get product ID from URL
     const [product, setProduct] = useState(null);
 
     useEffect(() => {
         const getProduct = async () => {
             try {
-                const response = await axios.get(`http://localhost:3001/api/products/${id}`);
+                const response = await axios.get(`https://servertest-isos.onrender.com/api/products/${id}`);
                 setProduct(response.data);
             } catch (error) {
                 console.error('Error fetching product details:', error);
@@ -35,7 +35,7 @@ const ProductDetailPage = () => {
                 {/* Left: Product Image */}
                 <div className="w-full md:w-1/2 mb-6 md:mb-0">
                     <img
-                        src={product.image ? `http://localhost:3001/uploads/${product.image}` : 'default-image-url'}
+                        src={product.image ? `https://servertest-isos.onrender.com/uploads/${product.image}` : 'default-image-url'}
                         alt={product.title}
                         className="w-full h-full object-cover rounded-lg"
                     />

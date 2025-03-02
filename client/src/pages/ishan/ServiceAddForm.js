@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
+import {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import axios from "axios";
 import homepic6 from "../../images/e.jpg";
 import Swal from "sweetalert2";
@@ -11,7 +11,7 @@ const Layout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -50,7 +50,7 @@ const Layout = () => {
         useEffect(() => {
             const fetchCategories = async () => {
                 try {
-                    const response = await axios.get("http://localhost:3001/service/categories");
+                    const response = await axios.get("https://servertest-isos.onrender.com/service/categories");
                     setCategories(response.data);
                 } catch (error) {
                     console.error("Error fetching categories:", error);
@@ -60,14 +60,14 @@ const Layout = () => {
         }, []);
 
         const handleChange = (e) => {
-            const { id, value } = e.target;
-            setFormData({ ...formData, [id]: value });
+            const {id, value} = e.target;
+            setFormData({...formData, [id]: value});
         };
 
         const handleSubmit = async (e) => {
             e.preventDefault();
             try {
-                const response = await axios.post("http://localhost:3001/service/services", formData);
+                const response = await axios.post("https://servertest-isos.onrender.com/service/services", formData);
                 if (response.data && response.data.duration) {
                     // Ensure the response contains the duration
                     setMessage("Service added successfully!");
@@ -102,7 +102,7 @@ const Layout = () => {
         return (
             <div className="flex h-screen">
                 <div className="w-[20%] h-full text-white">
-                    <Sidebar />
+                    <Sidebar/>
                 </div>
 
                 <div className="w-[80%] h-full bg-pink-500 julius-sans-one-regular">

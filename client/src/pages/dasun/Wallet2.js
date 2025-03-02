@@ -44,7 +44,7 @@ const Wallet2 = () => {
 
     const fetchCards = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/user/get/100`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/get/100`, {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -80,7 +80,7 @@ const Wallet2 = () => {
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:3001/api/user/updatecard/${selectedCard.id}`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/updatecard/${selectedCard.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -147,7 +147,7 @@ const Wallet2 = () => {
     const handleDelete = async (cardId) => {
         if (window.confirm('Are you sure you want to delete this card?')) {
             try {
-                await fetch(`http://localhost:3001/api/user/deletecard/${cardId}`, {
+                await fetch(`https://servertest-isos.onrender.com/api/user/deletecard/${cardId}`, {
                     method: 'DELETE',
                     credentials: 'include',
                 });

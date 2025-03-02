@@ -14,7 +14,7 @@ const LayoutWithAppointments = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include'
                 });
 
@@ -63,7 +63,7 @@ const LayoutWithAppointments = () => {
     const handleConfirm = async (id) => {
         try {
             const response = await axios.put(
-                `http://localhost:3001/api/appointmentconfirmed/confirmed/${id}`
+                `https://servertest-isos.onrender.com/api/appointmentconfirmed/confirmed/${id}`
             );
             console.log('Appointment confirmed:', response.data);
             window.location.reload();
@@ -76,7 +76,7 @@ const LayoutWithAppointments = () => {
     const handleReject = async (id) => {
         try {
             const response = await axios.put(
-                `http://localhost:3001/api/appointmentrejected/rejected/${id}`
+                `https://servertest-isos.onrender.com/api/appointmentrejected/rejected/${id}`
             );
             console.log('Appointment rejected:', response.data);
             window.location.reload();

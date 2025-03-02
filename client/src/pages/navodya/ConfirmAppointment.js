@@ -32,7 +32,7 @@ const ConfirmAppointment = () => {
 
     useEffect(() => {
         const getAppointmentStatus = async () => {
-            fetch(`http://localhost:3001/api/user/status/${appointmentId}`, {credentials: 'include'})
+            fetch(`https://servertest-isos.onrender.com/api/user/status/${appointmentId}`, {credentials: 'include'})
                 .then((response) => response.json())
                 .then((data) => {
                     console.log('Fetched appointment status data:', data); // Debug log
@@ -81,7 +81,7 @@ const ConfirmAppointment = () => {
             console.log("Appointment status is pending, proceeding with deletion.");
 
             try {
-                const response = await fetch(`http://localhost:3001/api/user/delete?appointmentId=${appointmentId}`, {
+                const response = await fetch(`https://servertest-isos.onrender.com/api/user/delete?appointmentId=${appointmentId}`, {
                     method: 'DELETE',
                     credentials: 'include',
                 });

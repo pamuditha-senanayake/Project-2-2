@@ -180,7 +180,7 @@ function ChatComponent() {
         setMessages([...messages, {text: message, type: 'user'}]);
 
         try {
-            const res = await fetch('http://localhost:3001/ask', {
+            const res = await fetch('https://servertest-isos.onrender.com/ask', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

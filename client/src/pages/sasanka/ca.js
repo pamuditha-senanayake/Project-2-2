@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 
 const ServicesPage = () => {
@@ -6,19 +6,19 @@ const ServicesPage = () => {
     const [selectedService, setSelectedService] = useState(null);
 
     const durationOptions = [
-        { label: "15 minutes", interval: '15 minutes' },
-        { label: "30 minutes", interval: '30 minutes' },
-        { label: "45 minutes", interval: '45 minutes' },
-        { label: "1 hour", interval: '1 hour' },
-        { label: "2 hours", interval: '2 hours' },
-        { label: "3 hours", interval: '3 hours' },
-        { label: "4 hours", interval: '4 hours' },
+        {label: "15 minutes", interval: '15 minutes'},
+        {label: "30 minutes", interval: '30 minutes'},
+        {label: "45 minutes", interval: '45 minutes'},
+        {label: "1 hour", interval: '1 hour'},
+        {label: "2 hours", interval: '2 hours'},
+        {label: "3 hours", interval: '3 hours'},
+        {label: "4 hours", interval: '4 hours'},
     ];
 
     useEffect(() => {
         const fetchServices = async () => {
             try {
-                const response = await axios.get("http://localhost:3001/service/services");
+                const response = await axios.get("https://servertest-isos.onrender.com/service/services");
                 const servicesWithFormattedDuration = response.data.map(service => {
                     const minutes = service.duration.match(/(\d+) minutes/);
                     const hours = service.duration.match(/(\d+) hours/);
@@ -30,7 +30,7 @@ const ServicesPage = () => {
                         durationLabel = `${minutes[1]} minutes`;
                     }
 
-                    return { ...service, duration: durationLabel };
+                    return {...service, duration: durationLabel};
                 });
                 setServices(servicesWithFormattedDuration);
             } catch (err) {
@@ -45,20 +45,20 @@ const ServicesPage = () => {
     };
 
     const handleChange = (e) => {
-        const { name, value } = e.target;
+        const {name, value} = e.target;
 
         if (name === "duration") {
             const selectedOption = durationOptions.find(option => option.label === value);
             const interval = selectedOption ? selectedOption.interval : selectedService.duration;
-            setSelectedService({ ...selectedService, duration: interval });
+            setSelectedService({...selectedService, duration: interval});
         } else {
-            setSelectedService({ ...selectedService, [name]: value });
+            setSelectedService({...selectedService, [name]: value});
         }
     };
 
     const handleUpdateService = async () => {
         try {
-            await axios.put(`http://localhost:3001/service/services/${selectedService.id}`, selectedService);
+            await axios.put(`https://servertest-isos.onrender.com/service/services/${selectedService.id}`, selectedService);
             setServices(services.map(service =>
                 service.id === selectedService.id ? selectedService : service
             ));

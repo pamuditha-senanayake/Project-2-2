@@ -12,7 +12,7 @@ function AdminTestimonials() {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -55,7 +55,7 @@ function AdminTestimonials() {
         const fetchUserData = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:3001/api/user/profile",
+                    "https://servertest-isos.onrender.com/api/user/profile",
                     {
                         method: "GET",
                         headers: {
@@ -134,7 +134,7 @@ function AdminTestimonials() {
     const fetchAllTestimonials = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:3001/api/testimonials"
+                "https://servertest-isos.onrender.com/api/testimonials"
             );
             setTestimonials(response.data);
         } catch (err) {
@@ -229,7 +229,7 @@ function AdminTestimonials() {
         );
         if (confirmDelete) {
             try {
-                await axios.delete(`http://localhost:3001/api/testimonials/${id}`);
+                await axios.delete(`https://servertest-isos.onrender.com/api/testimonials/${id}`);
                 setTestimonials((prevTestimonials) =>
                     prevTestimonials.filter((testimonial) => testimonial.id !== id)
                 );
@@ -244,7 +244,7 @@ function AdminTestimonials() {
     // Function to handle testimonial approval
     const handleApprove = async (id) => {
         try {
-            await axios.put(`http://localhost:3001/api/testimonials/approve/${id}`, {
+            await axios.put(`https://servertest-isos.onrender.com/api/testimonials/approve/${id}`, {
                 status: "approved",
             });
             setTestimonials((prevTestimonials) =>

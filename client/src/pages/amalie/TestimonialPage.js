@@ -34,7 +34,7 @@ function TestimonialPage() {
     const fetchAllTestimonials = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:3001/api/testimonials/approved"
+                "https://servertest-isos.onrender.com/api/testimonials/approved"
             );
             console.log(response.data);
             setTestimonials(response.data);
@@ -50,7 +50,7 @@ function TestimonialPage() {
     const handleDelete = async (id) => {
         try {
             await axios.delete(
-                `http://localhost:3001/api/testimonials/${id}`
+                `https://servertest-isos.onrender.com/api/testimonials/${id}`
             );
             setTestimonials(
                 testimonials.filter((t) => t.id !== id)
@@ -65,7 +65,7 @@ function TestimonialPage() {
     const handleUpdate = async (id, updatedTestimonial) => {
         try {
             await axios.put(
-                `http://localhost:3001/api/testimonials/${id}`,
+                `https://servertest-isos.onrender.com/api/testimonials/${id}`,
                 updatedTestimonial
             );
             fetchAllTestimonials(); // Refresh the list to show updated data
@@ -96,7 +96,7 @@ function TestimonialPage() {
 
         try {
             await axios.post(
-                "http://localhost:3001/api/testimonials",
+                "https://servertest-isos.onrender.com/api/testimonials",
                 newTestimonialData
             );
             setNewTestimonial({
@@ -127,7 +127,7 @@ function TestimonialPage() {
         const fetchUserData = async () => {
             try {
                 const response = await fetch(
-                    "http://localhost:3001/api/user/profile",
+                    "https://servertest-isos.onrender.com/api/user/profile",
                     {
                         method: "GET",
                         headers: {

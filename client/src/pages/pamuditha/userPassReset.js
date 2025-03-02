@@ -34,7 +34,7 @@ const ResetPassword = () => {
         }
 
         try {
-            const response = await fetch(`http://localhost:3001/resetu`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/resetu`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',

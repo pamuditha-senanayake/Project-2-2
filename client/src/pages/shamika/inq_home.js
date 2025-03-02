@@ -10,7 +10,7 @@ const UserProfile = () => {
     useEffect(() => {
         const checkUser = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/customer', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/customer', {
                     credentials: 'include' // Include credentials with the request
                 });
 
@@ -45,7 +45,7 @@ function InquiriesPage() {
 
     // Fetch inquiries on component mount
     useEffect(() => {
-        fetch('http://localhost:3001/api/user/inquiries/view', {credentials: 'include'})
+        fetch('https://servertest-isos.onrender.com/api/user/inquiries/view', {credentials: 'include'})
             .then((response) => response.json())
             .then((data) => {
                 setInquiries(data.inquiries || []);
@@ -56,7 +56,7 @@ function InquiriesPage() {
     // Handle form submission
     const handleSubmit = (e) => {
         e.preventDefault();
-        fetch('http://localhost:3001/api/user/inquiries', {
+        fetch('https://servertest-isos.onrender.com/api/user/inquiries', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
@@ -87,7 +87,7 @@ function InquiriesPage() {
             confirmButtonText: 'Yes, delete it!'
         }).then((result) => {
             if (result.isConfirmed) {
-                fetch(`http://localhost:3001/api/user/inquiries/delete/${id}`, {
+                fetch(`https://servertest-isos.onrender.com/api/user/inquiries/delete/${id}`, {
                     method: 'DELETE',
                     credentials: 'include',
                 })
@@ -118,7 +118,7 @@ function InquiriesPage() {
     // Handle the update of inquiry
     const handleUpdate = () => {
         if (editInquiryId) {
-            fetch(`http://localhost:3001/api/user/inquiries/update/${editInquiryId}`, {
+            fetch(`https://servertest-isos.onrender.com/api/user/inquiries/update/${editInquiryId}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -144,7 +144,7 @@ function InquiriesPage() {
                             icon: 'success',
                         });
                         // Refetch inquiries to refresh the UI
-                        fetch('http://localhost:3001/api/user/inquiries/view', {credentials: 'include'})
+                        fetch('https://servertest-isos.onrender.com/api/user/inquiries/view', {credentials: 'include'})
                             .then((response) => response.json())
                             .then((updatedInquiries) => {
                                 setInquiries(updatedInquiries.inquiries || []);

@@ -1,6 +1,6 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import Sidebar from '../com/admindash';
-import { useNavigate } from 'react-router-dom';
+import {useNavigate} from 'react-router-dom';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import homepic7 from "../../images/f.jpg";
@@ -31,7 +31,7 @@ const OrdersLayout = () => {
     useEffect(() => {
         const checkAdmin = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/admin', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/admin', {
                     credentials: 'include'
                 });
 
@@ -52,7 +52,7 @@ const OrdersLayout = () => {
 
         const fetchOrders = async () => {
             try {
-                const response = await fetch('http://localhost:3001/api/user/orders', {
+                const response = await fetch('https://servertest-isos.onrender.com/api/user/orders', {
                     credentials: 'include'
                 });
 
@@ -78,7 +78,7 @@ const OrdersLayout = () => {
     }, [navigate]);
 
     const formatDate = (dateString) => {
-        const options = { year: 'numeric', month: 'long', day: 'numeric' };
+        const options = {year: 'numeric', month: 'long', day: 'numeric'};
         const date = new Date(dateString);
         return date.toLocaleDateString(undefined, options); // Format date
     };
@@ -111,8 +111,8 @@ const OrdersLayout = () => {
             head: [columns],
             body: data,
             theme: 'grid',
-            margin: { horizontal: 14 },
-            styles: { fontSize: 10 },
+            margin: {horizontal: 14},
+            styles: {fontSize: 10},
         });
 
         doc.setFontSize(10);
@@ -129,7 +129,7 @@ const OrdersLayout = () => {
                      backgroundPosition: 'center',
                      backgroundRepeat: 'no-repeat',
                  }}>
-                <Sidebar />
+                <Sidebar/>
             </div>
             <div className="w-[80%] h-full bg-pink-500 p-4 julius-sans-one-regular overflow-auto"
                  style={{
@@ -140,7 +140,7 @@ const OrdersLayout = () => {
                  }}>
                 <div className="p-6 bg-white rounded-lg shadow-md overflow-x-auto">
                     <h1 className="text-3xl">Order Information</h1>
-                    <br />
+                    <br/>
 
                     <input
                         type="text"

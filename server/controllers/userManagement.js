@@ -39,7 +39,7 @@ router.post('/forgot-password', async (req, res) => {
         );
 
         // Create a reset link (assuming your frontend will handle the token)
-        const resetLink = `http://localhost:3000/reset-password/${resetToken}`;
+        const resetLink = `https://pamoo.netlify.app/reset-password/${resetToken}`;
 
         // Send an email with the reset link (using Nodemailer or any other email service)
         const transporter = nodemailer.createTransport({
@@ -122,11 +122,11 @@ router.post('/reset-password', async (req, res) => {
     }
 });
 router.get("/", (req, res) => {
-    res.redirect("http://localhost:3000/");
+    res.redirect("https://pamoo.netlify.app/");
 });
 
 router.get("/register", (req, res) => {
-    res.redirect("http://localhost:3000/register");
+    res.redirect("https://pamoo.netlify.app/register");
 });
 
 router.post("/register", async (req, res) => {
@@ -168,8 +168,8 @@ router.post("/register", async (req, res) => {
 
 
 // router.post("/login", passport.authenticate("local", {
-//     successRedirect: "http://localhost:3000/home",
-//     failureRedirect: "http://localhost:3000/admin-users",
+//     successRedirect: "https://pamoo.netlify.app/home",
+//     failureRedirect: "https://pamoo.netlify.app/admin-users",
 // }));
 
 
@@ -182,23 +182,23 @@ const roleRedirect = async (req, res, next) => {
                 const user = result.rows[0];
 
                 if (user.role === 'admin') {
-                    return res.redirect('http://localhost:3000/adminhome');
+                    return res.redirect('https://pamoo.netlify.app/adminhome');
                 } else if (user.role === 'customer') {
-                    return res.redirect('http://localhost:3000/home');
+                    return res.redirect('https://pamoo.netlify.app/home');
                 } else {
-                    return res.redirect('http://localhost:3000/home');
+                    return res.redirect('https://pamoo.netlify.app/home');
                 }
             } else {
                 console.log('User not found in database');
-                return res.redirect('http://localhost:3000/');
+                return res.redirect('https://pamoo.netlify.app/');
             }
         } catch (err) {
             console.error('Error fetching user data:', err);
-            return res.redirect('http://localhost:3000/');
+            return res.redirect('https://pamoo.netlify.app/');
         }
     } else {
         console.log('No user found in request');
-        return res.redirect('http://localhost:3000/');
+        return res.redirect('https://pamoo.netlify.app/');
     }
 };
 
@@ -277,7 +277,7 @@ router.post("/login", (req, res, next) => {
         if (!user) {
             // If authentication fails, clear cookies and redirect to the login page
             res.clearCookie('diamond');
-            return res.redirect('http://localhost:3000/');
+            return res.redirect('https://pamoo.netlify.app/');
         }
         req.logIn(user, (err) => {
             if (err) return next(err);
@@ -294,7 +294,7 @@ router.get("/logout", (req, res, next) => {
         }
 
         res.clearCookie('diamond', {path: '/'});
-        res.redirect('http://localhost:3000/');
+        res.redirect('https://pamoo.netlify.app/');
     });
 });
 
@@ -309,8 +309,8 @@ router.get(
 // router.get(
 //     "/auth/google/secrets",
 //     passport.authenticate("google", {
-//         successRedirect: "http://localhost:3000/home",
-//         failureRedirect: "http://localhost:3000/",
+//         successRedirect: "https://pamoo.netlify.app/home",
+//         failureRedirect: "https://pamoo.netlify.app/",
 //     })
 // );
 
@@ -352,7 +352,7 @@ passport.use(
         {
             clientID: process.env.GOOGLE_CLIENT_ID,
             clientSecret: process.env.GOOGLE_CLIENT_SECRET,
-            callbackURL: "http://localhost:3001/auth/google/secrets",
+            callbackURL: "https://servertest-isos.onrender.com/auth/google/secrets",
             userProfileURL: "https://www.googleapis.com/oauth2/v3/userinfo",
         },
         async (accessToken, refreshToken, profile, cb) => {

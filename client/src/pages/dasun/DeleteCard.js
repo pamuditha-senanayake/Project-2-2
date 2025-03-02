@@ -2,10 +2,10 @@
 import React from 'react';
 import axios from 'axios';
 
-const DeleteCard = ({ cardId, onClose, onDelete }) => {
+const DeleteCard = ({cardId, onClose, onDelete}) => {
     const handleDelete = async () => {
         try {
-            const response = await axios.delete(`http://localhost:3001/api/user/delete/${cardId}`, {
+            const response = await axios.delete(`https://servertest-isos.onrender.com/api/user/delete/${cardId}`, {
                 withCredentials: true // Include credentials if needed
             });
 

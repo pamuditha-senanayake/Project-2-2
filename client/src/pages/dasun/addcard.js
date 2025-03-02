@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, {useState} from 'react';
 
 const AddCard = () => {
     const [cardHolderName, setCardHolderName] = useState('');
@@ -8,10 +8,15 @@ const AddCard = () => {
 
     const handleSubmit = async (e) => {
         e.preventDefault();
-        await fetch('http://localhost:3001/api/user/api/cards', {
+        await fetch('https://servertest-isos.onrender.com/api/user/api/cards', {
             method: 'POST',
-            headers: { 'Content-Type': 'application/json' },
-            body: JSON.stringify({ card_holder_name: cardHolderName, card_number: cardNumber, expiration_date: expirationDate, cvv }),
+            headers: {'Content-Type': 'application/json'},
+            body: JSON.stringify({
+                card_holder_name: cardHolderName,
+                card_number: cardNumber,
+                expiration_date: expirationDate,
+                cvv
+            }),
         });
         // Reset form or handle success
         setCardHolderName('');

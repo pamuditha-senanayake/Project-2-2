@@ -1,16 +1,16 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 
 const ViewCards = () => {
     const [cards, setCards] = useState([]);
 
     const fetchCards = async () => {
-        const response = await fetch('http://localhost:3001/api/user/api/cards');
+        const response = await fetch('https://servertest-isos.onrender.com/api/user/api/cards');
         const data = await response.json();
         setCards(data);
     };
 
     const deleteCard = async (id) => {
-        await fetch(`http://localhost:3001/api/user/api/cards/${id}`, { method: 'DELETE' });
+        await fetch(`https://servertest-isos.onrender.com/api/user/api/cards/${id}`, {method: 'DELETE'});
         fetchCards(); // Refresh the list
     };
 

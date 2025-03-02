@@ -1,9 +1,9 @@
-import React, { useEffect, useState } from 'react';
+import React, {useEffect, useState} from 'react';
 import axios from 'axios';
 import jsPDF from 'jspdf';
 import 'jspdf-autotable';
 import homepic6 from "../../images/e.jpg";
-import { useNavigate, useParams } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 
 const Wallet = () => {
     const [cards, setCards] = useState([]);
@@ -14,7 +14,7 @@ const Wallet = () => {
     const [paymentSuccess, setPaymentSuccess] = useState(null);
     const [paymentSuccessVisible, setPaymentSuccessVisible] = useState(false);
     const navigate = useNavigate();
-    const { userId } = useParams();
+    const {userId} = useParams();
 
     // Function to group cards by type
     const groupCardsByType = (cards) => {
@@ -30,7 +30,7 @@ const Wallet = () => {
     // Fetch cards from the API
     const fetchCards = async () => {
         try {
-            const response = await fetch(`http://localhost:3001/api/user/get/100`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/get/100`, {
                 method: 'GET',
                 credentials: 'include',
             });
@@ -68,7 +68,7 @@ const Wallet = () => {
     const handleUpdateSubmit = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch(`http://localhost:3001/api/user/updatecard/${selectedCard.id}`, {
+            const response = await fetch(`https://servertest-isos.onrender.com/api/user/updatecard/${selectedCard.id}`, {
                 method: 'PUT',
                 headers: {
                     'Content-Type': 'application/json',
@@ -105,7 +105,7 @@ const Wallet = () => {
     // Handle payment
     const handlePay = async (cardId) => {
         try {
-            await axios.post(`http://localhost:3001/api/user/increment/${cardId}`);
+            await axios.post(`https://servertest-isos.onrender.com/api/user/increment/${cardId}`);
             setPaymentSuccess(cardId);
             setPaymentSuccessVisible(true); // Show success message
             fetchCards();
@@ -123,7 +123,7 @@ const Wallet = () => {
     // Download report functionality
     const handleDownloadReport = async () => {
         try {
-            const response = await axios.get('http://localhost:3001/api/user/reportt');
+            const response = await axios.get('https://servertest-isos.onrender.com/api/user/reportt');
             const reportData = response.data;
 
             const doc = new jsPDF();
@@ -146,7 +146,7 @@ const Wallet = () => {
     const handleDelete = async (cardId) => {
         if (window.confirm('Are you sure you want to delete this card?')) {
             try {
-                await fetch(`http://localhost:3001/api/user/deletecard/${cardId}`, {
+                await fetch(`https://servertest-isos.onrender.com/api/user/deletecard/${cardId}`, {
                     method: 'DELETE',
                     credentials: 'include',
                 });
@@ -235,7 +235,7 @@ const Wallet = () => {
                                 <input
                                     type="text"
                                     value={selectedCard?.cardHolderName || ''}
-                                    onChange={(e) => setSelectedCard({ ...selectedCard, cardHolderName: e.target.value })}
+                                    onChange={(e) => setSelectedCard({...selectedCard, cardHolderName: e.target.value})}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     required
                                 />
@@ -245,7 +245,7 @@ const Wallet = () => {
                                 <input
                                     type="text"
                                     value={selectedCard?.cardNo || ''}
-                                    onChange={(e) => setSelectedCard({ ...selectedCard, cardNo: e.target.value })}
+                                    onChange={(e) => setSelectedCard({...selectedCard, cardNo: e.target.value})}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     required
                                 />
@@ -255,7 +255,7 @@ const Wallet = () => {
                                 <input
                                     type="date"
                                     value={selectedCard?.expiryDate || ''}
-                                    onChange={(e) => setSelectedCard({ ...selectedCard, expiryDate: e.target.value })}
+                                    onChange={(e) => setSelectedCard({...selectedCard, expiryDate: e.target.value})}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     required
                                 />
@@ -265,7 +265,7 @@ const Wallet = () => {
                                 <input
                                     type="text"
                                     value={selectedCard?.cvcNo || ''}
-                                    onChange={(e) => setSelectedCard({ ...selectedCard, cvcNo: e.target.value })}
+                                    onChange={(e) => setSelectedCard({...selectedCard, cvcNo: e.target.value})}
                                     className="w-full p-2 border border-gray-300 rounded-md"
                                     required
                                 />
