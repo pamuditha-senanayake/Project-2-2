@@ -41,7 +41,7 @@ const app = express();
 const port = 3001;
 
 app.use(cors({
-    origin: ['https://pamoo.netlify.app', 'https://servertest-isos.onrender.com'],
+    origin: ['https://pamoo.netlify.app', 'https://servertest-r1xa.onrender.com'],
     credentials: true
 }));
 
@@ -53,7 +53,7 @@ app.use(
         cookie: {
             maxAge: 1000 * 60 * 100, // 100 minutes
             httpOnly: false,
-            secure: false
+            secure: true
         },
         name: 'diamond'
     })
